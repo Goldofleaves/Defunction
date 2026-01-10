@@ -1,7 +1,7 @@
 Util.Other = {}
 local other_lib = Util.Other
 
-other_lib.copy_table = function(t,filter)
+other_lib.CopyTable = function(t, filter)
 	if type(t) ~= "table" then
 		return t
 	end
@@ -18,13 +18,13 @@ other_lib.copy_table = function(t,filter)
 				end
 			end
 		else
-			ret[k] = other_lib.copy_table(v,filter)
+			ret[k] = other_lib.CopyTable(v, filter)
 		end
 	end
 	return ret
 end
 
-other_lib.load_localization = function()
+other_lib.LoadLocalization = function()
 	G.Localization = assert(load(love.filesystem.read("Localization/english.lua")))()
 	local language = G.Language or "english"
 	local temp = assert(load(love.filesystem.read("Localization/"..language..".lua")))()
@@ -34,7 +34,7 @@ other_lib.load_localization = function()
 	-- love.window.setTitle(G.Localization.title)
 end
 
-function other_lib.HEX(hex)
+function other_lib.Hex(hex)
 	if string.sub(hex, 1, 1) == "#" then
 		hex = string.sub(hex, 2, string.len(hex))
 	end
@@ -44,13 +44,13 @@ function other_lib.HEX(hex)
 	return color
 end
 
-function other_lib.exract_value_from_hierarch(tab, hierarch)
-	hierarch = other_lib.copy_table(hierarch)
+function other_lib.ExractValueFromHierarch(tab, hierarch)
+	hierarch = other_lib.CopyTable(hierarch)
 	if next(hierarch) then
 		local k = hierarch[#hierarch]
 		table.remove(hierarch, #hierarch)
 		if tab[k] then
-			return other_lib.exract_value_from_hierarch(tab[k], hierarch)
+			return other_lib.ExractValueFromHierarch(tab[k], hierarch)
 		end
 		return
 	end
