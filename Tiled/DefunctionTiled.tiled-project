@@ -1,0 +1,61 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "compatibilityVersion": 1100,
+    "extensionsPath": "extensions",
+    "folders": [
+        "."
+    ],
+    "properties": [
+    ],
+    "propertyTypes": [
+        {
+            "color": "#ff0000ff",
+            "drawFill": true,
+            "id": 1,
+            "members": [
+            ],
+            "name": "collisions",
+            "type": "class",
+            "useAs": [
+                "property",
+                "object",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffff0000",
+            "drawFill": true,
+            "id": 4,
+            "members": [
+            ],
+            "name": "ricochetableRegion",
+            "type": "class",
+            "useAs": [
+                "property",
+                "object",
+                "project"
+            ]
+        },
+        {
+            "color": "#ffffffff",
+            "drawFill": true,
+            "id": 5,
+            "members": [
+                {
+                    "name": "nid",
+                    "type": "string",
+                    "value": "default"
+                }
+            ],
+            "name": "spawnpoint",
+            "type": "class",
+            "useAs": [
+                "property",
+                "object",
+                "project"
+            ]
+        }
+    ]
+}
