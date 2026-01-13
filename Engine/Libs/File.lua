@@ -108,7 +108,7 @@ function file_lib.read_table_from_file(fn)
 		end
 		local function write(hierarch, degree, keyval, tab)
 			if next(hierarch) then
-			local hr = Util.Other.copy_table(hierarch)
+			local hr = Util.Other.CopyTable(hierarch)
 				if not tab[hierarch[1]] then
 					tab[hierarch[1]] = {} -- if the table doest exist create an empty table
 				end
