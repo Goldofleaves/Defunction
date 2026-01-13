@@ -15,6 +15,7 @@ function Game:new()
         SPRITES = {}
     }
     self.Timer = 0
+    self.State = "Overworld"
     G = self
 end
 function Game:update(dt)
