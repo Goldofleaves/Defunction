@@ -14,6 +14,7 @@ RegisterAtlasSimple("Icon", "Assets/Images/Icon.png", 16, 16)
 love.filesystem.setIdentity("Defuntion")
 
 love.load = function()
+    Wall{vx = 10, vy = 5}
     SimpleScale.auto_scale()
     love.window.setTitle("Defuntion")
     love.window.setIcon(Atlases.Icon.imageData)

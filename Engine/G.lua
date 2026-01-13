@@ -12,8 +12,10 @@ function Game:new()
         ShowGrid = true
     }
     self.I = {
-        SPRITES = {}
+        SPRITES = {},
+        MOVEABLES = {},
     }
+    self.Debug = true
     self.Timer = 0
     self.State = "Overworld"
     G = self
@@ -53,6 +55,9 @@ function Game:draw()
             love.graphics.rectangle("fill", Macros.TileSize, (1 + i) * Macros.TileSize, Macros.BaseResolution.w - Macros.TileSize * 2, 1)
         end
         love.graphics.setColor { r, g, b, a }
+    end
+    for _, v in pairs(self.I.MOVEABLES) do
+        v:draw()
     end
 end
 
