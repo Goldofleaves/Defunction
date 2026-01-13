@@ -38,16 +38,18 @@ function Sprite:new(args)
         x = args.atliX or 0,
         y = args.atliY or 0
     }
-    self.func = args.func or function(a, b) return end
+    self.UpdateFunc = args.UpdateFunc or function(s, dt) return end
     self.drawOrder = args.drawOrder or 1
     self.drawTiled = args.drawTiled == nil and false or args.drawTiled
     self.extra = args.extra or {}
+    self.DrawFunc = args.DrawFunc or function (s) return end
     self.mask = {
         shouldApply = args.maskShouldApply == nil and false or args.maskShouldApply,
         imageFpos = args.maskImageFpos,
     }
     self.Properties = args.Properties or {}
     table.insert(G.I.SPRITES, self)
+    return self
 end
 
 function Sprite:draw()
@@ -99,6 +101,7 @@ function Sprite:draw()
                 end
             end
         end
+        self.DrawFunc(self)
         if self.mask.shouldApply then
             love.graphics.setStencilTest()
         end
@@ -123,5 +126,5 @@ function Sprite:draw()
 end
 
 function Sprite:update(dt)
-    self.func(self, dt)
+    self.UpdateFunc(self, dt)
 end
