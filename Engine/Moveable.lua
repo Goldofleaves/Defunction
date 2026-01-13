@@ -86,5 +86,5 @@ function Wall:new(args)
             love.graphics.setColor{r, g, b, a}
         end
     end
-    Moveable.new(self, args)
+    return Moveable.new(self, args)
 end
