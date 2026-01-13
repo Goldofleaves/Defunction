@@ -1,6 +1,6 @@
 Util.File = {}
 local file_lib = Util.File
-function file_lib.save_table_to_file(tab, fn)
+function file_lib.SaveTableToFile(tab, fn)
 	local returnstring = ""
 	local typetab = {
 		string = "str",
@@ -30,16 +30,16 @@ function file_lib.save_table_to_file(tab, fn)
 	love.filesystem.write(fn..Macros.FileSuffix , returnstring)
 end
 
-function file_lib.set_table_with_file(tab, fn)
+function file_lib.SetTableWithFIle(tab, fn)
 	local c = love.filesystem.read(fn..Macros.FileSuffix)
 	if c then
-		local temp = Util.File.read_table_from_file(fn)
+		local temp = Util.File.ReadTableFromFile(fn)
 		for k,v in pairs(temp) do
 			tab[k] = v or tab[k]
 		end
 	end
 end
-function file_lib.read_table_from_file(fn)
+function file_lib.ReadTableFromFile(fn)
 	local returntable = {}
 	local hierarchies = {} -- table hierarchy, for sub table value jank
 	local contents = love.filesystem.read(fn..Macros.FileSuffix)

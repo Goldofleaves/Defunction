@@ -56,11 +56,10 @@ function Sprite:draw()
         local y = self.pos.y + ky
         local r, g, b, a = love.graphics.getColor()
         love.graphics.setColor { r, g, b, a * self.transparency }
-        if not self.drawTiled then
-            if self.mask.shouldApply then
-                self.extra = self.extra or {}
-                self.extra.mask = self.extra.mask or love.graphics.newImage(self.mask.imageFpos)
-                self.extra.mask_shader = self.extra.mask_shader or love.graphics.newShader [[
+        if self.mask.shouldApply then
+            self.extra = self.extra or {}
+            self.extra.mask = self.extra.mask or love.graphics.newImage(self.mask.imageFpos)
+            self.extra.mask_shader = self.extra.mask_shader or love.graphics.newShader [[
                    vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
                       if (Texel(texture, texture_coords).rgb == vec3(0.0)) {
                          // a discarded pixel wont be applied as the stencil.
@@ -69,43 +68,21 @@ function Sprite:draw()
                       return vec4(1.0);
                    }
                 ]]
-                local function myStencilFunction()
-                    love.graphics.setShader(self.extra.mask_shader)
-                    love.graphics.draw(self.extra.mask, 0, 0)
-                    love.graphics.setShader()
-                end
-                love.graphics.stencil(myStencilFunction, "replace", 1)
-                love.graphics.setStencilTest("greater", 0)
+            local function myStencilFunction()
+                love.graphics.setShader(self.extra.mask_shader)
+                love.graphics.draw(self.extra.mask, 0, 0)
+                love.graphics.setShader()
             end
+            love.graphics.stencil(myStencilFunction, "replace", 1)
+            love.graphics.setStencilTest("greater", 0)
+        end
+        if not self.drawTiled then
             love.graphics.draw(
                 Atlases[self.atliInfo.key].image, Atlases[self.atliInfo.key].splicedImages[self.atliInfo.x][self.atliInfo.y],
                 x, y,
                 0, 1, 1
             )
-            if self.mask.shouldApply then
-                love.graphics.setStencilTest()
-            end
         else
-            if self.mask.shouldApply then
-                self.extra = self.extra or {}
-                self.extra.mask = self.extra.mask or love.graphics.newImage(self.mask.imageFpos)
-                self.extra.mask_shader = self.extra.mask_shader or love.graphics.newShader [[
-                   vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
-                      if (Texel(texture, texture_coords).rgb == vec3(0.0)) {
-                         // a discarded pixel wont be applied as the stencil.
-                         discard;
-                      }
-                      return vec4(1.0);
-                   }
-                ]]
-                local function myStencilFunction()
-                    love.graphics.setShader(self.extra.mask_shader)
-                    love.graphics.draw(self.extra.mask, 0, 0)
-                    love.graphics.setShader()
-                end
-                love.graphics.stencil(myStencilFunction, "replace", 1)
-                love.graphics.setStencilTest("greater", 0)
-            end
             local moduloX = x % Atlases[self.atliInfo.key].singleDimention.w
             local moduloY = y % Atlases[self.atliInfo.key].singleDimention.h
             local xSegments = math.ceil(Macros.BaseResolution.w / Atlases[self.atliInfo.key].singleDimention.w)
@@ -121,9 +98,9 @@ function Sprite:draw()
                     )
                 end
             end
-            if self.mask.shouldApply then
-                love.graphics.setStencilTest()
-            end
+        end
+        if self.mask.shouldApply then
+            love.graphics.setStencilTest()
         end
         love.graphics.setColor { r, g, b, a }
     end
