@@ -53,6 +53,24 @@ function Game:draw()
     love.graphics.setColor(Util.Other.Hex("#4a3052"))
     love.graphics.rectangle("fill", 0, 0, Macros.BaseResolution.w, Macros.BaseResolution.h)
     love.graphics.setColor { r, g, b, a }
+    if self.Settings.ShowGrid then
+        local r, g, b, a = love.graphics.getColor()
+        love.graphics.setColor(Util.Other.Hex("#a32858"))
+        local amtx, amty = (Macros.BaseResolution.w - Macros.TileSize * 2) / Macros.TileSize,
+            (Macros.BaseResolution.h - Macros.TileSize * 2) / Macros.TileSize
+        for i = 1, amtx - 1 do
+            love.graphics.rectangle("fill", (1 + i) * Macros.TileSize, Macros.TileSize, 1,
+                Macros.BaseResolution.h - Macros.TileSize * 2)
+        end
+        for i = 1, amty - 1 do
+            love.graphics.rectangle("fill", Macros.TileSize, (1 + i) * Macros.TileSize,
+                Macros.BaseResolution.w - Macros.TileSize * 2, 1)
+        end
+        love.graphics.setColor { r, g, b, a }
+    end
+    for _, v in pairs(self.I.MOVEABLES) do
+        v:draw()
+    end
     local iTable = {}
     for _, v in pairs(self.I.SPRITES) do
         table.insert(iTable, v)
@@ -61,21 +79,6 @@ function Game:draw()
         return (a.DrawOrder < b.DrawOrder)
     end)
     for _, v in ipairs(iTable) do
-        v:draw()
-    end
-    if self.Settings.ShowGrid then
-        local r, g, b, a = love.graphics.getColor()
-        love.graphics.setColor(Util.Other.Hex("#a32858"))
-        local amtx, amty = (Macros.BaseResolution.w - Macros.TileSize * 2) / Macros.TileSize, (Macros.BaseResolution.h - Macros.TileSize * 2) / Macros.TileSize
-        for i = 1, amtx - 1 do
-            love.graphics.rectangle("fill", (1 + i) * Macros.TileSize, Macros.TileSize, 1, Macros.BaseResolution.h - Macros.TileSize * 2)
-        end
-        for i = 1, amty - 1 do
-            love.graphics.rectangle("fill", Macros.TileSize, (1 + i) * Macros.TileSize, Macros.BaseResolution.w - Macros.TileSize * 2, 1)
-        end
-        love.graphics.setColor { r, g, b, a }
-    end
-    for _, v in pairs(self.I.MOVEABLES) do
         v:draw()
     end
 end
