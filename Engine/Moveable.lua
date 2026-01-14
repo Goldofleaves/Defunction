@@ -161,7 +161,9 @@ function Moveable:ResolveCollision(e)
             end
             return true
         else
-            self.Extra.Ticked = true
+            if not e.Properties.CollisionCheck then
+                self.Extra.Ticked = true
+            end
             return true
         end
     end
@@ -257,8 +259,8 @@ function Player:new(args)
                 s.TMod.x.offset = 0
                 s.TMod.w.base = 20
             else
-                s.TMod.x.offset = 1
-                s.TMod.w.base = 18
+                s.TMod.x.offset = 2
+                s.TMod.w.base = 16
             end
         end
     }
