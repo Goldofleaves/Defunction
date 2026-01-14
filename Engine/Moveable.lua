@@ -59,7 +59,7 @@ function Moveable:GetParentOffset()
     if not self.Parent then return {x=0,y=0} end
     local Parent = GetObjectById(self.Parent)
     if not Parent then return {x = 0, y = 0} end
-    return {x = Parent.T.x, y = Parent.T.Y}
+    return {x = Parent.T.x, y = Parent.T.y}
 end
 
 function Moveable:GetTotalOffset(Component)
@@ -79,12 +79,12 @@ end
 function Moveable:GetTotalVelocity(Component)
     local RetTable = { x = 0, y = 0 }
     for k, v in pairs(self.V) do
-        if self.V[k][Component] then
-            if not Component then
-                for kk, vv in pairs(v) do
-                    RetTable[k] = RetTable[k] + vv
-                end
-            else
+        if not Component then
+            for kk, vv in pairs(v) do
+                RetTable[k] = RetTable[k] + vv
+            end
+        else
+            if self.V[k][Component] then
                 RetTable[k] = RetTable[k] + v[Component]
             end
         end
@@ -161,8 +161,12 @@ function Moveable:ResolveCollision(e)
             end
             return true
         else
+            self.Extra.Ticked = true
             return true
         end
+    end
+    if self.Properties.Check then
+        self.Extra.Ticked = false
     end
     return false
 end
@@ -173,9 +177,9 @@ function Wall:new(args)
     args = args or {}
     args.Properties = args.Properties or {}
     args.Properties.Wall = true
-    args.x = args.x or 100
-    args.y = args.y or 100
-    args.w = args.w or 20
+    args.x = args.x or 140
+    args.y = args.y or 200
+    args.w = args.w or 80
     args.h = args.h or 20
     args.DrawFunc = function (s)
         if G.Debug then
@@ -195,8 +199,8 @@ function Player:new(args)
     args = args or {}
     args.Properties = args.Properties or {}
     args.Properties.Player = true
-    args.x = args.x or 150
-    args.y = args.y or 150
+    args.x = args.x or 140
+    args.y = args.y or 140
     args.w = args.w or 20
     args.h = args.h or 40
     args.UpdateFunc = function(self, dt)
@@ -217,19 +221,12 @@ function Player:new(args)
         self.TMod.y.Gravity = self.TMod.y.Gravity or 0
         self.V.y.Gravity = self.V.y.Gravity or 0
         self.V.y.Gravity = self.V.y.Gravity + Macros.Gravity
-        if love.keyboard.isDown("up") then
-            if not self.Extra.LastUp then
-                self.V.y.Gravity = -150
-            end
-            self.Extra.LastUp = true
-        else
-            self.Extra.LastUp = false
+        if self.Extra.Check.Extra.Ticked then
+            self.V.y.Gravity = 0
         end
-        --[[for k, v in pairs(self.T) do
-            self.Extra.Check[k] = v
+        if love.keyboard.isDown("up") and self.Extra.Check.Extra.Ticked then
+            self.V.y.Gravity = -Macros.JumpVelocity
         end
-        self.Extra.Check.T.x = self.Extra.Check.T.x + 80]]
-        print(self.Extra.Grounded)
     end
     args.DrawFunc = function(s)
         if G.Debug then
@@ -239,8 +236,13 @@ function Player:new(args)
             love.graphics.setColor { r, g, b, a }
         end
     end
-    --[[args.Extra = args.Extra or {}
-    args.Extra.Check = Moveable({
+    Moveable.new(self, args)
+    self.Extra.Check = Moveable{
+        Properties = {
+            Check = true
+        },
+        w = 16,
+        h = 0.5,
         DrawFunc = function(s)
             if G.Debug then
                 local r, g, b, a = love.graphics.getColor()
@@ -248,8 +250,19 @@ function Player:new(args)
                 love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
                 love.graphics.setColor { r, g, b, a }
             end
+        end,
+        UpdateFunc = function (s, dt)
+            if s.Extra.Ticked then
+                s.TMod.x.offset = 0
+                s.TMod.w.base = 20
+            else
+                s.TMod.x.offset = 2
+                s.TMod.w.base = 16
+            end
         end
-    })]]
-    Moveable.new(self, args)
+    }
+    self.Extra.Check.TMod.x.offset = 2
+    self.Extra.Check.TMod.y.offset = 40
+    self.Extra.Check:SetParent(self)
     return self
 end
