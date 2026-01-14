@@ -137,7 +137,7 @@ function Moveable:ResolveCollision(e)
         return e:ResolveCollision(self)
     end
     if self:CheckCollision(e) then
-        if not self.Properties.Check then
+        if not self.Properties.CollisionCheck then
             if self:WasVerticallyAligned(e) then
                 if self.T.x + self.T.w / 2 < e.T.x + e.T.w / 2 then
                     local pushback = self.T.x + self.T.w - e.T.x
@@ -165,7 +165,7 @@ function Moveable:ResolveCollision(e)
             return true
         end
     end
-    if self.Properties.Check then
+    if self.Properties.CollisionCheck then
         self.Extra.Ticked = false
     end
     return false
@@ -216,7 +216,7 @@ function Player:new(args)
         self.TMod.y.Gravity = self.TMod.y.Gravity or 0
         self.V.y.Gravity = self.V.y.Gravity or 0
         self.V.y.Gravity = self.V.y.Gravity + Macros.Gravity
-        if self.Extra.Check.Extra.Ticked then
+        if self.Extra.DownCheck.Extra.Ticked then
             self.V.y.Gravity = 0
             self.Extra.HaventJumped = true
             self.Extra.CoyoteTimer = 0.35
@@ -238,9 +238,9 @@ function Player:new(args)
     end
     Moveable.new(self, args)
     self.Extra.CoyoteTimer = 0.35
-    self.Extra.Check = Moveable{
+    self.Extra.DownCheck = Moveable{
         Properties = {
-            Check = true
+            CollisionCheck = true
         },
         w = 16,
         h = 1,
@@ -262,8 +262,8 @@ function Player:new(args)
             end
         end
     }
-    self.Extra.Check.TMod.x.offset = 2
-    self.Extra.Check.TMod.y.offset = 40
-    self.Extra.Check:SetParent(self)
+    self.Extra.DownCheck.TMod.x.offset = 2
+    self.Extra.DownCheck.TMod.y.offset = 40
+    self.Extra.DownCheck:SetParent(self)
     return self
 end
