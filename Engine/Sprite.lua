@@ -27,25 +27,25 @@ Sprite = Object:extend()
 
 function Sprite:new(args)
     args = args or {}
-    self.nid = args.nid
-    self.pos = {
+    self.Nid = args.Nid
+    self.T = {
         x = args.x or 0,
         y = args.y or 0
     }
-    self.transparency = args.transparency or 1
-    self.atliInfo = {
-        key = args.atliKey,
-        x = args.atliX or 0,
-        y = args.atliY or 0
+    self.Transparency = args.Transparency or 1
+    self.AtliInfo = {
+        key = args.AtliKey,
+        x = args.AtliX or 0,
+        y = args.AtliY or 0
     }
     self.UpdateFunc = args.UpdateFunc or function(s, dt) return end
-    self.drawOrder = args.drawOrder or 1
-    self.drawTiled = args.drawTiled == nil and false or args.drawTiled
-    self.extra = args.extra or {}
+    self.DrawOrder = args.DrawOrder or 1
+    self.DrawTiled = args.DrawTiled == nil and false or args.DrawTiled
+    self.Extra = args.Extra or {}
     self.DrawFunc = args.DrawFunc or function (s) return end
-    self.mask = {
-        shouldApply = args.maskShouldApply == nil and false or args.maskShouldApply,
-        imageFpos = args.maskImageFpos,
+    self.Mask = {
+        ShouldApply = args.MaskShouldApply == nil and false or args.MaskShouldApply,
+        ImageFpos = args.MaskImageFpos,
     }
     self.Properties = args.Properties or {}
     table.insert(G.I.SPRITES, self)
@@ -54,13 +54,13 @@ end
 
 function Sprite:draw()
     local draw_func = function (kx, ky)
-        local x = self.pos.x + kx
-        local y = self.pos.y + ky
+        local x = self.T.x + kx
+        local y = self.T.y + ky
         local r, g, b, a = love.graphics.getColor()
-        love.graphics.setColor { r, g, b, a * self.transparency }
-        if self.mask.shouldApply then
+        love.graphics.setColor { r, g, b, a * self.Transparency }
+        if self.Mask.ShouldApply then
             self.extra = self.extra or {}
-            self.extra.mask = self.extra.mask or love.graphics.newImage(self.mask.imageFpos)
+            self.extra.mask = self.extra.mask or love.graphics.newImage(self.Mask.ImageFpos)
             self.extra.mask_shader = self.extra.mask_shader or love.graphics.newShader [[
                    vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
                       if (Texel(texture, texture_coords).rgb == vec3(0.0)) {
@@ -78,31 +78,31 @@ function Sprite:draw()
             love.graphics.stencil(myStencilFunction, "replace", 1)
             love.graphics.setStencilTest("greater", 0)
         end
-        if not self.drawTiled then
+        if not self.DrawTiled then
             love.graphics.draw(
-                Atlases[self.atliInfo.key].image, Atlases[self.atliInfo.key].splicedImages[self.atliInfo.x][self.atliInfo.y],
+                Atlases[self.AtliInfo.key].image, Atlases[self.AtliInfo.key].splicedImages[self.AtliInfo.x][self.AtliInfo.y],
                 x, y,
                 0, 1, 1
             )
         else
-            local moduloX = x % Atlases[self.atliInfo.key].singleDimention.w
-            local moduloY = y % Atlases[self.atliInfo.key].singleDimention.h
-            local xSegments = math.ceil(Macros.BaseResolution.w / Atlases[self.atliInfo.key].singleDimention.w)
-            local ySegments = math.ceil(Macros.BaseResolution.h / Atlases[self.atliInfo.key].singleDimention.h)
+            local moduloX = x % Atlases[self.AtliInfo.key].singleDimention.w
+            local moduloY = y % Atlases[self.AtliInfo.key].singleDimention.h
+            local xSegments = math.ceil(Macros.BaseResolution.w / Atlases[self.AtliInfo.key].singleDimention.w)
+            local ySegments = math.ceil(Macros.BaseResolution.h / Atlases[self.AtliInfo.key].singleDimention.h)
             for i = -1, xSegments + 1 do
                 for j = -1, ySegments + 1 do
                     love.graphics.draw(
-                        Atlases[self.atliInfo.key].image,
-                        Atlases[self.atliInfo.key].splicedImages[self.atliInfo.x][self.atliInfo.y],
-                        moduloX + i * Atlases[self.atliInfo.key].singleDimention.w,
-                        moduloY + j * Atlases[self.atliInfo.key].singleDimention.h,
+                        Atlases[self.AtliInfo.key].image,
+                        Atlases[self.AtliInfo.key].splicedImages[self.AtliInfo.x][self.AtliInfo.y],
+                        moduloX + i * Atlases[self.AtliInfo.key].singleDimention.w,
+                        moduloY + j * Atlases[self.AtliInfo.key].singleDimention.h,
                         0, 1, 1
                     )
                 end
             end
         end
         self.DrawFunc(self)
-        if self.mask.shouldApply then
+        if self.Mask.ShouldApply then
             love.graphics.setStencilTest()
         end
         love.graphics.setColor { r, g, b, a }

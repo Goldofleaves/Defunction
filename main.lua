@@ -14,29 +14,30 @@ RegisterAtlasSimple("Icon", "Assets/Images/Icon.png", 16, 16)
 love.filesystem.setIdentity("Defuntion")
 
 love.load = function()
-    Wall{vx = 10, vy = 5}
+    Wall()
+    Player()
     SimpleScale.auto_scale()
     love.window.setTitle("Defuntion")
     love.window.setIcon(Atlases.Icon.imageData)
     love.mouse.setVisible(false)
     Sprite({
-        atliKey = "Border",
-        nid = "Border",
-        drawOrder = 9000
+        AtliKey = "Border",
+        Nid = "Border",
+        DrawOrder = 9000
     })
     Sprite({
-        atliKey = "BorderPattern",
-        nid = "BorderPattern",
-        drawOrder = 9001,
-        func = function (self, dt)
-            self.pos.x = self.pos.x + 25 * dt
-            self.pos.y = self.pos.y + 25 * dt
-            self.pos.x = self.pos.x % Macros.TileSize
-            self.pos.y = self.pos.y % Macros.TileSize
+        AtliKey = "BorderPattern",
+        Nid = "BorderPattern",
+        DrawOrder = 9001,
+        UpdateFunc = function (self, dt)
+            self.T.x = self.T.x + 25 * dt
+            self.T.y = self.T.y + 25 * dt
+            self.T.x = self.T.x % Macros.TileSize
+            self.T.y = self.T.y % Macros.TileSize
         end,
-        drawTiled = true,
-        maskShouldApply = true,
-        maskImageFpos = "Assets/Images/BorderMask.png"
+        DrawTiled = true,
+        MaskShouldApply = true,
+        MaskImageFpos = "Assets/Images/BorderMask.png"
     })
 end
 function love.update(dt)
