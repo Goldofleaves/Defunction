@@ -221,7 +221,7 @@ function Player:new(args)
         if self.Extra.DownCheck.Extra.Ticked then
             self.V.y.Gravity = 0
             self.Extra.HaventJumped = true
-            self.Extra.CoyoteTimer = 0.35
+            self.Extra.CoyoteTimer = Macros.CoyoteTime
         else
             self.Extra.CoyoteTimer = self.Extra.CoyoteTimer - dt
         end
@@ -239,7 +239,7 @@ function Player:new(args)
         end
     end
     Moveable.new(self, args)
-    self.Extra.CoyoteTimer = 0.35
+    self.Extra.CoyoteTimer = Macros.CoyoteTime
     self.Extra.DownCheck = Moveable{
         Properties = {
             CollisionCheck = true
