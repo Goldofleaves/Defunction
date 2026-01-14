@@ -26,6 +26,25 @@ function Game:update(dt)
             vv:update(dt)
         end
     end
+
+    local loop = true
+    local limit = 0
+
+    while loop do
+        loop = false
+        limit = limit + 1
+        if limit > 1000 then
+            break
+        end
+        for i = 1, #self.I.MOVEABLES - 1 do
+            for j = i + 1, #self.I.MOVEABLES do
+                local collision = self.I.MOVEABLES[i]:ResolveCollision(self.I.MOVEABLES[j])
+                if collision then
+                    loop = true
+                end
+            end
+        end
+    end
     self.Timer = self.Timer + dt
 end
 
