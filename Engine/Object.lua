@@ -59,3 +59,20 @@ function Object:__call(...)
 end
 
 
+function GetObjectById(Id)
+  for k,v in pairs(G.I) do
+    for kk,vv in ipairs(v) do
+      if vv.Id == Id then return vv end
+    end
+  end
+  return false
+end
+
+function GetObjectByNid(Nid)
+  for k,v in pairs(G.I) do
+    for kk,vv in ipairs(v) do
+      if vv.Nid == Nid then return vv end
+    end
+  end
+  return false
+end

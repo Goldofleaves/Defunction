@@ -11,6 +11,7 @@ function Game:new()
         Fullscreen = false,
         ShowGrid = true
     }
+    self.CurrentID = 0
     self.I = {
         SPRITES = {},
         MOVEABLES = {},
