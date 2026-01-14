@@ -39,7 +39,7 @@ function Game:draw()
         table.insert(iTable, v)
     end
     table.sort(iTable, function(a, b)
-        return (a.drawOrder < b.drawOrder)
+        return (a.DrawOrder < b.DrawOrder)
     end)
     for _, v in ipairs(iTable) do
         v:draw()
