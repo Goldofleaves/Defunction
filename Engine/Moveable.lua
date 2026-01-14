@@ -99,28 +99,32 @@ function Moveable:ResolveCollision(e)
         return e:ResolveCollision(self)
     end
     if self:CheckCollision(e) then
-        if self:WasVerticallyAligned(e) then
-            if self.T.x + self.T.w / 2 < e.T.x + e.T.w / 2 then
-                local pushback = self.T.x + self.T.w - e.T.x
-                self.TMod.x.base = self.TMod.x.base - pushback
-                self.T.x = self.T.x - pushback
-            else
-                local pushback = e.T.x + e.T.w - self.T.x
-                self.TMod.x.base = self.TMod.x.base + pushback
-                self.T.x = self.T.x + pushback
+        if not self.Properties.Check then
+            if self:WasVerticallyAligned(e) then
+                if self.T.x + self.T.w / 2 < e.T.x + e.T.w / 2 then
+                    local pushback = self.T.x + self.T.w - e.T.x
+                    self.TMod.x.base = self.TMod.x.base - pushback
+                    self.T.x = self.T.x - pushback
+                else
+                    local pushback = e.T.x + e.T.w - self.T.x
+                    self.TMod.x.base = self.TMod.x.base + pushback
+                    self.T.x = self.T.x + pushback
+                end
+            elseif self:WasHorizontallyAligned(e) then
+                if self.T.y + self.T.h / 2 < e.T.y + e.T.h / 2 then
+                    local pushback = self.T.y + self.T.h - e.T.y
+                    self.TMod.y.base = self.TMod.y.base - pushback
+                    self.T.y = self.T.y - pushback
+                else
+                    local pushback = e.T.y + e.T.h - self.T.y
+                    self.TMod.y.base = self.TMod.y.base + pushback
+                    self.T.y = self.T.y + pushback
+                end
             end
-        elseif self:WasHorizontallyAligned(e) then
-            if self.T.y + self.T.h / 2 < e.T.y + e.T.h / 2 then
-                local pushback = self.T.y + self.T.h - e.T.y
-                self.TMod.y.base = self.TMod.y.base - pushback
-                self.T.y = self.T.y - pushback
-            else
-                local pushback = e.T.y + e.T.h - self.T.y
-                self.TMod.y.base = self.TMod.y.base + pushback
-                self.T.y = self.T.y + pushback
-            end
+            return true
+        else
+            return true
         end
-        return true
     end
     return false
 end
@@ -208,5 +212,6 @@ function Player:new(args)
             end
         end
     })]]
-    return Moveable.new(self, args)
+    Moveable.new(self, args)
+    return self
 end
