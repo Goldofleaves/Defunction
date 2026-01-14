@@ -180,7 +180,7 @@ function Player:new(args)
         self.V.y.Gravity = self.V.y.Gravity or 0
         self.V.y.Gravity = self.V.y.Gravity + Macros.Gravity
         if love.keyboard.isDown("up") then
-            if self.Extra.LastUp then
+            if not self.Extra.LastUp then
                 self.V.y.Gravity = -150
             end
             self.Extra.LastUp = true
