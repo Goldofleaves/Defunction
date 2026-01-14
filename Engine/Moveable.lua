@@ -211,11 +211,6 @@ function Player:new(args)
         else
             self.V.x.base = 0
         end
-        for k, v in ipairs(G.I.MOVEABLES) do
-            if self.T.y + self.T.h <= 1 then
-                
-            end
-        end
         self.TMod.x.Gravity = self.TMod.x.Gravity or 0
         self.V.x.Gravity = self.V.x.Gravity or 0
         self.TMod.y.Gravity = self.TMod.y.Gravity or 0
@@ -223,9 +218,14 @@ function Player:new(args)
         self.V.y.Gravity = self.V.y.Gravity + Macros.Gravity
         if self.Extra.Check.Extra.Ticked then
             self.V.y.Gravity = 0
+            self.Extra.HaventJumped = true
+            self.Extra.CoyoteTimer = 0.35
+        else
+            self.Extra.CoyoteTimer = self.Extra.CoyoteTimer - dt
         end
-        if love.keyboard.isDown("up") and self.Extra.Check.Extra.Ticked then
+        if love.keyboard.isDown("up") and self.Extra.HaventJumped and self.Extra.CoyoteTimer >= 0 then
             self.V.y.Gravity = -Macros.JumpVelocity
+            self.Extra.HaventJumped = false
         end
     end
     args.DrawFunc = function(s)
@@ -237,12 +237,13 @@ function Player:new(args)
         end
     end
     Moveable.new(self, args)
+    self.Extra.CoyoteTimer = 0.35
     self.Extra.Check = Moveable{
         Properties = {
             Check = true
         },
         w = 16,
-        h = 0.5,
+        h = 1,
         DrawFunc = function(s)
             if G.Debug then
                 local r, g, b, a = love.graphics.getColor()
@@ -256,8 +257,8 @@ function Player:new(args)
                 s.TMod.x.offset = 0
                 s.TMod.w.base = 20
             else
-                s.TMod.x.offset = 2
-                s.TMod.w.base = 16
+                s.TMod.x.offset = 1
+                s.TMod.w.base = 18
             end
         end
     }
