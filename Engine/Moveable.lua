@@ -211,12 +211,12 @@ function Player:new(args)
         HoldTimer = Macros.MaxHold
     }
     args.UpdateFunc = function(self, dt)
-        if love.keyboard.isDown("left") then
+        if not (love.keyboard.isDown("left") or love.keyboard.isDown("right")) or (love.keyboard.isDown("right") and love.keyboard.isDown("left")) then
+            self.V.x.base = Util.Math.LerpDt(self.V.x.base, 0, 0.005)
+        elseif love.keyboard.isDown("left") then
             self.V.x.base = Util.Math.LerpDt(self.V.x.base ,-100, 0.005)
         elseif love.keyboard.isDown("right") then
             self.V.x.base = Util.Math.LerpDt(self.V.x.base, 100, 0.005)
-        else
-            self.V.x.base = Util.Math.LerpDt(self.V.x.base, 0, 0.005)
         end
         self.TMod.x.Gravity = self.TMod.x.Gravity or 0
         self.V.x.Gravity = self.V.x.Gravity or 0
