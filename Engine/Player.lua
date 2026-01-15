@@ -79,7 +79,7 @@ function Player:new(args)
             if G.Debug then
                 local r, g, b, a = love.graphics.getColor()
                 love.graphics.setColor(Util.Other.Hex("#2F00FF"))
-                love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+                --love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
                 love.graphics.setColor { r, g, b, a }
             end
         end,

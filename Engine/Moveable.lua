@@ -247,7 +247,7 @@ function Box:new(args)
         Properties = {
             CollisionCheck = true
         },
-        w = 20,
+        w = args.w,
         h = 1,
         DrawFunc = function(s)
             if G.Debug then
