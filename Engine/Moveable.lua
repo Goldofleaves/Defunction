@@ -169,7 +169,7 @@ function Moveable:ResolveCollision(e)
             end
             return true
         else
-            self.Extra.Ticked = true
+            self.Extra.Ticked = e.Id
             return true
         end
     end
@@ -247,7 +247,7 @@ function Box:new(args)
         Properties = {
             CollisionCheck = true
         },
-        w = 16,
+        w = 20,
         h = 1,
         DrawFunc = function(s)
             if G.Debug then
@@ -257,18 +257,9 @@ function Box:new(args)
                 love.graphics.setColor { r, g, b, a }
             end
         end,
-        UpdateFunc = function(s, dt)
-            if s.Extra.Ticked then
-                s.TMod.x.offset = 0
-                s.TMod.w.base = 20
-            else
-                s.TMod.x.offset = 2
-                s.TMod.w.base = 16
-            end
-        end
     }
-    self.Extra.DownCheck.TMod.x.offset = 2
-    self.Extra.DownCheck.TMod.y.offset = 20
+    self.Extra.DownCheck.TMod.x.offset = 0
+    self.Extra.DownCheck.TMod.y.offset = args.h
     self.Extra.DownCheck:SetParent(self)
     return self
 end

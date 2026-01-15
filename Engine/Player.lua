@@ -33,7 +33,7 @@ function Player:new(args)
         self.V.y.Gravity = self.V.y.Gravity or 0
         self.V.y.Gravity = self.V.y.Gravity + Macros.Gravity
         self.Extra.OnGround = self.Extra.DownCheck.Extra.Ticked
-        if self.Extra.OnGround then
+        if self.Extra.OnGround and self.Extra.OnGround ~= self.Id then
             self.V.y.Gravity = 0
             self.Extra.HaventJumped = true
             self.Extra.CoyoteTimer = Macros.CoyoteTime
@@ -53,6 +53,10 @@ function Player:new(args)
             if self.Extra.HaventJumped then
                 self.Extra.HoldTimer = -1
             end
+        end
+        if self.Extra.OnGround == self.Id then
+            self.V.y.Gravity = 20
+            self.Extra.HoldTimer = -1
         end
     end
     args.DrawFunc = function(s)
@@ -79,15 +83,6 @@ function Player:new(args)
                 love.graphics.setColor { r, g, b, a }
             end
         end,
-        UpdateFunc = function(s, dt)
-            if s.Extra.Ticked then
-                s.TMod.x.offset = 0
-                s.TMod.w.base = 20
-            else
-                s.TMod.x.offset = 2
-                s.TMod.w.base = 16
-            end
-        end
     }
     self.Extra.DownCheck.TMod.x.offset = 2
     self.Extra.DownCheck.TMod.y.offset = 40
