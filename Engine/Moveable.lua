@@ -205,13 +205,18 @@ function Player:new(args)
     args.y = args.y or 140
     args.w = args.w or 20
     args.h = args.h or 40
+    args.Extra = {
+        CoyoteTimer = 0,
+        HaventJumped = true,
+        HoldTimer = Macros.MaxHold
+    }
     args.UpdateFunc = function(self, dt)
         if love.keyboard.isDown("left") then
-            self.V.x.base = -100
+            self.V.x.base = Util.Math.LerpDt(self.V.x.base ,-100, 0.005)
         elseif love.keyboard.isDown("right") then
-            self.V.x.base = 100
+            self.V.x.base = Util.Math.LerpDt(self.V.x.base, 100, 0.005)
         else
-            self.V.x.base = 0
+            self.V.x.base = Util.Math.LerpDt(self.V.x.base, 0, 0.005)
         end
         self.TMod.x.Gravity = self.TMod.x.Gravity or 0
         self.V.x.Gravity = self.V.x.Gravity or 0
@@ -222,13 +227,24 @@ function Player:new(args)
             self.V.y.Gravity = 0
             self.Extra.HaventJumped = true
             self.Extra.CoyoteTimer = Macros.CoyoteTime
+            self.Extra.HoldTimer = Macros.MaxHold
         else
             self.Extra.CoyoteTimer = self.Extra.CoyoteTimer - dt
         end
-        if love.keyboard.isDown("up") and self.Extra.HaventJumped and self.Extra.CoyoteTimer >= 0 then
-            self.V.y.Gravity = -Macros.JumpVelocity
+        if self.Extra.CoyoteTimer < 0 then
             self.Extra.HaventJumped = false
         end
+        if love.keyboard.isDown("up") then
+            if self.Extra.HaventJumped or self.Extra.HoldTimer >= 0 then
+                self.V.y.Gravity = -Macros.JumpVelocity
+            end
+            self.Extra.HoldTimer = self.Extra.HoldTimer - dt
+        else
+            if self.Extra.HaventJumped then
+                self.Extra.HoldTimer = -1
+            end
+        end
+        print(self.Extra.CoyoteTimer.." "..tostring(self.Extra.HaventJumped))
     end
     args.DrawFunc = function(s)
         if G.Debug then

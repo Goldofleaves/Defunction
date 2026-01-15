@@ -5,6 +5,7 @@ require "Engine.Moveable"
 require "Engine.Sprite"
 require "Engine.Macros"
 require "Engine.Libs.File"
+require "Engine.Libs.Math"
 require "Engine.Libs.Other"
 require "Engine.G"
 require "Engine.Scaling"
@@ -41,6 +42,7 @@ love.load = function()
     })
 end
 function love.update(dt)
+    DELTATIME = dt
     G:update(dt)
 end
 
