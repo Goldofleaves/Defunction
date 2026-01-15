@@ -27,7 +27,9 @@ Sprite = Object:extend()
 
 function Sprite:new(args)
     args = args or {}
+    self.Id = G.CurrentID
     self.Nid = args.Nid
+    G.CurrentID = G.CurrentID + 1
     self.T = {
         x = args.x or 0,
         y = args.y or 0
@@ -49,6 +51,10 @@ function Sprite:new(args)
     }
     self.Properties = args.Properties or {}
     table.insert(G.I.SPRITES, self)
+    self.Offset = {
+        x = args.OffsetX or 0,
+        y = args.OffsetY or 0
+    }
     return self
 end
 
@@ -110,10 +116,10 @@ function Sprite:draw()
     if self.Properties.Outline then
         local r, g, b, a = love.graphics.getColor()
         local function myStencilFunction()
-            draw_func(1, 0)
-            draw_func(-1, 0)
-            draw_func(0, 1)
-            draw_func(0, -1)
+            draw_func(self.Offset.x + 1, self.Offset.y)
+            draw_func(self.Offset.x - 1, self.Offset.y)
+            draw_func(self.Offset.x, self.Offset.y + 1)
+            draw_func(self.Offset.x, self.Offset.y - 1)
         end
         love.graphics.stencil(myStencilFunction, "replace", 1)
         love.graphics.setStencilTest("greater", 0)
@@ -122,9 +128,24 @@ function Sprite:draw()
         love.graphics.setColor { r, g, b, a }
         love.graphics.setStencilTest()
     end
-    draw_func(0, 0)
+    draw_func(self.Offset.x, self.Offset.y)
 end
+function Sprite:SetParent(Obj)
+    table.insert(Obj.Children, self.Id)
+    self.Parent = Obj.Id
+    return self.Parent
+end
+function Sprite:GetParentOffset()
+    if not self.Parent then return { x = 0, y = 0 } end
+    local Parent = GetObjectById(self.Parent)
+    if not Parent then return { x = 0, y = 0 } end
+    return { x = Parent.T.x, y = Parent.T.y }
+    end
 
 function Sprite:update(dt)
+    if self.Parent then
+        self.T.x = self:GetParentOffset().x
+        self.T.y = self:GetParentOffset().y
+    end
     self.UpdateFunc(self, dt)
 end

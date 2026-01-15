@@ -22,10 +22,11 @@ function Game:new()
     G = self
 end
 function Game:update(dt)
-    for k, v in pairs(self.I) do
-        for kk, vv in ipairs(v) do
-            vv:update(dt)
-        end
+    for k, v in pairs(self.I.MOVEABLES) do
+        v:update(dt)
+    end
+    for k, v in pairs(self.I.SPRITES) do
+        v:update(dt)
     end
 
     local loop = true

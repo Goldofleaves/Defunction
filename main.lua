@@ -12,6 +12,8 @@ require "Engine.Scaling"
 RegisterAtlasSimple("Border", "Assets/Images/Border.png", 640, 360)
 RegisterAtlasSimple("BorderPattern", "Assets/Images/BorderPattern.png", 20, 20)
 RegisterAtlasSimple("Icon", "Assets/Images/Icon.png", 16, 16)
+RegisterAtlasSimple("ArnaOverworld", "Assets/Images/ArnaOverworld.png", 20, 40)
+RegisterAtlasSimple("ArnaOverworldMask", "Assets/Images/ArnaOverworldMask.png", 20, 40)
 love.filesystem.setIdentity("Defuntion")
 
 love.load = function()

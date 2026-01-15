@@ -46,7 +46,7 @@ end
 function Moveable:SetParent (Obj)
     table.insert(Obj.Children,self.Id)
     self.Parent = Obj.Id
-    return self.parent
+    return self.Parent
 end
 
 ---Add a children to this object.
@@ -250,7 +250,7 @@ function Player:new(args)
         if G.Debug then
             local r, g, b, a = love.graphics.getColor()
             love.graphics.setColor(Util.Other.Hex("#00FF15"))
-            love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+            --love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
             love.graphics.setColor { r, g, b, a }
         end
     end
@@ -283,5 +283,218 @@ function Player:new(args)
     self.Extra.DownCheck.TMod.x.offset = 2
     self.Extra.DownCheck.TMod.y.offset = 40
     self.Extra.DownCheck:SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworld",
+        DrawOrder = 4000,
+        UpdateFunc = function (s, dt)
+            local TickTime = 0.2
+            local frame = Util.Math.Div(G.Timer, TickTime) % 7
+            s.AtliInfo.x = frame
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworld",
+        DrawOrder = 3999,
+        AtliY = 2,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            if not self.Extra.DownCheck.Extra.Ticked then
+                s.AtliInfo.x = 1
+                s.AtliInfo.y = 1
+            else
+                if love.keyboard.isDown("left") or love.keyboard.isDown("right") then 
+                    local frame = Util.Math.Div(G.Timer, TickTime) % 6
+                    s.AtliInfo.x = frame
+                    s.AtliInfo.y = 2
+                else
+                    s.AtliInfo.x = 0
+                    s.AtliInfo.y = 1
+                end
+            end
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworld",
+        DrawOrder = 3998,
+        AtliY = 3,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            local frame = Util.Math.Div(G.Timer, TickTime) % 7
+            s.AtliInfo.x = frame
+        end
+    }):SetParent(self)
+    -- Outlines Yay
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetX = 1,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            local frame = Util.Math.Div(G.Timer, TickTime) % 7
+            s.AtliInfo.x = frame
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetX = 1,
+        AtliY = 2,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            if not self.Extra.DownCheck.Extra.Ticked then
+                s.AtliInfo.x = 1
+                s.AtliInfo.y = 1
+            else
+                if love.keyboard.isDown("left") or love.keyboard.isDown("right") then
+                    local frame = Util.Math.Div(G.Timer, TickTime) % 6
+                    s.AtliInfo.x = frame
+                    s.AtliInfo.y = 2
+                else
+                    s.AtliInfo.x = 0
+                    s.AtliInfo.y = 1
+                end
+            end
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetX = 1,
+        AtliY = 3,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            local frame = Util.Math.Div(G.Timer, TickTime) % 7
+            s.AtliInfo.x = frame
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetX = -1,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            local frame = Util.Math.Div(G.Timer, TickTime) % 7
+            s.AtliInfo.x = frame
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetX = -1,
+        AtliY = 2,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            if not self.Extra.DownCheck.Extra.Ticked then
+                s.AtliInfo.x = 1
+                s.AtliInfo.y = 1
+            else
+                if love.keyboard.isDown("left") or love.keyboard.isDown("right") then
+                    local frame = Util.Math.Div(G.Timer, TickTime) % 6
+                    s.AtliInfo.x = frame
+                    s.AtliInfo.y = 2
+                else
+                    s.AtliInfo.x = 0
+                    s.AtliInfo.y = 1
+                end
+            end
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetX = -1,
+        AtliY = 3,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            local frame = Util.Math.Div(G.Timer, TickTime) % 7
+            s.AtliInfo.x = frame
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetY = 1,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            local frame = Util.Math.Div(G.Timer, TickTime) % 7
+            s.AtliInfo.x = frame
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetY = 1,
+        AtliY = 2,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            if not self.Extra.DownCheck.Extra.Ticked then
+                s.AtliInfo.x = 1
+                s.AtliInfo.y = 1
+            else
+                if love.keyboard.isDown("left") or love.keyboard.isDown("right") then
+                    local frame = Util.Math.Div(G.Timer, TickTime) % 6
+                    s.AtliInfo.x = frame
+                    s.AtliInfo.y = 2
+                else
+                    s.AtliInfo.x = 0
+                    s.AtliInfo.y = 1
+                end
+            end
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetY = 1,
+        AtliY = 3,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            local frame = Util.Math.Div(G.Timer, TickTime) % 7
+            s.AtliInfo.x = frame
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetY = -1,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            local frame = Util.Math.Div(G.Timer, TickTime) % 7
+            s.AtliInfo.x = frame
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetY = -1,
+        AtliY = 2,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            if not self.Extra.DownCheck.Extra.Ticked then
+                s.AtliInfo.x = 1
+                s.AtliInfo.y = 1
+            else
+                if love.keyboard.isDown("left") or love.keyboard.isDown("right") then
+                    local frame = Util.Math.Div(G.Timer, TickTime) % 6
+                    s.AtliInfo.x = frame
+                    s.AtliInfo.y = 2
+                else
+                    s.AtliInfo.x = 0
+                    s.AtliInfo.y = 1
+                end
+            end
+        end
+    }):SetParent(self)
+    Sprite({
+        AtliKey = "ArnaOverworldMask",
+        DrawOrder = 3997,
+        OffsetY = -1,
+        AtliY = 3,
+        UpdateFunc = function(s, dt)
+            local TickTime = 0.2
+            local frame = Util.Math.Div(G.Timer, TickTime) % 7
+            s.AtliInfo.x = frame
+        end
+    }):SetParent(self)
     return self
 end
