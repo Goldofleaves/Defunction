@@ -104,7 +104,7 @@ function Player:new(args)
         UpdateFunc = function(s, dt)
             s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
-            if not self.Extra.OnGround then
+            if not (self.Extra.OnGround and self.Extra.OnGround ~= self.Id) then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
@@ -150,7 +150,7 @@ function Player:new(args)
         UpdateFunc = function(s, dt)
             s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
-            if not self.Extra.OnGround then
+            if not (self.Extra.OnGround and self.Extra.OnGround ~= self.Id) then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
@@ -196,7 +196,7 @@ function Player:new(args)
         UpdateFunc = function(s, dt)
             s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
-            if not self.Extra.OnGround then
+            if not (self.Extra.OnGround and self.Extra.OnGround ~= self.Id) then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
@@ -242,7 +242,7 @@ function Player:new(args)
         UpdateFunc = function(s, dt)
             s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
-            if not self.Extra.OnGround then
+            if not (self.Extra.OnGround and self.Extra.OnGround ~= self.Id) then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
@@ -288,7 +288,7 @@ function Player:new(args)
         UpdateFunc = function(s, dt)
             s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
-            if not self.Extra.OnGround then
+            if not (self.Extra.OnGround and self.Extra.OnGround ~= self.Id) then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
