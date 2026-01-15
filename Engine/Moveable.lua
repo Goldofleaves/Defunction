@@ -208,15 +208,18 @@ function Player:new(args)
     args.Extra = {
         CoyoteTimer = 0,
         HaventJumped = true,
-        HoldTimer = Macros.MaxHold
+        HoldTimer = Macros.MaxHold,
+        Facing = "Right"
     }
     args.UpdateFunc = function(self, dt)
         if not (love.keyboard.isDown("left") or love.keyboard.isDown("right")) or (love.keyboard.isDown("right") and love.keyboard.isDown("left")) then
             self.V.x.base = Util.Math.LerpDt(self.V.x.base, 0, 0.005)
         elseif love.keyboard.isDown("left") then
-            self.V.x.base = Util.Math.LerpDt(self.V.x.base ,-100, 0.005)
+            self.V.x.base = Util.Math.LerpDt(self.V.x.base ,-90, 0.005)
+            self.Extra.Facing = "Left"
         elseif love.keyboard.isDown("right") then
-            self.V.x.base = Util.Math.LerpDt(self.V.x.base, 100, 0.005)
+            self.V.x.base = Util.Math.LerpDt(self.V.x.base, 90, 0.005)
+            self.Extra.Facing = "Right"
         end
         self.TMod.x.Gravity = self.TMod.x.Gravity or 0
         self.V.x.Gravity = self.V.x.Gravity or 0
@@ -244,7 +247,7 @@ function Player:new(args)
                 self.Extra.HoldTimer = -1
             end
         end
-        print(self.Extra.CoyoteTimer.." "..tostring(self.Extra.HaventJumped))
+        print(self.Extra.Facing)
     end
     args.DrawFunc = function(s)
         if G.Debug then
@@ -287,6 +290,7 @@ function Player:new(args)
         AtliKey = "ArnaOverworld",
         DrawOrder = 4000,
         UpdateFunc = function (s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
@@ -297,12 +301,13 @@ function Player:new(args)
         DrawOrder = 3999,
         AtliY = 2,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             if not self.Extra.DownCheck.Extra.Ticked then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if love.keyboard.isDown("left") or love.keyboard.isDown("right") then 
+                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -318,6 +323,7 @@ function Player:new(args)
         DrawOrder = 3998,
         AtliY = 3,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
@@ -329,6 +335,7 @@ function Player:new(args)
         DrawOrder = 3997,
         OffsetX = 1,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
@@ -340,12 +347,13 @@ function Player:new(args)
         OffsetX = 1,
         AtliY = 2,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             if not self.Extra.DownCheck.Extra.Ticked then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if love.keyboard.isDown("left") or love.keyboard.isDown("right") then
+                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -362,6 +370,7 @@ function Player:new(args)
         OffsetX = 1,
         AtliY = 3,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
@@ -372,6 +381,7 @@ function Player:new(args)
         DrawOrder = 3997,
         OffsetX = -1,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
@@ -383,12 +393,13 @@ function Player:new(args)
         OffsetX = -1,
         AtliY = 2,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             if not self.Extra.DownCheck.Extra.Ticked then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if love.keyboard.isDown("left") or love.keyboard.isDown("right") then
+                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -405,6 +416,7 @@ function Player:new(args)
         OffsetX = -1,
         AtliY = 3,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
@@ -415,6 +427,7 @@ function Player:new(args)
         DrawOrder = 3997,
         OffsetY = 1,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
@@ -426,12 +439,13 @@ function Player:new(args)
         OffsetY = 1,
         AtliY = 2,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             if not self.Extra.DownCheck.Extra.Ticked then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if love.keyboard.isDown("left") or love.keyboard.isDown("right") then
+                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -448,6 +462,7 @@ function Player:new(args)
         OffsetY = 1,
         AtliY = 3,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
@@ -458,6 +473,7 @@ function Player:new(args)
         DrawOrder = 3997,
         OffsetY = -1,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
@@ -469,12 +485,13 @@ function Player:new(args)
         OffsetY = -1,
         AtliY = 2,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             if not self.Extra.DownCheck.Extra.Ticked then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if love.keyboard.isDown("left") or love.keyboard.isDown("right") then
+                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -491,6 +508,7 @@ function Player:new(args)
         OffsetY = -1,
         AtliY = 3,
         UpdateFunc = function(s, dt)
+            s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame

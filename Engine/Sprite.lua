@@ -32,8 +32,9 @@ function Sprite:new(args)
     G.CurrentID = G.CurrentID + 1
     self.T = {
         x = args.x or 0,
-        y = args.y or 0
+        y = args.y or 0,
     }
+    self.Xflipped = false
     self.Transparency = args.Transparency or 1
     self.AtliInfo = {
         key = args.AtliKey,
@@ -59,6 +60,8 @@ function Sprite:new(args)
 end
 
 function Sprite:draw()
+    local dir = self.Xflipped and -1 or 1
+    local XFlpiiedOffset = self.Xflipped and Atlases[self.AtliInfo.key].singleDimention.w or 0
     local draw_func = function (kx, ky)
         local x = self.T.x + kx
         local y = self.T.y + ky
@@ -87,8 +90,8 @@ function Sprite:draw()
         if not self.DrawTiled then
             love.graphics.draw(
                 Atlases[self.AtliInfo.key].image, Atlases[self.AtliInfo.key].splicedImages[self.AtliInfo.x][self.AtliInfo.y],
-                x, y,
-                0, 1, 1
+                x + XFlpiiedOffset, y,
+                0, dir, 1
             )
         else
             local moduloX = x % Atlases[self.AtliInfo.key].singleDimention.w
@@ -100,9 +103,9 @@ function Sprite:draw()
                     love.graphics.draw(
                         Atlases[self.AtliInfo.key].image,
                         Atlases[self.AtliInfo.key].splicedImages[self.AtliInfo.x][self.AtliInfo.y],
-                        moduloX + i * Atlases[self.AtliInfo.key].singleDimention.w,
+                        moduloX + i * Atlases[self.AtliInfo.key].singleDimention.w + XFlpiiedOffset,
                         moduloY + j * Atlases[self.AtliInfo.key].singleDimention.h,
-                        0, 1, 1
+                        0, dir, 1
                     )
                 end
             end
