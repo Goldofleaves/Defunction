@@ -22,9 +22,6 @@ function Game:new()
     G = self
 end
 function Game:update(dt)
-    for k, v in pairs(self.I.MOVEABLES) do
-        v:update(dt)
-    end
     for k, v in pairs(self.I.SPRITES) do
         v:update(dt)
     end
@@ -35,16 +32,53 @@ function Game:update(dt)
     while loop do
         loop = false
         limit = limit + 1
-        if limit > 1000 then
+        if limit > 1 then
             break
         end
         for i = 1, #self.I.MOVEABLES - 1 do
             for j = i + 1, #self.I.MOVEABLES do
+                --print("i = "..i..", j = "..j)
                 local collision = self.I.MOVEABLES[i]:ResolveCollision(self.I.MOVEABLES[j])
+                --print(collision)
                 if collision then
                     loop = true
                 end
             end
+        end
+    end
+    for k, v in pairs(self.I.MOVEABLES) do
+        if not v.Properties.CollisionCheck then
+            v:update(dt)
+        end
+    end
+    for k, v in pairs(self.I.MOVEABLES) do
+        if v.Properties.CollisionCheck then
+            v:update(dt)
+        end
+    end
+    local loop = true
+    local limit = 0
+
+    while loop do
+        loop = false
+        limit = limit + 1
+        if limit > 1 then
+            break
+        end
+        for i = 1, #self.I.MOVEABLES - 1 do
+            for j = i + 1, #self.I.MOVEABLES do
+                --print("i = "..i..", j = "..j)
+                local collision = self.I.MOVEABLES[i]:ResolveCollision(self.I.MOVEABLES[j])
+                --print(collision)
+                if collision then
+                    loop = true
+                end
+            end
+        end
+    end
+    for k, v in pairs(self.I.MOVEABLES) do
+        if v.Properties.CollisionCheck then
+            v.Extra.Ticked = false
         end
     end
     self.Timer = self.Timer + dt

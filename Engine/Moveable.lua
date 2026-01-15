@@ -3,6 +3,7 @@
 Moveable = Object:extend()
 
 function Moveable:new(args)
+    self.Strength = args.Strength or 1
     self.Id = G.CurrentID
     self.Nid = args.nid
     G.CurrentID = G.CurrentID + 1
@@ -35,6 +36,7 @@ function Moveable:new(args)
     self.Properties = args.Properties or {}
     self.Extra = args.Extra or {}
     table.insert(G.I.MOVEABLES, self)
+    self.TempStrength = self.Strength
     return self
 end
 
@@ -111,6 +113,7 @@ function Moveable:update(dt)
         end
     end
     self.UpdateFunc(self, dt)
+    self.TempStrength = self.Strength
 end
 
 function Moveable:draw()
@@ -133,10 +136,15 @@ function Moveable:CheckCollision(e)
         and self.T.y < e.T.y + e.T.h
 end
 function Moveable:ResolveCollision(e)
-    if self.Properties.Wall then
+    if self.Properties.NoCollision or e.Properties.NoCollision then
+        return false
+    end
+    if self.TempStrength > e.TempStrength then
         return e:ResolveCollision(self)
     end
+    -- self is strictly a less strong moveable than e
     if self:CheckCollision(e) then
+        self.TempStrength = e.TempStrength - 1
         if not self.Properties.CollisionCheck then
             if self:WasVerticallyAligned(e) then
                 if self.T.x + self.T.w / 2 < e.T.x + e.T.w / 2 then
@@ -161,14 +169,9 @@ function Moveable:ResolveCollision(e)
             end
             return true
         else
-            if not e.Properties.CollisionCheck then
-                self.Extra.Ticked = true
-            end
+            self.Extra.Ticked = true
             return true
         end
-    end
-    if self.Properties.CollisionCheck then
-        self.Extra.Ticked = false
     end
     return false
 end
@@ -178,11 +181,11 @@ Wall = Moveable:extend()
 function Wall:new(args)
     args = args or {}
     args.Properties = args.Properties or {}
-    args.Properties.Wall = true
     args.x = args.x or 140
     args.y = args.y or 200
     args.w = args.w or 80
     args.h = args.h or 20
+    args.Strength = 1000
     args.DrawFunc = function (s)
         if G.Debug then
             local r, g, b, a = love.graphics.getColor()
@@ -194,72 +197,53 @@ function Wall:new(args)
     return Moveable.new(self, args)
 end
 
----@class Player: Moveable
+require "Engine.Player"
 
-Player = Moveable:extend()
-function Player:new(args)
+Box = Moveable:extend()
+function Box:new(args)
     args = args or {}
+    args.Strength = 200
     args.Properties = args.Properties or {}
-    args.Properties.Player = true
-    args.x = args.x or 140
+    args.x = args.x or 160
     args.y = args.y or 140
     args.w = args.w or 20
-    args.h = args.h or 40
+    args.h = args.h or 20
     args.Extra = {
-        CoyoteTimer = 0,
-        HaventJumped = true,
-        HoldTimer = Macros.MaxHold,
-        Facing = "Right"
+        OnGround = true
     }
     args.UpdateFunc = function(self, dt)
-        if not (love.keyboard.isDown("left") or love.keyboard.isDown("right")) or (love.keyboard.isDown("right") and love.keyboard.isDown("left")) then
-            self.V.x.base = Util.Math.LerpDt(self.V.x.base, 0, 0.005)
-        elseif love.keyboard.isDown("left") then
-            self.V.x.base = Util.Math.LerpDt(self.V.x.base ,-90, 0.005)
-            self.Extra.Facing = "Left"
-        elseif love.keyboard.isDown("right") then
-            self.V.x.base = Util.Math.LerpDt(self.V.x.base, 90, 0.005)
-            self.Extra.Facing = "Right"
-        end
         self.TMod.x.Gravity = self.TMod.x.Gravity or 0
         self.V.x.Gravity = self.V.x.Gravity or 0
         self.TMod.y.Gravity = self.TMod.y.Gravity or 0
         self.V.y.Gravity = self.V.y.Gravity or 0
         self.V.y.Gravity = self.V.y.Gravity + Macros.Gravity
-        if self.Extra.DownCheck.Extra.Ticked then
+        self.Extra.OnGround = self.Extra.DownCheck.Extra.Ticked
+        if self.Extra.OnGround then
             self.V.y.Gravity = 0
-            self.Extra.HaventJumped = true
-            self.Extra.CoyoteTimer = Macros.CoyoteTime
-            self.Extra.HoldTimer = Macros.MaxHold
-        else
-            self.Extra.CoyoteTimer = self.Extra.CoyoteTimer - dt
         end
-        if self.Extra.CoyoteTimer < 0 then
-            self.Extra.HaventJumped = false
-        end
-        if love.keyboard.isDown("up") then
-            if self.Extra.HaventJumped or self.Extra.HoldTimer >= 0 then
-                self.V.y.Gravity = -Macros.JumpVelocity
-            end
-            self.Extra.HoldTimer = self.Extra.HoldTimer - dt
-        else
-            if self.Extra.HaventJumped then
-                self.Extra.HoldTimer = -1
+        self.Strength = 200
+        for k, v in pairs(G.I.MOVEABLES) do
+            if v.Properties.Player then
+                if v.T.y + v.T.h <= self.T.y then
+                    self.Strength = 1000
+                end
             end
         end
-        print(self.Extra.Facing)
     end
     args.DrawFunc = function(s)
         if G.Debug then
             local r, g, b, a = love.graphics.getColor()
-            love.graphics.setColor(Util.Other.Hex("#00FF15"))
-            --love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+            if self.Strength < 980 then
+                love.graphics.setColor(Util.Other.Hex("#83591B"))
+            else
+                love.graphics.setColor(Util.Other.Hex("#B8341D"))
+            end
+            love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
             love.graphics.setColor { r, g, b, a }
         end
     end
     Moveable.new(self, args)
-    self.Extra.CoyoteTimer = Macros.CoyoteTime
-    self.Extra.DownCheck = Moveable{
+    self.Extra.DownCheck = Moveable {
         Properties = {
             CollisionCheck = true
         },
@@ -273,7 +257,7 @@ function Player:new(args)
                 love.graphics.setColor { r, g, b, a }
             end
         end,
-        UpdateFunc = function (s, dt)
+        UpdateFunc = function(s, dt)
             if s.Extra.Ticked then
                 s.TMod.x.offset = 0
                 s.TMod.w.base = 20
@@ -284,235 +268,64 @@ function Player:new(args)
         end
     }
     self.Extra.DownCheck.TMod.x.offset = 2
-    self.Extra.DownCheck.TMod.y.offset = 40
+    self.Extra.DownCheck.TMod.y.offset = 20
     self.Extra.DownCheck:SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworld",
-        DrawOrder = 4000,
-        UpdateFunc = function (s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            local frame = Util.Math.Div(G.Timer, TickTime) % 7
-            s.AtliInfo.x = frame
-        end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworld",
-        DrawOrder = 3999,
-        AtliY = 2,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            if not self.Extra.DownCheck.Extra.Ticked then
-                s.AtliInfo.x = 1
-                s.AtliInfo.y = 1
-            else
-                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
-                    local frame = Util.Math.Div(G.Timer, TickTime) % 6
-                    s.AtliInfo.x = frame
-                    s.AtliInfo.y = 2
-                else
-                    s.AtliInfo.x = 0
-                    s.AtliInfo.y = 1
+    return self
+end
+OneWayPlatform = Moveable:extend()
+function OneWayPlatform:new(args)
+    args.Strength = 1000
+    args = args or {}
+    args.Properties = args.Properties or {}
+    args.x = args.x or 160
+    args.y = args.y or 120
+    args.w = args.w or 20
+    args.h = args.h or 20
+    args.Extra = {
+        OnGround = true,
+        Facing = args.Facing or "Up"
+    }
+    args.UpdateFunc = function(self, dt)
+        self.Properties.NoCollision = true
+        for k, v in pairs(G.I.MOVEABLES) do
+            if v.Properties.Player then
+                if v.T.y + v.T.h <= self.T.y and self.Extra.Facing == "Up" then
+                    self.Properties.NoCollision = false
+                end
+                if v.T.y >= self.T.h + self.T.y and self.Extra.Facing == "Down" then
+                    self.Properties.NoCollision = false
+                end
+                if v.T.x + v.T.w <= self.T.x and self.Extra.Facing == "Left" then
+                    self.Properties.NoCollision = false
+                end
+                if v.T.x >= self.T.w + self.T.x and self.Extra.Facing == "Right" then
+                    self.Properties.NoCollision = false
                 end
             end
         end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworld",
-        DrawOrder = 3998,
-        AtliY = 3,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            local frame = Util.Math.Div(G.Timer, TickTime) % 7
-            s.AtliInfo.x = frame
-        end
-    }):SetParent(self)
-    -- Outlines Yay
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetX = 1,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            local frame = Util.Math.Div(G.Timer, TickTime) % 7
-            s.AtliInfo.x = frame
-        end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetX = 1,
-        AtliY = 2,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            if not self.Extra.DownCheck.Extra.Ticked then
-                s.AtliInfo.x = 1
-                s.AtliInfo.y = 1
+    end
+    args.DrawFunc = function(s)
+        if G.Debug then
+            local r, g, b, a = love.graphics.getColor()
+            if not self.Properties.NoCollision then
+                love.graphics.setColor(Util.Other.Hex("#0EDB0E"))
             else
-                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
-                    local frame = Util.Math.Div(G.Timer, TickTime) % 6
-                    s.AtliInfo.x = frame
-                    s.AtliInfo.y = 2
-                else
-                    s.AtliInfo.x = 0
-                    s.AtliInfo.y = 1
-                end
+                love.graphics.setColor(Util.Other.Hex("#FF00F2"))
             end
-        end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetX = 1,
-        AtliY = 3,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            local frame = Util.Math.Div(G.Timer, TickTime) % 7
-            s.AtliInfo.x = frame
-        end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetX = -1,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            local frame = Util.Math.Div(G.Timer, TickTime) % 7
-            s.AtliInfo.x = frame
-        end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetX = -1,
-        AtliY = 2,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            if not self.Extra.DownCheck.Extra.Ticked then
-                s.AtliInfo.x = 1
-                s.AtliInfo.y = 1
-            else
-                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
-                    local frame = Util.Math.Div(G.Timer, TickTime) % 6
-                    s.AtliInfo.x = frame
-                    s.AtliInfo.y = 2
-                else
-                    s.AtliInfo.x = 0
-                    s.AtliInfo.y = 1
-                end
+            love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+            love.graphics.setColor(Util.Other.Hex("#1100FF"))
+            if self.Extra.Facing == "Up" then
+                love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, 1)
+            elseif self.Extra.Facing == "Down" then
+                love.graphics.rectangle("fill", s.T.x, s.T.y + s.T.h - 1, s.T.w, 1)
+            elseif self.Extra.Facing == "Left" then
+                love.graphics.rectangle("fill", s.T.x, s.T.y, 1, s.T.h)
+            elseif self.Extra.Facing == "Right" then
+                love.graphics.rectangle("fill", s.T.x + s.T.w - 1, s.T.y, 1, s.T.h)
             end
+            love.graphics.setColor { r, g, b, a }
         end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetX = -1,
-        AtliY = 3,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            local frame = Util.Math.Div(G.Timer, TickTime) % 7
-            s.AtliInfo.x = frame
-        end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetY = 1,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            local frame = Util.Math.Div(G.Timer, TickTime) % 7
-            s.AtliInfo.x = frame
-        end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetY = 1,
-        AtliY = 2,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            if not self.Extra.DownCheck.Extra.Ticked then
-                s.AtliInfo.x = 1
-                s.AtliInfo.y = 1
-            else
-                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
-                    local frame = Util.Math.Div(G.Timer, TickTime) % 6
-                    s.AtliInfo.x = frame
-                    s.AtliInfo.y = 2
-                else
-                    s.AtliInfo.x = 0
-                    s.AtliInfo.y = 1
-                end
-            end
-        end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetY = 1,
-        AtliY = 3,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            local frame = Util.Math.Div(G.Timer, TickTime) % 7
-            s.AtliInfo.x = frame
-        end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetY = -1,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            local frame = Util.Math.Div(G.Timer, TickTime) % 7
-            s.AtliInfo.x = frame
-        end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetY = -1,
-        AtliY = 2,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            if not self.Extra.DownCheck.Extra.Ticked then
-                s.AtliInfo.x = 1
-                s.AtliInfo.y = 1
-            else
-                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
-                    local frame = Util.Math.Div(G.Timer, TickTime) % 6
-                    s.AtliInfo.x = frame
-                    s.AtliInfo.y = 2
-                else
-                    s.AtliInfo.x = 0
-                    s.AtliInfo.y = 1
-                end
-            end
-        end
-    }):SetParent(self)
-    Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
-        OffsetY = -1,
-        AtliY = 3,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
-            local TickTime = 0.2
-            local frame = Util.Math.Div(G.Timer, TickTime) % 7
-            s.AtliInfo.x = frame
-        end
-    }):SetParent(self)
+    end
+    Moveable.new(self, args)
     return self
 end
