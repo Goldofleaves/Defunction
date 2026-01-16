@@ -152,3 +152,15 @@ function Sprite:update(dt)
     end
     self.UpdateFunc(self, dt)
 end
+
+function Sprite:remove()
+    for k, v in ipairs(G.I.SPRITES) do
+        if v.Id == self.Id then
+            table.remove(G.I.SPRITES, k)
+            G.OldState = G.State
+            G.State = "DestroyedObj"
+            print(":(")
+        end
+    end
+    self = nil
+end

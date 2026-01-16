@@ -20,17 +20,30 @@ function Game:new()
     self.Timer = 0
     self.State = "Overworld"
     self.Controller = {
-        up = { Pressed = false, Held = false },
-        down = { Pressed = false, Held = false },
-        left = { Pressed = false, Held = false },
-        right = { Pressed = false, Held = false },
-        z = { Pressed = false, Held = false },
+        Keyboard = {
+            up = { Keybind = "w", Pressed = false, Held = false, Released = false },
+            down = { Keybind = "s", Pressed = false, Held = false, Released = false },
+            left = { Keybind = "a", Pressed = false, Held = false, Released = false },
+            right = { Keybind = "d", Pressed = false, Held = false, Released = false },
+        },
+        Mouse = {
+            [1] = { Pressed = false, Held = false, Released = false }, -- Primary (left)
+            [2] = { Pressed = false, Held = false, Released = false }, -- Secondary (right)
+            [3] = { Pressed = false, Held = false, Released = false }, -- Middle Click
+        }
+    }
+    self.MousePos = {
+        x = 0, y = 0
     }
     G = self
 end
 function Game:update(dt)
-    for k, v in pairs(self.Controller) do
-        if love.keyboard.isDown(k) then
+    self.MousePos = {
+        x = love.mouse.getX() / G.Settings.ScalingFactor,
+        y = love.mouse.getY() / G.Settings.ScalingFactor
+    }
+    for k, v in pairs(self.Controller.Keyboard) do
+        if love.keyboard.isDown(v.Keybind) then
             v.Held = true
             if not v.PressTemp then
                 v.Pressed = true
@@ -39,6 +52,33 @@ function Game:update(dt)
                 v.Pressed = false
             end
         else
+            if v.Held then
+                v.Released = true
+            else
+                v.Released = false
+
+            end
+            v.Held = false
+            v.Pressed = false
+            v.PressTemp = false
+        end
+    end
+
+    for k, v in pairs(self.Controller.Mouse) do
+        if love.mouse.isDown(k) then
+            v.Held = true
+            if not v.PressTemp then
+                v.Pressed = true
+                v.PressTemp = true
+            else
+                v.Pressed = false
+            end
+        else
+            if v.Held then
+                v.Released = true
+            else
+                v.Released = false
+            end
             v.Held = false
             v.Pressed = false
             v.PressTemp = false
@@ -47,6 +87,11 @@ function Game:update(dt)
     
     for k, v in pairs(self.I.SPRITES) do
         v:update(dt)
+        if self.State == "DestroyedObj" then
+            self.State = self.OldState
+            self.OldState = nil
+            break
+        end
     end
 
     local loop = true

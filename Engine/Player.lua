@@ -18,12 +18,97 @@ function Player:new(args)
         OnGround = true
     }
     args.UpdateFunc = function(self, dt)
-        if not (G.Controller.left.Held or G.Controller.right.Held) or (G.Controller.right.Held and G.Controller.left.Held) then
+        if G.Controller.Mouse[1].Pressed and not self.Extra.J then
+            self.Extra.J = true
+            print(":o")
+            love.mouse.setX((self.T.x + 10) * G.Settings.ScalingFactor)
+            love.mouse.setY((self.T.y + 20) * G.Settings.ScalingFactor)
+            Sprite({
+                AtliKey = "BoomerangRing",
+                x = self.T.x,
+                y = self.T.y,
+                DrawOrder = 4001,
+                OffsetX = -30,
+                OffsetY = -20,
+                Transparency = 0,
+                Extra = {
+                    a = 0
+                },
+                UpdateFunc = function (s, ddt)
+                    s.Extra.a = Util.Math.LerpDt(s.Extra.a, s.Extra.Removen and 0 or 4.5, 0.0025)
+                    s.Transparency = Util.Math.LerpDt(s.Transparency, s.Extra.Removen and 0 or 1, 0.0025)
+                    if G.Controller.Mouse[1].Released then
+                        s.Extra.Removen = true
+                        self.Extra.J = nil
+                    end
+                    if s.Extra.Removen and s.Transparency <= 0.005 then
+                        s:remove()
+                    end
+                    local verticalQuadrant = G.MousePos.y > (self.T.y + 20) and "down" or "up"
+                    local horizontalQuadrant = G.MousePos.x > (self.T.x + 10) and "right" or "left"
+                    s.Extra.s1 = s.Extra.s1 or math.tan(math.pi / 8)
+                    s.Extra.s2 = s.Extra.s2 or math.tan(3 * math.pi / 8)
+                    s.Extra.s3 = s.Extra.s3 or math.tan(5 * math.pi / 8)
+                    s.Extra.s4 = s.Extra.s4 or math.tan(7 * math.pi / 8)
+                    local slope = -(G.MousePos.y - (self.T.y + 20)) / (G.MousePos.x - (self.T.x + 10))
+                    local det = 1 -- the region of the mouse, going from 1 to 8 starting with the positive x direction going counter clockwise
+                    if verticalQuadrant == "down" then
+                        if horizontalQuadrant == "right" then
+                            if slope > s.Extra.s4 then
+                                det = 1
+                            elseif slope > s.Extra.s3 then
+                                det = 8
+                            else
+                                det = 7
+                            end
+                        else
+                            if slope < s.Extra.s1 then
+                                det = 5
+                            elseif slope < s.Extra.s2 then
+                                det = 6
+                            else
+                                det = 7
+                            end
+                        end
+                    else
+                        if horizontalQuadrant == "right" then
+                            if slope < s.Extra.s1 then
+                                det = 1
+                            elseif slope < s.Extra.s2 then
+                                det = 2
+                            else
+                                det = 3
+                            end
+                        else
+                            if slope > s.Extra.s4 then
+                                det = 5
+                            elseif slope > s.Extra.s3 then
+                                det = 4
+                            else
+                                det = 3
+                            end
+                        end
+                    end
+                    print(det)
+                end,
+                DrawFunc = function(s)
+                    local r, g, b, a = love.graphics.getColor()
+                    love.graphics.setColor(Util.Other.Hex("#FFFFFF"))
+                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, s.Extra.a)
+                    love.graphics.setColor(Util.Other.Hex("#4a3052"))
+                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, math.max(0, s.Extra.a - 0.5))
+                    love.graphics.setColor(Util.Other.Hex("#FFFFFF"))
+                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, math.max(0, s.Extra.a - 2.5))
+                    love.graphics.setColor { r, g, b, a }
+                end
+            }):SetParent(self)
+        end
+        if not (G.Controller.Keyboard.left.Held or G.Controller.Keyboard.right.Held) or (G.Controller.Keyboard.right.Held and G.Controller.Keyboard.left.Held) then
             self.V.x.base = Util.Math.LerpDt(self.V.x.base, 0, 0.005)
-        elseif G.Controller.left.Held then
+        elseif G.Controller.Keyboard.left.Held then
             self.V.x.base = Util.Math.LerpDt(self.V.x.base, -90, 0.005)
             self.Extra.Facing = "Left"
-        elseif G.Controller.right.Held then
+        elseif G.Controller.Keyboard.right.Held then
             self.V.x.base = Util.Math.LerpDt(self.V.x.base, 90, 0.005)
             self.Extra.Facing = "Right"
         end
@@ -44,7 +129,7 @@ function Player:new(args)
         if self.Extra.CoyoteTimer < 0 then
             self.Extra.HaventJumped = false
         end
-        if love.keyboard.isDown("up") then
+        if G.Controller.Keyboard.up.Held then
             if self.Extra.HaventJumped or self.Extra.HoldTimer >= 0 then
                 self.V.y.Gravity = -Macros.JumpVelocity
             end
@@ -108,7 +193,7 @@ function Player:new(args)
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if (G.Controller.left.Held or G.Controller.right.Held) and not (G.Controller.left.Held and G.Controller.right.Held) then
+                if (G.Controller.Keyboard.left.Held or G.Controller.Keyboard.right.Held) and not (G.Controller.Keyboard.left.Held and G.Controller.Keyboard.right.Held) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -154,7 +239,7 @@ function Player:new(args)
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if (G.Controller.left.Held or G.Controller.right.Held) and not (G.Controller.left.Held and G.Controller.right.Held) then
+                if (G.Controller.Keyboard.left.Held or G.Controller.Keyboard.right.Held) and not (G.Controller.Keyboard.left.Held and G.Controller.Keyboard.right.Held) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -200,7 +285,7 @@ function Player:new(args)
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if (G.Controller.left.Held or G.Controller.right.Held) and not (G.Controller.left.Held and G.Controller.right.Held) then
+                if (G.Controller.Keyboard.left.Held or G.Controller.Keyboard.right.Held) and not (G.Controller.Keyboard.left.Held and G.Controller.Keyboard.right.Held) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -246,7 +331,7 @@ function Player:new(args)
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if (G.Controller.left.Held or G.Controller.right.Held) and not (G.Controller.left.Held and G.Controller.right.Held) then
+                if (G.Controller.Keyboard.left.Held or G.Controller.Keyboard.right.Held) and not (G.Controller.Keyboard.left.Held and G.Controller.Keyboard.right.Held) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -292,7 +377,7 @@ function Player:new(args)
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if (G.Controller.left.Held or G.Controller.right.Held) and not (G.Controller.left.Held and G.Controller.right.Held) then
+                if (G.Controller.Keyboard.left.Held or G.Controller.Keyboard.right.Held) and not (G.Controller.Keyboard.left.Held and G.Controller.Keyboard.right.Held) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
