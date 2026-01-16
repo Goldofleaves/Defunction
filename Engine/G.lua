@@ -19,9 +19,32 @@ function Game:new()
     self.Debug = true
     self.Timer = 0
     self.State = "Overworld"
+    self.Controller = {
+        up = { Pressed = false, Held = false },
+        down = { Pressed = false, Held = false },
+        left = { Pressed = false, Held = false },
+        right = { Pressed = false, Held = false },
+        z = { Pressed = false, Held = false },
+    }
     G = self
 end
 function Game:update(dt)
+    for k, v in pairs(self.Controller) do
+        if love.keyboard.isDown(k) then
+            v.Held = true
+            if not v.PressTemp then
+                v.Pressed = true
+                v.PressTemp = true
+            else
+                v.Pressed = false
+            end
+        else
+            v.Held = false
+            v.Pressed = false
+            v.PressTemp = false
+        end
+    end
+    
     for k, v in pairs(self.I.SPRITES) do
         v:update(dt)
     end

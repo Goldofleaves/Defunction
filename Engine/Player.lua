@@ -18,12 +18,12 @@ function Player:new(args)
         OnGround = true
     }
     args.UpdateFunc = function(self, dt)
-        if not (love.keyboard.isDown("left") or love.keyboard.isDown("right")) or (love.keyboard.isDown("right") and love.keyboard.isDown("left")) then
+        if not (G.Controller.left.Held or G.Controller.right.Held) or (G.Controller.right.Held and G.Controller.left.Held) then
             self.V.x.base = Util.Math.LerpDt(self.V.x.base, 0, 0.005)
-        elseif love.keyboard.isDown("left") then
+        elseif G.Controller.left.Held then
             self.V.x.base = Util.Math.LerpDt(self.V.x.base, -90, 0.005)
             self.Extra.Facing = "Left"
-        elseif love.keyboard.isDown("right") then
+        elseif G.Controller.right.Held then
             self.V.x.base = Util.Math.LerpDt(self.V.x.base, 90, 0.005)
             self.Extra.Facing = "Right"
         end
@@ -108,7 +108,7 @@ function Player:new(args)
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
+                if (G.Controller.left.Held or G.Controller.right.Held) and not (G.Controller.left.Held and G.Controller.right.Held) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -154,7 +154,7 @@ function Player:new(args)
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
+                if (G.Controller.left.Held or G.Controller.right.Held) and not (G.Controller.left.Held and G.Controller.right.Held) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -200,7 +200,7 @@ function Player:new(args)
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
+                if (G.Controller.left.Held or G.Controller.right.Held) and not (G.Controller.left.Held and G.Controller.right.Held) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -246,7 +246,7 @@ function Player:new(args)
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
+                if (G.Controller.left.Held or G.Controller.right.Held) and not (G.Controller.left.Held and G.Controller.right.Held) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
@@ -292,7 +292,7 @@ function Player:new(args)
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
-                if (love.keyboard.isDown("left") or love.keyboard.isDown("right")) and not (love.keyboard.isDown("left") and love.keyboard.isDown("right")) then
+                if (G.Controller.left.Held or G.Controller.right.Held) and not (G.Controller.left.Held and G.Controller.right.Held) then
                     local frame = Util.Math.Div(G.Timer, TickTime) % 6
                     s.AtliInfo.x = frame
                     s.AtliInfo.y = 2
