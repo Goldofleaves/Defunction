@@ -20,7 +20,6 @@ function Player:new(args)
     args.UpdateFunc = function(self, dt)
         if G.Controller.Mouse[1].Pressed and not self.Extra.J then
             self.Extra.J = true
-            print(":o")
             love.mouse.setX((self.T.x + 10) * G.Settings.ScalingFactor)
             love.mouse.setY((self.T.y + 20) * G.Settings.ScalingFactor)
             Sprite({
@@ -39,7 +38,30 @@ function Player:new(args)
                     s.Transparency = Util.Math.LerpDt(s.Transparency, s.Extra.Removen and 0 or 1, 0.0025)
                     if G.Controller.Mouse[1].Released then
                         s.Extra.Removen = true
+                    end
+                    if s.Extra.Removen and s.Transparency <= 0.01 then
+                        s:remove()
                         self.Extra.J = nil
+                    end
+                end,
+            }):SetParent(self)
+            Sprite({
+                AtliKey = "BoomerangRing",
+                x = self.T.x,
+                y = self.T.y,
+                DrawOrder = 4002,
+                OffsetX = -30,
+                OffsetY = -20,
+                Transparency = 0,
+                Extra = {
+                    a = 0,
+                    Det = 1
+                },
+                UpdateFunc = function(s, ddt)
+                    s.Extra.a = Util.Math.LerpDt(s.Extra.a, s.Extra.Removen and 0 or 4.5, 0.0025)
+                    s.Transparency = Util.Math.LerpDt(s.Transparency, s.Extra.Removen and 0 or 1, 0.0025)
+                    if G.Controller.Mouse[1].Released then
+                        s.Extra.Removen = true
                     end
                     if s.Extra.Removen and s.Transparency <= 0.005 then
                         s:remove()
@@ -51,45 +73,46 @@ function Player:new(args)
                     s.Extra.s3 = s.Extra.s3 or math.tan(5 * math.pi / 8)
                     s.Extra.s4 = s.Extra.s4 or math.tan(7 * math.pi / 8)
                     local slope = -(G.MousePos.y - (self.T.y + 20)) / (G.MousePos.x - (self.T.x + 10))
-                    local det = 1 -- the region of the mouse, going from 1 to 8 starting with the positive x direction going counter clockwise
+                    s.Extra.Det = 1-- the region of the mouse, going from 1 to 8 starting with the positive x direction going counter clockwise
                     if verticalQuadrant == "down" then
                         if horizontalQuadrant == "right" then
                             if slope > s.Extra.s4 then
-                                det = 1
+                                s.Extra.Det = 1
                             elseif slope > s.Extra.s3 then
-                                det = 8
+                                s.Extra.Det = 8
                             else
-                                det = 7
+                                s.Extra.Det = 7
                             end
                         else
                             if slope < s.Extra.s1 then
-                                det = 5
+                                s.Extra.Det = 5
                             elseif slope < s.Extra.s2 then
-                                det = 6
+                                s.Extra.Det = 6
                             else
-                                det = 7
+                                s.Extra.Det = 7
                             end
                         end
                     else
                         if horizontalQuadrant == "right" then
                             if slope < s.Extra.s1 then
-                                det = 1
+                                s.Extra.Det = 1
                             elseif slope < s.Extra.s2 then
-                                det = 2
+                                s.Extra.Det = 2
                             else
-                                det = 3
+                                s.Extra.Det = 3
                             end
                         else
                             if slope > s.Extra.s4 then
-                                det = 5
+                                s.Extra.Det = 5
                             elseif slope > s.Extra.s3 then
-                                det = 4
+                                s.Extra.Det = 4
                             else
-                                det = 3
+                                s.Extra.Det = 3
                             end
                         end
                     end
-                    print(det)
+                    s.AtliInfo.x = (s.Extra.Det - 1) % 4
+                    s.AtliInfo.y = Util.Math.Div((s.Extra.Det - 1), 4) + 1
                 end,
                 DrawFunc = function(s)
                     local r, g, b, a = love.graphics.getColor()

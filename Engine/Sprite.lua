@@ -159,7 +159,6 @@ function Sprite:remove()
             table.remove(G.I.SPRITES, k)
             G.OldState = G.State
             G.State = "DestroyedObj"
-            print(":(")
         end
     end
     self = nil
