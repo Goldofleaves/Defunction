@@ -66,8 +66,8 @@ function Player:new(args)
                     if s.Extra.Removen and s.Transparency <= 0.005 then
                         s:remove()
                     end
-                    local verticalQuadrant = G.MousePos.y > (self.T.y + 20) and "down" or "up"
-                    local horizontalQuadrant = G.MousePos.x > (self.T.x + 10) and "right" or "left"
+                    local verticalQuadrant = G.MousePos.y >= (self.T.y + 20) and "down" or "up"
+                    local horizontalQuadrant = G.MousePos.x >= (self.T.x + 10) and "right" or "left"
                     s.Extra.s1 = s.Extra.s1 or math.tan(math.pi / 8)
                     s.Extra.s2 = s.Extra.s2 or math.tan(3 * math.pi / 8)
                     s.Extra.s3 = s.Extra.s3 or math.tan(5 * math.pi / 8)
