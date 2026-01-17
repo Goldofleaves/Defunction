@@ -1,5 +1,4 @@
 Util.Math = {}
-local math_lib = Util.Math
 
 --- The value of τ.
 math.tau = math.pi * 2
@@ -8,7 +7,7 @@ math.tau = math.pi * 2
 --- @param num number
 --- @param div number
 --- @return integer Result
-math_lib.Div = function(num, div)
+Util.Math.Div = function(num, div)
     return math.floor(num / div)
     -- // is fucking broken, thanks love2d
 end
@@ -16,7 +15,7 @@ end
 --- Returns a random element and its corresponding key from tab.
 --- @param tab table
 --- @return {v:any,k:string|integer} Element
-math_lib.RandomElement = function(tab)
+Util.Math.RandomElement = function(tab)
     local f = {}
     for k, v in pairs(tab) do
         table.insert(f, k)
@@ -28,13 +27,13 @@ end
 --- Has a probably of the arguement to return true, else return false
 --- @param chance number
 --- @return boolean Result
-math_lib.Chance = function(chance)
+Util.Math.Chance = function(chance)
     return math.random() <= chance
 end
 
 
 --- Clamps a value between 2 numbers.
-math_lib.Clamp = function(min, max, value)
+Util.Math.Clamp = function(min, max, value)
     if max < min then
         local a = min
         min = max
@@ -47,7 +46,7 @@ end
 --- @param a number The starting value.
 --- @param b number The ending value.
 --- @param v number The `"speed"`, or fraction of the distance traversed in 1 frame.
-math_lib.Lerp = function(a, b, v)
+Util.Math.Lerp = function(a, b, v)
     return a + (v * (b - a))
 end
 
@@ -57,7 +56,7 @@ end
 --- @param a number The starting value.
 --- @param b number The ending value.
 --- @param r number The `"speed"`, or fraction of the distance left to traverse in 1 second.
-math_lib.LerpDt = function(a, b, r)
+Util.Math.LerpDt = function(a, b, r)
     local v = 1 - (r ^ DELTATIME)
-    return math_lib.Lerp(a, b, v)
+    return Util.Math.Lerp(a, b, v)
 end

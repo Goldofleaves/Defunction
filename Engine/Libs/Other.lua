@@ -1,11 +1,10 @@
 Util.Other = {}
-local other_lib = Util.Other
 
 --- Creates a new table with the same elements to avoid jank caused by passing by reference
 --- @param t table|any The original Table
 --- @param filter table|nil If this is a table, then this function only copy entries inside filter as well.
 --- @return table|any
-other_lib.CopyTable = function(t, filter)
+Util.Other.CopyTable = function(t, filter)
 	if type(t) ~= "table" then
 		return t
 	end
@@ -22,14 +21,14 @@ other_lib.CopyTable = function(t, filter)
 				end
 			end
 		else
-			ret[k] = other_lib.CopyTable(v, filter)
+			ret[k] = Util.Other.CopyTable(v, filter)
 		end
 	end
 	return ret
 end
 
 --- Loads the localization entries to G.Localization.
-other_lib.LoadLocalization = function()
+Util.Other.LoadLocalization = function()
 	G.Localization = assert(load(love.filesystem.read("Localization/english.lua")))()
 	local language = G.Language or "english"
 	local temp = assert(load(love.filesystem.read("Localization/"..language..".lua")))()
@@ -42,7 +41,7 @@ end
 --- Returns the color value for the passed in hex code.
 --- @param hex string The hex code, `"#"` optionally included.
 --- @return table Color
-function other_lib.Hex(hex)
+function Util.Other.Hex(hex)
 	if string.sub(hex, 1, 1) == "#" then
 		hex = string.sub(hex, 2, string.len(hex))
 	end
@@ -57,13 +56,13 @@ end
 ---@param tab table
 ---@param hierarch table
 ---@return any
-function other_lib.ExractValueFromHierarch(tab, hierarch)
-	hierarch = other_lib.CopyTable(hierarch)
+function Util.Other.ExractValueFromHierarch(tab, hierarch)
+	hierarch = Util.Other.CopyTable(hierarch)
 	if next(hierarch) then
 		local k = hierarch[#hierarch]
 		table.remove(hierarch, #hierarch)
 		if tab[k] then
-			return other_lib.ExractValueFromHierarch(tab[k], hierarch)
+			return Util.Other.ExractValueFromHierarch(tab[k], hierarch)
 		end
 		return
 	end
