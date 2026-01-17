@@ -1,6 +1,10 @@
 Util.Other = {}
 local other_lib = Util.Other
 
+--- Creates a new table with the same elements to avoid jank caused by passing by reference
+--- @param t table|any The original Table
+--- @param filter table|nil If this is a table, then this function only copy entries inside filter as well.
+--- @return table|any
 other_lib.CopyTable = function(t, filter)
 	if type(t) ~= "table" then
 		return t
@@ -24,6 +28,7 @@ other_lib.CopyTable = function(t, filter)
 	return ret
 end
 
+--- Loads the localization entries to G.Localization.
 other_lib.LoadLocalization = function()
 	G.Localization = assert(load(love.filesystem.read("Localization/english.lua")))()
 	local language = G.Language or "english"
@@ -34,6 +39,9 @@ other_lib.LoadLocalization = function()
 	-- love.window.setTitle(G.Localization.title)
 end
 
+--- Returns the color value for the passed in hex code.
+--- @param hex string The hex code, `"#"` optionally included.
+--- @return table Color
 function other_lib.Hex(hex)
 	if string.sub(hex, 1, 1) == "#" then
 		hex = string.sub(hex, 2, string.len(hex))
@@ -44,6 +52,11 @@ function other_lib.Hex(hex)
 	return color
 end
 
+--- Return the stored value with the key list of hierarch in table.\
+--- For example, F({a = {[4] = 7}}, {a, 4}) would return 7.
+---@param tab table
+---@param hierarch table
+---@return any
 function other_lib.ExractValueFromHierarch(tab, hierarch)
 	hierarch = other_lib.CopyTable(hierarch)
 	if next(hierarch) then

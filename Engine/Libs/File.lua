@@ -1,5 +1,9 @@
 Util.File = {}
 local file_lib = Util.File
+
+--- Saves the table to a file named fn under the appdata
+--- @param tab table
+--- @param fn string
 function file_lib.SaveTableToFile(tab, fn)
 	local returnstring = ""
 	local typetab = {
@@ -30,15 +34,22 @@ function file_lib.SaveTableToFile(tab, fn)
 	love.filesystem.write(fn..Macros.FileSuffix , returnstring)
 end
 
+--- Sets a table with the file contents in fn,  replacing its original entries with the new one, but doesnt erase any old entries.\
+--- This function does not return anything and sets the table via passing by reference.
+--- @param tab table
+--- @param fn string
 function file_lib.SetTableWithFIle(tab, fn)
 	local c = love.filesystem.read(fn..Macros.FileSuffix)
 	if c then
 		local temp = Util.File.ReadTableFromFile(fn)
 		for k,v in pairs(temp) do
-			tab[k] = v or tab[k]
+			tab[k] = v == nil and tab[k] or v
 		end
 	end
 end
+--- Reads from a file named fn under the appdata and returns the contents as a table
+--- @param fn string
+--- @return table contents
 function file_lib.ReadTableFromFile(fn)
 	local returntable = {}
 	local hierarchies = {} -- table hierarchy, for sub table value jank
@@ -106,21 +117,22 @@ function file_lib.ReadTableFromFile(fn)
 			hierarchies[#hierarchies] = nil -- removes the latest hierarchy d times, because indents and stuff
 			end
 		end
-		local function write(hierarch, degree, keyval, tab)
+		local function writeToTable(hierarch, degree, keyval, tab)
 			if next(hierarch) then
 			local hr = Util.Other.CopyTable(hierarch)
 				if not tab[hierarch[1]] then
 					tab[hierarch[1]] = {} -- if the table doest exist create an empty table
 				end
 				table.remove(hr, 1)
-				write(hr, degree - 1, keyval, tab[hierarch[1]]) -- -1 degree, we love recursion
+				writeToTable(hr, degree - 1, keyval, tab[hierarch[1]]) -- -1 degree, we love recursion
 			end
 			if degree == 0 then -- youre at the top of the hierarchy list
 				tab[keyval.key] = keyval.val -- because of how pass by reference works, this writes to the original table
 			end
 		end
+		-- Technically this would break if the table goes deeper, but that isnt possible in this circumstance.
 		if v_type ~= "tab" then
-			write(hierarchies, #hierarchies, {key = k, val = v}, returntable)
+			writeToTable(hierarchies, #hierarchies, { key = k, val = v }, returntable)
 		end
 	end
 	return returntable

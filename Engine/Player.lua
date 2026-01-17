@@ -18,7 +18,7 @@ function Player:new(args)
         OnGround = true
     }
     args.UpdateFunc = function(self, dt)
-        if G.Controller.Mouse[1].Pressed and not self.Extra.J then
+        if G.Controller.Mouse.Primary.Pressed and not self.Extra.J then
             self.Extra.J = true
             love.mouse.setX((self.T.x + 10) * G.Settings.ScalingFactor)
             love.mouse.setY((self.T.y + 20) * G.Settings.ScalingFactor)
@@ -36,7 +36,7 @@ function Player:new(args)
                 UpdateFunc = function (s, ddt)
                     s.Extra.a = Util.Math.LerpDt(s.Extra.a, s.Extra.Removen and 0 or 4.5, 0.0025)
                     s.Transparency = Util.Math.LerpDt(s.Transparency, s.Extra.Removen and 0 or 1, 0.0025)
-                    if G.Controller.Mouse[1].Released then
+                    if G.Controller.Mouse.Primary.Released then
                         s.Extra.Removen = true
                     end
                     if s.Extra.Removen and s.Transparency <= 0.01 then
@@ -60,7 +60,7 @@ function Player:new(args)
                 UpdateFunc = function(s, ddt)
                     s.Extra.a = Util.Math.LerpDt(s.Extra.a, s.Extra.Removen and 0 or 4.5, 0.0025)
                     s.Transparency = Util.Math.LerpDt(s.Transparency, s.Extra.Removen and 0 or 1, 0.0025)
-                    if G.Controller.Mouse[1].Released then
+                    if G.Controller.Mouse.Primary.Released then
                         s.Extra.Removen = true
                     end
                     if s.Extra.Removen and s.Transparency <= 0.005 then

@@ -27,9 +27,9 @@ function Game:new()
             right = { Keybind = "d", Pressed = false, Held = false, Released = false },
         },
         Mouse = {
-            [1] = { Pressed = false, Held = false, Released = false }, -- Primary (left)
-            [2] = { Pressed = false, Held = false, Released = false }, -- Secondary (right)
-            [3] = { Pressed = false, Held = false, Released = false }, -- Middle Click
+            Primary = { Keybind = 1, Pressed = false, Held = false, Released = false }, -- Primary (left)
+            Secondary = { Keybind = 2, Pressed = false, Held = false, Released = false },     -- Secondary (right)
+            Middle = { Keybind = 3, Pressed = false, Held = false, Released = false },     -- Middle Click
         }
     }
     self.MousePos = {
@@ -65,7 +65,7 @@ function Game:update(dt)
     end
 
     for k, v in pairs(self.Controller.Mouse) do
-        if love.mouse.isDown(k) then
+        if love.mouse.isDown(v.Keybind) then
             v.Held = true
             if not v.PressTemp then
                 v.Pressed = true
