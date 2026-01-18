@@ -21,7 +21,7 @@ function Game:new()
     self.State = "Overworld"
     self.Controller = {
         Keyboard = {
-            up = { Keybind = {"w", "space", "up"}, Pressed = false, Held = false, Released = false },
+            up = { Keybind = {"w", "space", "up", {"lctrl", "lshift"}}, Pressed = false, Held = false, Released = false },
             down = { Keybind = {"s", "down"}, Pressed = false, Held = false, Released = false },
             left = { Keybind = {"a", "left"}, Pressed = false, Held = false, Released = false },
             right = { Keybind = {"d", "right"}, Pressed = false, Held = false, Released = false },
@@ -45,8 +45,20 @@ function Game:update(dt)
     for k, v in pairs(self.Controller.Keyboard) do
         if (function ()
                 for kk, vv in pairs(v.Keybind) do
-                    if love.keyboard.isDown(vv) then
-                        return true
+                    if type(vv) ~= "table" then
+                        if love.keyboard.isDown(vv) then
+                            return true
+                        end
+                    else
+                        local bool = true
+                        for kkk, vvv in pairs(vv) do
+                            if not love.keyboard.isDown(vvv) then
+                                bool = false
+                            end
+                        end
+                        if bool then
+                            return true
+                        end
                     end
                 end
                 return false
@@ -74,8 +86,20 @@ function Game:update(dt)
     for k, v in pairs(self.Controller.Mouse) do
         if (function()
                 for kk, vv in pairs(v.Keybind) do
-                    if love.mouse.isDown(vv) then
-                        return true
+                    if type(vv) ~= "table" then
+                        if love.mouse.isDown(vv) then
+                            return true
+                        end
+                    else
+                        local bool = true
+                        for kkk, vvv in pairs(vv) do
+                            if not love.mouse.isDown(vvv) then
+                                bool = false
+                            end
+                        end
+                        if bool then
+                            return true
+                        end
                     end
                 end
                 return false
