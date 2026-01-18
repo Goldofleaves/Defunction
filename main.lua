@@ -15,6 +15,8 @@ RegisterAtlasSimple("Icon", "Assets/Images/Icon.png", 16, 16)
 RegisterAtlasSimple("ArnaOverworld", "Assets/Images/ArnaOverworld.png", 20, 40)
 RegisterAtlasSimple("ArnaOverworldMask", "Assets/Images/ArnaOverworldMask.png", 20, 40)
 RegisterAtlasSimple("BoomerangRing", "Assets/Images/BoomerangRing.png", 80, 80)
+RegisterAtlasSimple("TitleSelection", "Assets/Images/TitleSelection.png", 47, 11) -- x: 359 y: 228 + (i - 1) * 11 i think. Might be off by 1
+RegisterAtlasSimple("TitleBase", "Assets/Images/TitleBase.png", 640, 360)
 love.filesystem.setIdentity("Defunction")
 
 love.load = function()
