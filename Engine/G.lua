@@ -24,7 +24,8 @@ function Game:new()
             up = { Keybind = {"w", "space", "up", {"lctrl", "lshift"}}, Pressed = false, Held = false, Released = false },
             down = { Keybind = {"s", "down"}, Pressed = false, Held = false, Released = false },
             left = { Keybind = {"a", "left"}, Pressed = false, Held = false, Released = false },
-            right = { Keybind = {"d", "right"}, Pressed = false, Held = false, Released = false },
+            right = { Keybind = { "d", "right" }, Pressed = false, Held = false, Released = false },
+            select = { Keybind = { "z", "return" }, Pressed = false, Held = false, Released = false },
         },
         Mouse = {
             Primary = { Keybind = {1}, Pressed = false, Held = false, Released = false }, -- Primary (left)

@@ -19,9 +19,9 @@ RegisterAtlasSimple("TitleSelection", "Assets/Images/TitleSelection.png", 47, 11
 RegisterAtlasSimple("TitleBase", "Assets/Images/TitleBase.png", 640, 360)
 love.filesystem.setIdentity("Defunction")
 
-love.load = function()
+local function LoadFirstRoomTemp()
     Wall()
-    Wall({x = 380})
+    Wall({ x = 380 })
     Box()
     OneWayPlatform({ x = 180, Facing = "Up" })
     OneWayPlatform({ x = 220, y = 100, Facing = "Down" })
@@ -29,6 +29,8 @@ love.load = function()
     OneWayPlatform({ x = 420, h = 40, y = 160, Facing = "Left" })
     Wall({ x = 220, y = 180, Facing = "Left" })
     Player()
+end
+love.load = function()
     SimpleScale.auto_scale()
     love.window.setTitle("Defunction")
     love.window.setIcon(Atlases.Icon.imageData)
@@ -52,6 +54,63 @@ love.load = function()
         MaskShouldApply = true,
         MaskImageFpos = "Assets/Images/BorderMask.png"
     })
+    Sprite({
+        AtliKey = "TitleBase",
+        Nid = "TitleScr",
+        DrawOrder = 1,
+        Extra = {
+            SelectedOption = 1,
+            Funcs = {
+                function(s, dt)
+                    love.event.push("quit")
+                end,
+                function(s, dt)
+                    return
+                end,
+                function(s, dt)
+                    s:remove()
+                    GetObjectByNid("TitleButtons"):remove()
+                    LoadFirstRoomTemp()
+                end
+            }
+        },
+        UpdateFunc = function(s, dt)
+            if G.Controller.Keyboard.up.Pressed then
+                s.Extra.SelectedOption = Util.Math.Clamp(1, 3, s.Extra.SelectedOption - 1)
+                local T = GetObjectByNid("TitleButtons")
+                T.Extra.Random = 1
+            end
+            if G.Controller.Keyboard.down.Pressed then
+                s.Extra.SelectedOption = Util.Math.Clamp(1, 3, s.Extra.SelectedOption + 1)
+                local T = GetObjectByNid("TitleButtons")
+                T.Extra.Random = 1
+            end
+            if G.Controller.Keyboard.select.Pressed then
+                s.Extra.Funcs[s.Extra.SelectedOption](s, dt)
+            end
+            local TickTime = 0.5
+            local frame = Util.Math.Div(G.Timer, TickTime) % 3
+            s.AtliInfo.y = frame
+        end
+    })
+    Sprite({
+        AtliKey = "TitleSelection",
+        Nid = "TitleButtons",
+        DrawOrder = 2,
+        x = 359,
+        y = 228,
+        Extra = {
+            Random = 0
+        },
+        UpdateFunc = function(s, dt)
+            local T = GetObjectByNid("TitleScr")
+            s.T.x = 359 + (math.random() * 2 - 1) * s.Extra.Random
+            s.T.y = 228 + (T.Extra.SelectedOption - 1) * 11 + (math.random() * 2 - 1) * s.Extra.Random
+            s.AtliInfo.y = T.Extra.SelectedOption - 1
+            s.Extra.Random = Util.Math.Clamp(0, 1, s.Extra.Random - 1/4)
+        end
+    })
+    --
 end
 function love.update(dt)
     DELTATIME = dt
