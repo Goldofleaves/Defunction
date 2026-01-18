@@ -21,15 +21,15 @@ function Game:new()
     self.State = "Overworld"
     self.Controller = {
         Keyboard = {
-            up = { Keybind = "w", Pressed = false, Held = false, Released = false },
-            down = { Keybind = "s", Pressed = false, Held = false, Released = false },
-            left = { Keybind = "a", Pressed = false, Held = false, Released = false },
-            right = { Keybind = "d", Pressed = false, Held = false, Released = false },
+            up = { Keybind = {"w", "space", "up"}, Pressed = false, Held = false, Released = false },
+            down = { Keybind = {"s", "down"}, Pressed = false, Held = false, Released = false },
+            left = { Keybind = {"a", "left"}, Pressed = false, Held = false, Released = false },
+            right = { Keybind = {"d", "right"}, Pressed = false, Held = false, Released = false },
         },
         Mouse = {
-            Primary = { Keybind = 1, Pressed = false, Held = false, Released = false }, -- Primary (left)
-            Secondary = { Keybind = 2, Pressed = false, Held = false, Released = false },     -- Secondary (right)
-            Middle = { Keybind = 3, Pressed = false, Held = false, Released = false },     -- Middle Click
+            Primary = { Keybind = {1}, Pressed = false, Held = false, Released = false }, -- Primary (left)
+            Secondary = { Keybind = {2}, Pressed = false, Held = false, Released = false },     -- Secondary (right)
+            Middle = { Keybind = {3}, Pressed = false, Held = false, Released = false },     -- Middle Click
         }
     }
     self.MousePos = {
@@ -43,7 +43,14 @@ function Game:update(dt)
         y = love.mouse.getY() / G.Settings.ScalingFactor
     }
     for k, v in pairs(self.Controller.Keyboard) do
-        if love.keyboard.isDown(v.Keybind) then
+        if (function ()
+                for kk, vv in pairs(v.Keybind) do
+                    if love.keyboard.isDown(vv) then
+                        return true
+                    end
+                end
+                return false
+            end)() then
             v.Held = true
             if not v.PressTemp then
                 v.Pressed = true
@@ -65,7 +72,14 @@ function Game:update(dt)
     end
 
     for k, v in pairs(self.Controller.Mouse) do
-        if love.mouse.isDown(v.Keybind) then
+        if (function()
+                for kk, vv in pairs(v.Keybind) do
+                    if love.mouse.isDown(vv) then
+                        return true
+                    end
+                end
+                return false
+            end)() then
             v.Held = true
             if not v.PressTemp then
                 v.Pressed = true
