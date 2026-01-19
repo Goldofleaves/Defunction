@@ -5,5 +5,6 @@ Macros = {
     Gravity = 4,
     JumpVelocity = 140,
     CoyoteTime = 0.35,
-    MaxHold = 0.55
+    MaxHold = 0.55,
+    TerminalVelocity = 250
 }

@@ -139,7 +139,7 @@ function Player:new(args)
         self.V.x.Gravity = self.V.x.Gravity or 0
         self.TMod.y.Gravity = self.TMod.y.Gravity or 0
         self.V.y.Gravity = self.V.y.Gravity or 0
-        self.V.y.Gravity = self.V.y.Gravity + Macros.Gravity
+        self.V.y.Gravity = math.min(self.V.y.Gravity + Macros.Gravity, Macros.TerminalVelocity)
         self.Extra.OnGround = self.Extra.DownCheck.Extra.Ticked
         if self.Extra.OnGround and self.Extra.OnGround ~= self.Id then
             self.V.y.Gravity = 0
