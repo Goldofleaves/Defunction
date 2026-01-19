@@ -141,7 +141,7 @@ function Player:new(args)
         self.V.y.Gravity = self.V.y.Gravity or 0
         self.V.y.Gravity = math.min(self.V.y.Gravity + Macros.Gravity, Macros.TerminalVelocity)
         self.Extra.OnGround = self.Extra.DownCheck.Extra.Ticked
-        if self.Extra.OnGround and self.Extra.OnGround ~= self.Id then
+        if self.Extra.OnGround and self.Extra.OnGround ~= self.Id and not GetObjectById(self.Extra.OnGround).Properties.NoCollision then
             self.V.y.Gravity = 0
             self.Extra.HaventJumped = true
             self.Extra.CoyoteTimer = Macros.CoyoteTime
@@ -158,9 +158,7 @@ function Player:new(args)
             end
             self.Extra.HoldTimer = self.Extra.HoldTimer - dt
         else
-            if self.Extra.HaventJumped then
-                self.Extra.HoldTimer = -1
-            end
+            self.Extra.HoldTimer = -1
         end
         if self.Extra.OnGround == self.Id then
             self.V.y.Gravity = 20
