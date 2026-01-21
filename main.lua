@@ -69,8 +69,8 @@ love.load = function()
                     return
                 end,
                 function(s, dt)
-                    s:remove()
-                    GetObjectByNid("TitleButtons"):remove()
+                    s:Remove()
+                    GetObjectByNid("TitleButtons"):Remove()
                     LoadFirstRoomTemp()
                 end
             }

@@ -153,7 +153,7 @@ function Sprite:update(dt)
     self.UpdateFunc(self, dt)
 end
 
-function Sprite:remove()
+function Sprite:Remove()
     for k, v in ipairs(G.I.SPRITES) do
         if v.Id == self.Id then
             table.remove(G.I.SPRITES, k)

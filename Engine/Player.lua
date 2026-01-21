@@ -30,17 +30,13 @@ function Player:new(args)
                 OffsetX = -30,
                 OffsetY = -20,
                 Transparency = 0,
-                Extra = {
-                    a = 0
-                },
                 UpdateFunc = function (s, ddt)
-                    s.Extra.a = Util.Math.LerpDt(s.Extra.a, s.Extra.Removen and 0 or 4.5, 0.0025)
                     s.Transparency = Util.Math.LerpDt(s.Transparency, s.Extra.Removen and 0 or 1, 0.0025)
                     if G.Controller.Mouse.Primary.Released then
                         s.Extra.Removen = true
                     end
                     if s.Extra.Removen and s.Transparency <= 0.01 then
-                        s:remove()
+                        s:Remove()
                         self.Extra.J = nil
                     end
                 end,
@@ -54,17 +50,17 @@ function Player:new(args)
                 OffsetY = -20,
                 Transparency = 0,
                 Extra = {
-                    a = 0,
+                    Radius = 0,
                     Det = 1
                 },
                 UpdateFunc = function(s, ddt)
-                    s.Extra.a = Util.Math.LerpDt(s.Extra.a, s.Extra.Removen and 0 or 4.5, 0.0025)
+                    s.Extra.Radius = Util.Math.LerpDt(s.Extra.Radius, s.Extra.Removen and 0 or 4.5, 0.0025)
                     s.Transparency = Util.Math.LerpDt(s.Transparency, s.Extra.Removen and 0 or 1, 0.0025)
                     if G.Controller.Mouse.Primary.Released then
                         s.Extra.Removen = true
                     end
                     if s.Extra.Removen and s.Transparency <= 0.005 then
-                        s:remove()
+                        s:Remove()
                     end
                     local verticalQuadrant = G.MousePos.y >= (self.T.y + 20) and "down" or "up"
                     local horizontalQuadrant = G.MousePos.x >= (self.T.x + 10) and "right" or "left"
@@ -117,11 +113,11 @@ function Player:new(args)
                 DrawFunc = function(s)
                     local r, g, b, a = love.graphics.getColor()
                     love.graphics.setColor(Util.Other.Hex("#FFFFFF"))
-                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, s.Extra.a)
+                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, s.Extra.Radius)
                     love.graphics.setColor(Util.Other.Hex("#4a3052"))
-                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, math.max(0, s.Extra.a - 0.5))
+                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, math.max(0, s.Extra.Radius - 0.5))
                     love.graphics.setColor(Util.Other.Hex("#FFFFFF"))
-                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, math.max(0, s.Extra.a - 2.5))
+                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, math.max(0, s.Extra.Radius - 2.5))
                     love.graphics.setColor { r, g, b, a }
                 end
             }):SetParent(self)
