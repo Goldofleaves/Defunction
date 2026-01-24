@@ -60,3 +60,13 @@ Util.Math.LerpDt = function(a, b, r)
     local v = 1 - (r ^ DELTATIME)
     return Util.Math.Lerp(a, b, v)
 end
+math.sgn = function (n)
+    if n ~= 0 then
+        return n/math.abs(n)
+    end
+    return 0
+end
+function Util.Math.PercisionCheck(a, b, p)
+    local delta = math.abs(a - b)
+    return delta <= p
+end

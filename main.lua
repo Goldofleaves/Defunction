@@ -15,6 +15,8 @@ RegisterAtlasSimple("Icon", "Assets/Images/Icon.png", 16, 16)
 RegisterAtlasSimple("ArnaOverworld", "Assets/Images/ArnaOverworld.png", 20, 40)
 RegisterAtlasSimple("ArnaOverworldMask", "Assets/Images/ArnaOverworldMask.png", 20, 40)
 RegisterAtlasSimple("BoomerangRing", "Assets/Images/BoomerangRing.png", 80, 80)
+RegisterAtlasSimple("Boomerang", "Assets/Images/Boomerang.png", 20, 20)
+RegisterAtlasSimple("Bump", "Assets/Images/Bump.png", 20, 20)
 RegisterAtlasSimple("TitleSelection", "Assets/Images/TitleSelection.png", 47, 11) -- x: 359 y: 228 + (i - 1) * 11 i think. Might be off by 1
 RegisterAtlasSimple("TitleBase", "Assets/Images/TitleBase.png", 640, 360)
 love.filesystem.setIdentity("Defunction")
@@ -27,8 +29,10 @@ local function LoadFirstRoomTemp()
     OneWayPlatform({ x = 180, Facing = "Up" })
     OneWayPlatform({ x = 220, y = 100, Facing = "Down" })
     OneWayPlatform({ x = 240, h = 40, y = 140, Facing = "Right" })
-    OneWayPlatform({ x = 420, h = 40, y = 160, Facing = "Left" })
-    Wall({ x = 220, y = 180, Facing = "Left" })
+    --OneWayPlatform({ x = 420, h = 40, y = 160, Facing = "Left" })
+    Wall({ x = 220, y = 180, w = 160})
+    RicoChet({ x = 500, y = 100 })
+    RicoChet({ x = 400, y = 60, h = 20, w = 80 })
     Player()
 end
 love.load = function()
@@ -116,6 +120,7 @@ end
 function love.update(dt)
     DELTATIME = dt
     G:update(dt)
+    PREVIOUS_DELTATIME = dt
 end
 
 function love.draw()

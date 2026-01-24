@@ -36,6 +36,7 @@ function Game:new()
     self.MousePos = {
         x = 0, y = 0
     }
+    self.Flags = {}
     G = self
 end
 function Game:update(dt)
@@ -124,6 +125,51 @@ function Game:update(dt)
         end
     end
     
+    local function HandleCollisions()
+        local loop = true
+        local limit = 0
+
+        while loop do
+            loop = false
+            limit = limit + 1
+            if limit > 1 then
+                break
+            end
+            for i = 1, #self.I.MOVEABLES - 1 do
+                for j = i + 1, #self.I.MOVEABLES do
+                    --print("i = "..i..", j = "..j)
+                    local collision = self.I.MOVEABLES[i]:ResolveCollision(self.I.MOVEABLES[j])
+                    --print(collision)
+                    if collision then
+                        loop = true
+                    end
+                end
+            end
+        end
+    end
+    HandleCollisions()
+    for k, v in pairs(self.I.MOVEABLES) do
+        if not v.Properties.CollisionCheck then
+            v:update(dt)
+            HandleCollisions()
+            if self.State == "DestroyedObj" then
+                self.State = self.OldState
+                self.OldState = nil
+                break
+            end
+        end
+    end
+    for k, v in pairs(self.I.MOVEABLES) do
+        if v.Properties.CollisionCheck then
+            v:update(dt)
+            HandleCollisions()
+            if self.State == "DestroyedObj" then
+                self.State = self.OldState
+                self.OldState = nil
+                break
+            end
+        end
+    end
     for k, v in pairs(self.I.SPRITES) do
         v:update(dt)
         if self.State == "DestroyedObj" then
@@ -132,62 +178,12 @@ function Game:update(dt)
             break
         end
     end
-
-    local loop = true
-    local limit = 0
-
-    while loop do
-        loop = false
-        limit = limit + 1
-        if limit > 1 then
-            break
-        end
-        for i = 1, #self.I.MOVEABLES - 1 do
-            for j = i + 1, #self.I.MOVEABLES do
-                --print("i = "..i..", j = "..j)
-                local collision = self.I.MOVEABLES[i]:ResolveCollision(self.I.MOVEABLES[j])
-                --print(collision)
-                if collision then
-                    loop = true
-                end
-            end
-        end
-    end
-    for k, v in pairs(self.I.MOVEABLES) do
-        if not v.Properties.CollisionCheck then
-            v:update(dt)
-        end
-    end
     for k, v in pairs(self.I.MOVEABLES) do
         if v.Properties.CollisionCheck then
-            v:update(dt)
+            v.Extra.Ticked = {}
         end
     end
-    local loop = true
-    local limit = 0
-
-    while loop do
-        loop = false
-        limit = limit + 1
-        if limit > 1 then
-            break
-        end
-        for i = 1, #self.I.MOVEABLES - 1 do
-            for j = i + 1, #self.I.MOVEABLES do
-                --print("i = "..i..", j = "..j)
-                local collision = self.I.MOVEABLES[i]:ResolveCollision(self.I.MOVEABLES[j])
-                --print(collision)
-                if collision then
-                    loop = true
-                end
-            end
-        end
-    end
-    for k, v in pairs(self.I.MOVEABLES) do
-        if v.Properties.CollisionCheck then
-            v.Extra.Ticked = false
-        end
-    end
+    HandleCollisions()
     self.Timer = self.Timer + dt
 end
 
@@ -211,7 +207,14 @@ function Game:draw()
         end
         love.graphics.setColor { r, g, b, a }
     end
+    local jTable = {}
     for _, v in pairs(self.I.MOVEABLES) do
+        table.insert(jTable, v)
+    end
+    table.sort(jTable, function(a, b)
+        return (a.DrawOrder < b.DrawOrder)
+    end)
+    for _, v in ipairs(jTable) do
         v:draw()
     end
     local iTable = {}

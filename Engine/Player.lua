@@ -2,6 +2,12 @@
 
 Player = Moveable:extend()
 function Player:new(args)
+    local OnGroundCond = function()
+        return next(self.Extra.OnGround) and not CollisionContainsId(self.Extra.OnGround, self.Id) and
+            not CollisionContainsProperty(self.Extra.OnGround, "NoCollision") and
+            not CollisionContainsProperty(self.Extra.OnGround, "CollisionCheck") and
+            (CollisionContainsExtra(self.Extra.OnGround, "Facing") and CollisionContainsId(GetAllCollisionExtra(self.Extra.OnGround, "Facing"), "Up") or true)
+    end
     args = args or {}
     args.Strength = 500
     args.Properties = args.Properties or {}
@@ -15,10 +21,10 @@ function Player:new(args)
         HaventJumped = true,
         HoldTimer = Macros.MaxHold,
         Facing = "Right",
-        OnGround = true
+        OnGround = {}
     }
     args.UpdateFunc = function(self, dt)
-        if G.Controller.Mouse.Primary.Pressed and not self.Extra.J then
+        if G.Controller.Mouse.Primary.Pressed and not self.Extra.J and not G.Flags.BoomerangExists then
             self.Extra.J = true
             love.mouse.setX((self.T.x + 10) * G.Settings.ScalingFactor)
             love.mouse.setY((self.T.y + 20) * G.Settings.ScalingFactor)
@@ -50,14 +56,62 @@ function Player:new(args)
                 OffsetY = -20,
                 Transparency = 0,
                 Extra = {
-                    Radius = 0,
+                    Radius = -1/5,
                     Det = 1
                 },
                 UpdateFunc = function(s, ddt)
                     s.Extra.Radius = Util.Math.LerpDt(s.Extra.Radius, s.Extra.Removen and 0 or 4.5, 0.0025)
                     s.Transparency = Util.Math.LerpDt(s.Transparency, s.Extra.Removen and 0 or 1, 0.0025)
-                    if G.Controller.Mouse.Primary.Released then
+                    if G.Controller.Mouse.Primary.Released and not G.Flags.BoomerangExists then
+                        G.Flags.BoomerangExists = true
                         s.Extra.Removen = true
+                        local XCoord, YCoord, XVel, YVel = 0, 0, 0, 0
+                        local Spd, Offset = 350, 15
+                        local rt2Spd, rt2Offset = Spd / (2 ^ (1 / 2)), Offset / (2 ^ (1 / 2))
+                        if s.Extra.Det == 1 then
+                            XCoord = Offset
+                            XVel = Spd
+                        elseif s.Extra.Det == 2 then
+                            XCoord = rt2Offset
+                            YCoord = -rt2Offset
+                            XVel = rt2Spd
+                            YVel = -rt2Spd
+                        elseif s.Extra.Det == 3 then
+                            YCoord = -Offset
+                            YVel = -Spd
+                        elseif s.Extra.Det == 4 then
+                            XCoord = -rt2Offset
+                            YCoord = -rt2Offset
+                            XVel = -rt2Spd
+                            YVel = -rt2Spd
+                        elseif s.Extra.Det == 5 then
+                            XCoord = -Offset
+                            XVel = -Spd
+                        elseif s.Extra.Det == 6 then
+                            XCoord = -rt2Offset
+                            YCoord = rt2Offset
+                            XVel = -rt2Spd
+                            YVel = rt2Spd
+                        elseif s.Extra.Det == 7 then
+                            YCoord = Offset
+                            YVel = Spd
+                        else
+                            XCoord = rt2Offset
+                            YCoord = rt2Offset
+                            XVel = rt2Spd
+                            YVel = rt2Spd
+                        end
+                        BRang{
+                            x = self.T.x + self.T.w / 2 + XCoord - 10,
+                            y = self.T.y + self.T.h / 2 + YCoord - 10,
+                            vx = XVel,
+                            vy = YVel,
+                            Extra = {
+                                OVX = XVel,
+                                OVY = YVel,
+                                ClockInit = 0
+                            }
+                        }
                     end
                     if s.Extra.Removen and s.Transparency <= 0.005 then
                         s:Remove()
@@ -137,7 +191,8 @@ function Player:new(args)
         self.V.y.Gravity = self.V.y.Gravity or 0
         self.V.y.Gravity = math.min(self.V.y.Gravity + Macros.Gravity, Macros.TerminalVelocity)
         self.Extra.OnGround = self.Extra.DownCheck.Extra.Ticked
-        if self.Extra.OnGround and self.Extra.OnGround ~= self.Id and not GetObjectById(self.Extra.OnGround).Properties.NoCollision then
+        self.Extra.HitCeiling = self.Extra.UpCheck.Extra.Ticked
+        if OnGroundCond() then
             self.V.y.Gravity = 0
             self.Extra.HaventJumped = true
             self.Extra.CoyoteTimer = Macros.CoyoteTime
@@ -156,7 +211,7 @@ function Player:new(args)
         else
             self.Extra.HoldTimer = -1
         end
-        if self.Extra.OnGround == self.Id then
+        if self.V.y.Gravity <= 0 and next(self.Extra.HitCeiling) and not CollisionContainsId(self.Extra.HitCeiling, self.Id) and not CollisionContainsProperty(self.Extra.HitCeiling, "NoCollision") then
             self.V.y.Gravity = 20
             self.Extra.HoldTimer = -1
         end
@@ -175,20 +230,47 @@ function Player:new(args)
         Properties = {
             CollisionCheck = true
         },
-        w = 16,
+        w = 20,
         h = 1,
         DrawFunc = function(s)
             if G.Debug then
                 local r, g, b, a = love.graphics.getColor()
                 love.graphics.setColor(Util.Other.Hex("#2F00FF"))
-                --love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+                love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
                 love.graphics.setColor { r, g, b, a }
             end
         end,
     }
-    self.Extra.DownCheck.TMod.x.offset = 2
+    self.Extra.DownCheck.TMod.x.offset = 0
     self.Extra.DownCheck.TMod.y.offset = 40
     self.Extra.DownCheck:SetParent(self)
+
+    self.Extra.UpCheck = Moveable {
+        Properties = {
+            CollisionCheck = true
+        },
+        w = 20,
+        h = 1,
+        DrawFunc = function(s)
+            if G.Debug then
+                local r, g, b, a = love.graphics.getColor()
+                love.graphics.setColor(Util.Other.Hex("#2F00FF"))
+                love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+                love.graphics.setColor { r, g, b, a }
+            end
+        end,
+    }
+    self.Extra.UpCheck.TMod.y.offset = -1
+    self.Extra.UpCheck:SetParent(self)
+
+
+
+
+
+
+
+
+
     Sprite({
         AtliKey = "ArnaOverworld",
         DrawOrder = 4000,
@@ -206,7 +288,7 @@ function Player:new(args)
         UpdateFunc = function(s, dt)
             s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
-            if not (self.Extra.OnGround and self.Extra.OnGround ~= self.Id) then
+            if not OnGroundCond() then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
@@ -252,7 +334,7 @@ function Player:new(args)
         UpdateFunc = function(s, dt)
             s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
-            if not (self.Extra.OnGround and self.Extra.OnGround ~= self.Id) then
+            if not OnGroundCond() then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
@@ -298,7 +380,7 @@ function Player:new(args)
         UpdateFunc = function(s, dt)
             s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
-            if not (self.Extra.OnGround and self.Extra.OnGround ~= self.Id) then
+            if not OnGroundCond() then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
@@ -344,7 +426,7 @@ function Player:new(args)
         UpdateFunc = function(s, dt)
             s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
-            if not (self.Extra.OnGround and self.Extra.OnGround ~= self.Id) then
+            if not OnGroundCond() then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
@@ -390,7 +472,7 @@ function Player:new(args)
         UpdateFunc = function(s, dt)
             s.Xflipped = self.Extra.Facing == "Left" and true or false
             local TickTime = 0.2
-            if not (self.Extra.OnGround and self.Extra.OnGround ~= self.Id) then
+            if not OnGroundCond() then
                 s.AtliInfo.x = 1
                 s.AtliInfo.y = 1
             else
@@ -417,5 +499,6 @@ function Player:new(args)
             s.AtliInfo.x = frame
         end
     }):SetParent(self)
+    self.Nid = "Player"
     return self
 end
