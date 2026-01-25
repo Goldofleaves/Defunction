@@ -121,7 +121,7 @@ end
 function love.update(dt)
     DELTATIME = dt
     G:update(dt)
-    print(#G.I.SPRITES)
+    print(1/dt)
     PREVIOUS_DELTATIME = dt
 end
 
