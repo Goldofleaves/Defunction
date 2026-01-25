@@ -56,7 +56,7 @@ end
 --- @param a number The starting value.
 --- @param b number The ending value.
 --- @param r number The `"speed"`, or fraction of the distance left to traverse in 1 second.
-Util.Math.LerpDt = function(a, b, r)
+Util.Math.lerpDt = function(a, b, r)
     local v = 1 - (r ^ DELTATIME)
     return Util.Math.Lerp(a, b, v)
 end

@@ -35,22 +35,22 @@ function Sprite:new(args)
         y = args.y or 0,
     }
     self.Xflipped = false
-    self.Transparency = args.Transparency or 1
+    self.transparency = args.transparency or 1
     self.AtliInfo = {
-        key = args.AtliKey,
-        x = args.AtliX or 0,
-        y = args.AtliY or 0
+        key = args.atlasKey,
+        x = args.AtlasX or 0,
+        y = args.AtlasY or 0
     }
-    self.UpdateFunc = args.UpdateFunc or function(s, dt) return end
-    self.DrawOrder = args.DrawOrder or 1
+    self.updateFunc = args.updateFunc or function(s, dt) return end
+    self.drawOrder = args.drawOrder or 1
     self.DrawTiled = args.DrawTiled == nil and false or args.DrawTiled
-    self.Extra = args.Extra or {}
-    self.DrawFunc = args.DrawFunc or function (s) return end
+    self.extra = args.extra or {}
+    self.drawFunc = args.drawFunc or function (s) return end
     self.Mask = {
         ShouldApply = args.MaskShouldApply == nil and false or args.MaskShouldApply,
         ImageFpos = args.MaskImageFpos,
     }
-    self.Properties = args.Properties or {}
+    self.properties = args.properties or {}
     table.insert(G.I.SPRITES, self)
     self.Offset = {
         x = args.OffsetX or 0,
@@ -66,7 +66,7 @@ function Sprite:draw()
         local x = self.T.x + kx
         local y = self.T.y + ky
         local r, g, b, a = love.graphics.getColor()
-        love.graphics.setColor { r, g, b, a * self.Transparency }
+        love.graphics.setColor { r, g, b, a * self.transparency }
         if self.Mask.ShouldApply then
             self.extra = self.extra or {}
             self.extra.mask = self.extra.mask or love.graphics.newImage(self.Mask.ImageFpos)
@@ -110,13 +110,13 @@ function Sprite:draw()
                 end
             end
         end
-        self.DrawFunc(self)
+        self.drawFunc(self)
         if self.Mask.ShouldApply then
             love.graphics.setStencilTest()
         end
         love.graphics.setColor { r, g, b, a }
     end
-    if self.Properties.Outline then
+    if self.properties.Outline then
         local r, g, b, a = love.graphics.getColor()
         local function myStencilFunction()
             draw_func(self.Offset.x + 1 + G:GetTotalOffset().x, self.Offset.y + G:GetTotalOffset().y)
@@ -126,7 +126,7 @@ function Sprite:draw()
         end
         love.graphics.stencil(myStencilFunction, "replace", 1)
         love.graphics.setStencilTest("greater", 0)
-        love.graphics.setColor(self.Properties.OutlineColor)
+        love.graphics.setColor(self.properties.OutlineColor)
         love.graphics.rectangle("fill", 0, 0, Macros.BaseResolution.w, Macros.BaseResolution.h)
         love.graphics.setColor { r, g, b, a }
         love.graphics.setStencilTest()
@@ -150,10 +150,10 @@ function Sprite:update(dt)
         self.T.x = self:GetParentOffset().x
         self.T.y = self:GetParentOffset().y
     end
-    self.UpdateFunc(self, dt)
+    self.updateFunc(self, dt)
 end
 
-function Sprite:Remove()
+function Sprite:remove()
     for k, v in ipairs(G.I.SPRITES) do
         if v.Id == self.Id then
             table.remove(G.I.SPRITES, k)

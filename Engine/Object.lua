@@ -33,7 +33,7 @@ function Object:implement(...)
   end
 end
 
---- Checks if an object is another, usually an extended object
+--- checks if an object is another, usually an extended object
 ---@param T Object
 function Object:is(T) 
   local mt = getmetatable(self)

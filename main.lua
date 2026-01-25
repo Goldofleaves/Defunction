@@ -42,15 +42,15 @@ love.load = function()
     love.window.setIcon(Atlases.Icon.imageData)
     love.mouse.setVisible(false)
     Sprite({
-        AtliKey = "Border",
+        atlasKey = "Border",
         Nid = "Border",
-        DrawOrder = 9000
+        drawOrder = 9000
     })
     Sprite({
-        AtliKey = "BorderPattern",
+        atlasKey = "BorderPattern",
         Nid = "BorderPattern",
-        DrawOrder = 9001,
-        UpdateFunc = function (self, dt)
+        drawOrder = 9001,
+        updateFunc = function (self, dt)
             self.T.x = self.T.x + 25 * dt
             self.T.y = self.T.y + 25 * dt
             self.T.x = self.T.x % Macros.TileSize
@@ -61,10 +61,10 @@ love.load = function()
         MaskImageFpos = "Assets/Images/BorderMask.png"
     })
     Sprite({
-        AtliKey = "TitleBase",
+        atlasKey = "TitleBase",
         Nid = "TitleScr",
-        DrawOrder = 1,
-        Extra = {
+        drawOrder = 1,
+        extra = {
             SelectedOption = 1,
             Funcs = {
                 function(s, dt)
@@ -74,25 +74,25 @@ love.load = function()
                     return
                 end,
                 function(s, dt)
-                    s:Remove()
-                    GetObjectByNid("TitleButtons"):Remove()
+                    s:remove()
+                    GetObjectByNid("TitleButtons"):remove()
                     LoadFirstRoomTemp()
                 end
             }
         },
-        UpdateFunc = function(s, dt)
+        updateFunc = function(s, dt)
             if G.Controller.Keyboard.up.Pressed then
-                s.Extra.SelectedOption = Util.Math.Clamp(1, 3, s.Extra.SelectedOption - 1)
+                s.extra.SelectedOption = Util.Math.Clamp(1, 3, s.extra.SelectedOption - 1)
                 local T = GetObjectByNid("TitleButtons")
-                T.Extra.Random = 1
+                T.extra.Random = 1
             end
             if G.Controller.Keyboard.down.Pressed then
-                s.Extra.SelectedOption = Util.Math.Clamp(1, 3, s.Extra.SelectedOption + 1)
+                s.extra.SelectedOption = Util.Math.Clamp(1, 3, s.extra.SelectedOption + 1)
                 local T = GetObjectByNid("TitleButtons")
-                T.Extra.Random = 1
+                T.extra.Random = 1
             end
             if G.Controller.Keyboard.select.Pressed then
-                s.Extra.Funcs[s.Extra.SelectedOption](s, dt)
+                s.extra.Funcs[s.extra.SelectedOption](s, dt)
             end
             local TickTime = 0.5
             local frame = Util.Math.Div(G.Timer, TickTime) % 3
@@ -100,20 +100,20 @@ love.load = function()
         end
     })
     Sprite({
-        AtliKey = "TitleSelection",
+        atlasKey = "TitleSelection",
         Nid = "TitleButtons",
-        DrawOrder = 2,
+        drawOrder = 2,
         x = 359,
         y = 228,
-        Extra = {
+        extra = {
             Random = 0
         },
-        UpdateFunc = function(s, dt)
+        updateFunc = function(s, dt)
             local T = GetObjectByNid("TitleScr")
-            s.T.x = 359 + (math.random() * 2 - 1) * s.Extra.Random
-            s.T.y = 228 + (T.Extra.SelectedOption - 1) * 11 + (math.random() * 2 - 1) * s.Extra.Random
-            s.AtliInfo.y = T.Extra.SelectedOption - 1
-            s.Extra.Random = Util.Math.Clamp(0, 1, s.Extra.Random - 1/4)
+            s.T.x = 359 + (math.random() * 2 - 1) * s.extra.Random
+            s.T.y = 228 + (T.extra.SelectedOption - 1) * 11 + (math.random() * 2 - 1) * s.extra.Random
+            s.AtliInfo.y = T.extra.SelectedOption - 1
+            s.extra.Random = Util.Math.Clamp(0, 1, s.extra.Random - 1/4)
         end
     })
     --

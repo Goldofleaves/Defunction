@@ -16,7 +16,7 @@ function Game:new()
         SPRITES = {},
         MOVEABLES = {},
     }
-    self.Debug = true
+    self.debug = true
     self.Timer = 0
     self.State = "Overworld"
     self.Controller = {
@@ -185,7 +185,7 @@ function Game:update(dt)
     end
     HandleCollisions()
     for k, v in pairs(self.I.MOVEABLES) do
-        if not v.Properties.CollisionCheck then
+        if not v.properties.CollisionCheck then
             v:update(dt)
             HandleCollisions()
             if self.State == "DestroyedObj" then
@@ -196,7 +196,7 @@ function Game:update(dt)
         end
     end
     for k, v in pairs(self.I.MOVEABLES) do
-        if v.Properties.CollisionCheck then
+        if v.properties.CollisionCheck then
             v:update(dt)
             HandleCollisions()
             if self.State == "DestroyedObj" then
@@ -215,8 +215,8 @@ function Game:update(dt)
         end
     end
     for k, v in pairs(self.I.MOVEABLES) do
-        if v.Properties.CollisionCheck then
-            v.Extra.Ticked = {}
+        if v.properties.CollisionCheck then
+            v.extra.ticked = {}
         end
     end
     HandleCollisions()
@@ -248,7 +248,7 @@ function Game:draw()
         table.insert(jTable, v)
     end
     table.sort(jTable, function(a, b)
-        return (a.DrawOrder < b.DrawOrder)
+        return (a.drawOrder < b.drawOrder)
     end)
     for _, v in ipairs(jTable) do
         v:draw()
@@ -258,7 +258,7 @@ function Game:draw()
         table.insert(iTable, v)
     end
     table.sort(iTable, function(a, b)
-        return (a.DrawOrder < b.DrawOrder)
+        return (a.drawOrder < b.drawOrder)
     end)
     for _, v in ipairs(iTable) do
         v:draw()

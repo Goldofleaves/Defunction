@@ -3,96 +3,96 @@
 Player = Moveable:extend()
 function Player:new(args)
     local OnGroundCond = function()
-        return next(self.Extra.OnGround) and not CollisionContainsId(self.Extra.OnGround, self.Id) and
-            not CollisionContainsProperty(self.Extra.OnGround, "NoCollision") and
-            not CollisionContainsProperty(self.Extra.OnGround, "CollisionCheck") and
-            (CollisionContainsExtra(self.Extra.OnGround, "Facing") and CollisionContainsId(GetAllCollisionExtra(self.Extra.OnGround, "Facing"), "Up") or true)
+        return next(self.extra.OnGround) and not collisionContainsId(self.extra.OnGround, self.Id) and
+            not collisionContainsProperty(self.extra.OnGround, "noCollision") and
+            not collisionContainsProperty(self.extra.OnGround, "CollisionCheck") and
+            (CollisionContainsextra(self.extra.OnGround, "Facing") and collisionContainsId(getAllCollisionextra(self.extra.OnGround, "Facing"), "Up") or true)
     end
     args = args or {}
-    args.Strength = 500
-    args.Properties = args.Properties or {}
-    args.Properties.Player = true
+    args.strength = 500
+    args.properties = args.properties or {}
+    args.properties.Player = true
     args.x = args.x or 140
     args.y = args.y or 140
     args.w = args.w or 20
     args.h = args.h or 40
-    args.Extra = {
+    args.extra = {
         CoyoteTimer = 0,
         HaventJumped = true,
         HoldTimer = Macros.MaxHold,
         Facing = "Right",
         OnGround = {}
     }
-    args.UpdateFunc = function(self, dt)
-        if G.Controller.Mouse.Primary.Pressed and not self.Extra.J and not G.Flags.BoomerangExists then
-            self.Extra.J = true
+    args.updateFunc = function(self, dt)
+        if G.Controller.Mouse.Primary.Pressed and not self.extra.J and not G.Flags.BoomerangExists then
+            self.extra.J = true
             love.mouse.setX((self.T.x + 10) * G.Settings.ScalingFactor)
             love.mouse.setY((self.T.y + 20) * G.Settings.ScalingFactor)
             Sprite({
-                AtliKey = "BoomerangRing",
+                atlasKey = "BoomerangRing",
                 x = self.T.x,
                 y = self.T.y,
-                DrawOrder = 4001,
+                drawOrder = 4001,
                 OffsetX = -30,
                 OffsetY = -20,
-                Transparency = 0,
-                UpdateFunc = function (s, ddt)
-                    s.Transparency = Util.Math.LerpDt(s.Transparency, s.Extra.Removen and 0 or 1, 0.0025)
+                transparency = 0,
+                updateFunc = function (s, ddt)
+                    s.transparency = Util.Math.lerpDt(s.transparency, s.extra.Removen and 0 or 1, 0.0025)
                     if G.Controller.Mouse.Primary.Released then
-                        s.Extra.Removen = true
+                        s.extra.Removen = true
                     end
-                    if s.Extra.Removen and s.Transparency <= 0.01 then
-                        s:Remove()
-                        self.Extra.J = nil
+                    if s.extra.Removen and s.transparency <= 0.01 then
+                        s:remove()
+                        self.extra.J = nil
                     end
                 end,
             }):SetParent(self)
             Sprite({
-                AtliKey = "BoomerangRing",
+                atlasKey = "BoomerangRing",
                 x = self.T.x,
                 y = self.T.y,
-                DrawOrder = 4002,
+                drawOrder = 4002,
                 OffsetX = -30,
                 OffsetY = -20,
-                Transparency = 0,
-                Extra = {
+                transparency = 0,
+                extra = {
                     Radius = -1/5,
                     Det = 1
                 },
-                UpdateFunc = function(s, ddt)
-                    s.Extra.Radius = Util.Math.LerpDt(s.Extra.Radius, s.Extra.Removen and 0 or 4.5, 0.0025)
-                    s.Transparency = Util.Math.LerpDt(s.Transparency, s.Extra.Removen and 0 or 1, 0.0025)
+                updateFunc = function(s, ddt)
+                    s.extra.Radius = Util.Math.lerpDt(s.extra.Radius, s.extra.Removen and 0 or 4.5, 0.0025)
+                    s.transparency = Util.Math.lerpDt(s.transparency, s.extra.Removen and 0 or 1, 0.0025)
                     if G.Controller.Mouse.Primary.Released and not G.Flags.BoomerangExists then
                         G.Flags.BoomerangExists = true
-                        s.Extra.Removen = true
+                        s.extra.Removen = true
                         local XCoord, YCoord, XVel, YVel = 0, 0, 0, 0
                         local Spd, Offset = 300, 15
                         local rt2Spd, rt2Offset = Spd / (2 ^ (1 / 2)), Offset / (2 ^ (1 / 2))
-                        if s.Extra.Det == 1 then
+                        if s.extra.Det == 1 then
                             XCoord = Offset
                             XVel = Spd
-                        elseif s.Extra.Det == 2 then
+                        elseif s.extra.Det == 2 then
                             XCoord = rt2Offset
                             YCoord = -rt2Offset
                             XVel = rt2Spd
                             YVel = -rt2Spd
-                        elseif s.Extra.Det == 3 then
+                        elseif s.extra.Det == 3 then
                             YCoord = -Offset
                             YVel = -Spd
-                        elseif s.Extra.Det == 4 then
+                        elseif s.extra.Det == 4 then
                             XCoord = -rt2Offset
                             YCoord = -rt2Offset
                             XVel = -rt2Spd
                             YVel = -rt2Spd
-                        elseif s.Extra.Det == 5 then
+                        elseif s.extra.Det == 5 then
                             XCoord = -Offset
                             XVel = -Spd
-                        elseif s.Extra.Det == 6 then
+                        elseif s.extra.Det == 6 then
                             XCoord = -rt2Offset
                             YCoord = rt2Offset
                             XVel = -rt2Spd
                             YVel = rt2Spd
-                        elseif s.Extra.Det == 7 then
+                        elseif s.extra.Det == 7 then
                             YCoord = Offset
                             YVel = Spd
                         else
@@ -106,118 +106,118 @@ function Player:new(args)
                             y = self.T.y + self.T.h / 2 + YCoord - 10,
                             vx = XVel,
                             vy = YVel,
-                            Extra = {
+                            extra = {
                                 OVX = XVel,
                                 OVY = YVel,
-                                ClockInit = 0
+                                clockInit = 0
                             }
                         }
                     end
-                    if s.Extra.Removen and s.Transparency <= 0.005 then
-                        s:Remove()
+                    if s.extra.Removen and s.transparency <= 0.005 then
+                        s:remove()
                     end
                     local verticalQuadrant = G.MousePos.y >= (self.T.y + 20) and "down" or "up"
                     local horizontalQuadrant = G.MousePos.x >= (self.T.x + 10) and "right" or "left"
-                    s.Extra.s1 = s.Extra.s1 or math.tan(math.pi / 8)
-                    s.Extra.s2 = s.Extra.s2 or math.tan(3 * math.pi / 8)
-                    s.Extra.s3 = s.Extra.s3 or math.tan(5 * math.pi / 8)
-                    s.Extra.s4 = s.Extra.s4 or math.tan(7 * math.pi / 8)
+                    s.extra.s1 = s.extra.s1 or math.tan(math.pi / 8)
+                    s.extra.s2 = s.extra.s2 or math.tan(3 * math.pi / 8)
+                    s.extra.s3 = s.extra.s3 or math.tan(5 * math.pi / 8)
+                    s.extra.s4 = s.extra.s4 or math.tan(7 * math.pi / 8)
                     local slope = -(G.MousePos.y - (self.T.y + 20)) / (G.MousePos.x - (self.T.x + 10))
-                    s.Extra.Det = 1-- the region of the mouse, going from 1 to 8 starting with the positive x direction going counter clockwise
+                    s.extra.Det = 1-- the region of the mouse, going from 1 to 8 starting with the positive x direction going counter clockwise
                     if verticalQuadrant == "down" then
                         if horizontalQuadrant == "right" then
-                            if slope > s.Extra.s4 then
-                                s.Extra.Det = 1
-                            elseif slope > s.Extra.s3 then
-                                s.Extra.Det = 8
+                            if slope > s.extra.s4 then
+                                s.extra.Det = 1
+                            elseif slope > s.extra.s3 then
+                                s.extra.Det = 8
                             else
-                                s.Extra.Det = 7
+                                s.extra.Det = 7
                             end
                         else
-                            if slope < s.Extra.s1 then
-                                s.Extra.Det = 5
-                            elseif slope < s.Extra.s2 then
-                                s.Extra.Det = 6
+                            if slope < s.extra.s1 then
+                                s.extra.Det = 5
+                            elseif slope < s.extra.s2 then
+                                s.extra.Det = 6
                             else
-                                s.Extra.Det = 7
+                                s.extra.Det = 7
                             end
                         end
                     else
                         if horizontalQuadrant == "right" then
-                            if slope < s.Extra.s1 then
-                                s.Extra.Det = 1
-                            elseif slope < s.Extra.s2 then
-                                s.Extra.Det = 2
+                            if slope < s.extra.s1 then
+                                s.extra.Det = 1
+                            elseif slope < s.extra.s2 then
+                                s.extra.Det = 2
                             else
-                                s.Extra.Det = 3
+                                s.extra.Det = 3
                             end
                         else
-                            if slope > s.Extra.s4 then
-                                s.Extra.Det = 5
-                            elseif slope > s.Extra.s3 then
-                                s.Extra.Det = 4
+                            if slope > s.extra.s4 then
+                                s.extra.Det = 5
+                            elseif slope > s.extra.s3 then
+                                s.extra.Det = 4
                             else
-                                s.Extra.Det = 3
+                                s.extra.Det = 3
                             end
                         end
                     end
-                    s.AtliInfo.x = (s.Extra.Det - 1) % 4
-                    s.AtliInfo.y = Util.Math.Div((s.Extra.Det - 1), 4) + 1
+                    s.AtliInfo.x = (s.extra.Det - 1) % 4
+                    s.AtliInfo.y = Util.Math.Div((s.extra.Det - 1), 4) + 1
                 end,
-                DrawFunc = function(s)
+                drawFunc = function(s)
                     local r, g, b, a = love.graphics.getColor()
                     love.graphics.setColor(Util.Other.Hex("#FFFFFF"))
-                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, s.Extra.Radius)
+                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, s.extra.Radius)
                     love.graphics.setColor(Util.Other.Hex("#4a3052"))
-                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, math.max(0, s.Extra.Radius - 0.5))
+                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, math.max(0, s.extra.Radius - 0.5))
                     love.graphics.setColor(Util.Other.Hex("#FFFFFF"))
-                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, math.max(0, s.Extra.Radius - 2.5))
+                    love.graphics.circle("fill", G.MousePos.x, G.MousePos.y, math.max(0, s.extra.Radius - 2.5))
                     love.graphics.setColor { r, g, b, a }
                 end
             }):SetParent(self)
         end
         if not (G.Controller.Keyboard.left.Held or G.Controller.Keyboard.right.Held) or (G.Controller.Keyboard.right.Held and G.Controller.Keyboard.left.Held) then
-            self.V.x.base = Util.Math.LerpDt(self.V.x.base, 0, 0.005)
+            self.V.x.base = Util.Math.lerpDt(self.V.x.base, 0, 0.005)
         elseif G.Controller.Keyboard.left.Held then
-            self.V.x.base = Util.Math.LerpDt(self.V.x.base, -90, 0.005)
-            self.Extra.Facing = "Left"
+            self.V.x.base = Util.Math.lerpDt(self.V.x.base, -90, 0.005)
+            self.extra.Facing = "Left"
         elseif G.Controller.Keyboard.right.Held then
-            self.V.x.base = Util.Math.LerpDt(self.V.x.base, 90, 0.005)
-            self.Extra.Facing = "Right"
+            self.V.x.base = Util.Math.lerpDt(self.V.x.base, 90, 0.005)
+            self.extra.Facing = "Right"
         end
         self.TMod.x.Gravity = self.TMod.x.Gravity or 0
         self.V.x.Gravity = self.V.x.Gravity or 0
         self.TMod.y.Gravity = self.TMod.y.Gravity or 0
         self.V.y.Gravity = self.V.y.Gravity or 0
         self.V.y.Gravity = math.min(self.V.y.Gravity + Macros.Gravity / 0.02 * DELTATIME, Macros.TerminalVelocity)
-        self.Extra.OnGround = self.Extra.DownCheck.Extra.Ticked
-        self.Extra.HitCeiling = self.Extra.UpCheck.Extra.Ticked
+        self.extra.OnGround = self.extra.DownCheck.extra.ticked
+        self.extra.HitCeiling = self.extra.UpCheck.extra.ticked
         if OnGroundCond() then
             self.V.y.Gravity = math.min(0, self.V.y.Gravity)
-            self.Extra.HaventJumped = true
-            self.Extra.CoyoteTimer = Macros.CoyoteTime
-            self.Extra.HoldTimer = Macros.MaxHold
+            self.extra.HaventJumped = true
+            self.extra.CoyoteTimer = Macros.CoyoteTime
+            self.extra.HoldTimer = Macros.MaxHold
         else
-            self.Extra.CoyoteTimer = self.Extra.CoyoteTimer - dt
+            self.extra.CoyoteTimer = self.extra.CoyoteTimer - dt
         end
-        if self.Extra.CoyoteTimer < 0 then
-            self.Extra.HaventJumped = false
+        if self.extra.CoyoteTimer < 0 then
+            self.extra.HaventJumped = false
         end
         if G.Controller.Keyboard.up.Held then
-            if self.Extra.HaventJumped or self.Extra.HoldTimer >= 0 then
+            if self.extra.HaventJumped or self.extra.HoldTimer >= 0 then
                 self.V.y.Gravity = -Macros.JumpVelocity
             end
-            self.Extra.HoldTimer = self.Extra.HoldTimer - dt
+            self.extra.HoldTimer = self.extra.HoldTimer - dt
         else
-            self.Extra.HoldTimer = -1
+            self.extra.HoldTimer = -1
         end
-        if self.V.y.Gravity <= 0 and next(self.Extra.HitCeiling) and not CollisionContainsId(self.Extra.HitCeiling, self.Id) and not CollisionContainsProperty(self.Extra.HitCeiling, "NoCollision") then
+        if self.V.y.Gravity <= 0 and next(self.extra.HitCeiling) and not collisionContainsId(self.extra.HitCeiling, self.Id) and not collisionContainsProperty(self.extra.HitCeiling, "noCollision") then
             self.V.y.Gravity = 20
-            self.Extra.HoldTimer = -1
+            self.extra.HoldTimer = -1
         end
     end
-    args.DrawFunc = function(s)
-        if G.Debug then
+    args.drawFunc = function(s)
+        if G.debug then
             local r, g, b, a = love.graphics.getColor()
             love.graphics.setColor(Util.Other.Hex("#00FF15"))
             --love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
@@ -225,15 +225,15 @@ function Player:new(args)
         end
     end
     Moveable.new(self, args)
-    self.Extra.CoyoteTimer = Macros.CoyoteTime
-    self.Extra.DownCheck = Moveable {
-        Properties = {
+    self.extra.CoyoteTimer = Macros.CoyoteTime
+    self.extra.DownCheck = Moveable {
+        properties = {
             CollisionCheck = true
         },
         w = 20,
         h = 1,
-        DrawFunc = function(s)
-            if G.Debug then
+        drawFunc = function(s)
+            if G.debug then
                 local r, g, b, a = love.graphics.getColor()
                 love.graphics.setColor(Util.Other.Hex("#2F00FF"))
                 love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
@@ -241,18 +241,18 @@ function Player:new(args)
             end
         end,
     }
-    self.Extra.DownCheck.TMod.x.offset = 0
-    self.Extra.DownCheck.TMod.y.offset = 40
-    self.Extra.DownCheck:SetParent(self)
+    self.extra.DownCheck.TMod.x.offset = 0
+    self.extra.DownCheck.TMod.y.offset = 40
+    self.extra.DownCheck:SetParent(self)
 
-    self.Extra.UpCheck = Moveable {
-        Properties = {
+    self.extra.UpCheck = Moveable {
+        properties = {
             CollisionCheck = true
         },
         w = 20,
         h = 1,
-        DrawFunc = function(s)
-            if G.Debug then
+        drawFunc = function(s)
+            if G.debug then
                 local r, g, b, a = love.graphics.getColor()
                 love.graphics.setColor(Util.Other.Hex("#2F00FF"))
                 love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
@@ -260,8 +260,8 @@ function Player:new(args)
             end
         end,
     }
-    self.Extra.UpCheck.TMod.y.offset = -1
-    self.Extra.UpCheck:SetParent(self)
+    self.extra.UpCheck.TMod.y.offset = -1
+    self.extra.UpCheck:SetParent(self)
 
 
 
@@ -272,21 +272,21 @@ function Player:new(args)
 
 
     Sprite({
-        AtliKey = "ArnaOverworld",
-        DrawOrder = 4000,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        atlasKey = "ArnaOverworld",
+        drawOrder = 4000,
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworld",
-        DrawOrder = 3999,
-        AtliY = 2,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        atlasKey = "ArnaOverworld",
+        drawOrder = 3999,
+        AtlasY = 2,
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             if not OnGroundCond() then
                 s.AtliInfo.x = 1
@@ -304,11 +304,11 @@ function Player:new(args)
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworld",
-        DrawOrder = 3998,
-        AtliY = 3,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        atlasKey = "ArnaOverworld",
+        drawOrder = 3998,
+        AtlasY = 3,
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
@@ -316,23 +316,23 @@ function Player:new(args)
     }):SetParent(self)
     -- Outlines Yay
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetX = 1,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetX = 1,
-        AtliY = 2,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        AtlasY = 2,
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             if not OnGroundCond() then
                 s.AtliInfo.x = 1
@@ -350,35 +350,35 @@ function Player:new(args)
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetX = 1,
-        AtliY = 3,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        AtlasY = 3,
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetX = -1,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetX = -1,
-        AtliY = 2,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        AtlasY = 2,
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             if not OnGroundCond() then
                 s.AtliInfo.x = 1
@@ -396,35 +396,35 @@ function Player:new(args)
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetX = -1,
-        AtliY = 3,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        AtlasY = 3,
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetY = 1,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetY = 1,
-        AtliY = 2,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        AtlasY = 2,
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             if not OnGroundCond() then
                 s.AtliInfo.x = 1
@@ -442,35 +442,35 @@ function Player:new(args)
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetY = 1,
-        AtliY = 3,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        AtlasY = 3,
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetY = -1,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetY = -1,
-        AtliY = 2,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        AtlasY = 2,
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             if not OnGroundCond() then
                 s.AtliInfo.x = 1
@@ -488,12 +488,12 @@ function Player:new(args)
         end
     }):SetParent(self)
     Sprite({
-        AtliKey = "ArnaOverworldMask",
-        DrawOrder = 3997,
+        atlasKey = "ArnaOverworldMask",
+        drawOrder = 3997,
         OffsetY = -1,
-        AtliY = 3,
-        UpdateFunc = function(s, dt)
-            s.Xflipped = self.Extra.Facing == "Left" and true or false
+        AtlasY = 3,
+        updateFunc = function(s, dt)
+            s.Xflipped = self.extra.Facing == "Left" and true or false
             local TickTime = 0.2
             local frame = Util.Math.Div(G.Timer, TickTime) % 7
             s.AtliInfo.x = frame

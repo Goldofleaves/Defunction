@@ -19,7 +19,7 @@ function Event:new(args)
     self.EndFunc = args.EndFunc or function () end
     self.Completed = false
     self.Duration = args.Duration or 1
-    self.Extra = args.Extra
+    self.extra = args.extra
     return self
 end
 Util.Event = {}
