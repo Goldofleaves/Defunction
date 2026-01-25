@@ -27,8 +27,8 @@ Sprite = Object:extend()
 
 function Sprite:new(args)
     args = args or {}
-    self.Id = G.currentID
-    self.Nid = args.Nid
+    self.id = G.currentID
+    self.nid = args.nid
     G.currentID = G.currentID + 1
     self.T = {
         x = args.x or 0,
@@ -53,8 +53,8 @@ function Sprite:new(args)
     self.properties = args.properties or {}
     table.insert(G.I.SPRITES, self)
     self.Offset = {
-        x = args.OffsetX or 0,
-        y = args.OffsetY or 0
+        x = args.offsetX or 0,
+        y = args.offsetY or 0
     }
     return self
 end
@@ -133,29 +133,29 @@ function Sprite:draw()
     end
     draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
 end
-function Sprite:SetParent(Obj)
-    table.insert(Obj.Children, self.Id)
-    self.Parent = Obj.Id
-    return self.Parent
+function Sprite:setParent(obj)
+    table.insert(obj.children, self.id)
+    self.parent = obj.id
+    return self.parent
 end
-function Sprite:GetParentOffset()
-    if not self.Parent then return { x = 0, y = 0 } end
-    local Parent = getObjectById(self.Parent)
-    if not Parent then return { x = 0, y = 0 } end
-    return { x = Parent.T.x, y = Parent.T.y }
+function Sprite:getParentOffset()
+    if not self.parent then return { x = 0, y = 0 } end
+    local parent = getObjectById(self.parent)
+    if not parent then return { x = 0, y = 0 } end
+    return { x = parent.T.x, y = parent.T.y }
     end
 
 function Sprite:update(dt)
-    if self.Parent then
-        self.T.x = self:GetParentOffset().x
-        self.T.y = self:GetParentOffset().y
+    if self.parent then
+        self.T.x = self:getParentOffset().x
+        self.T.y = self:getParentOffset().y
     end
     self.updateFunc(self, dt)
 end
 
 function Sprite:remove()
     for k, v in ipairs(G.I.SPRITES) do
-        if v.Id == self.Id then
+        if v.id == self.id then
             table.remove(G.I.SPRITES, k)
             G.oldState = G.state
             G.state = "DestroyedObj"

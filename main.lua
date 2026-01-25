@@ -26,11 +26,11 @@ local function LoadFirstRoomTemp()
     Wall()
     RicoChet({ x = 380, w = 80, h = 20})
     Box()
-    OneWayPlatform({ x = 180, y = 60, Facing = "up" })
-    OneWayPlatform({ x = 180, Facing = "up" })
-    OneWayPlatform({ x = 220, y = 100, Facing = "down" })
-    OneWayPlatform({ x = 240, h = 40, y = 140, Facing = "right" })
-    --OneWayPlatform({ x = 420, h = 40, y = 160, Facing = "left" })
+    OneWayPlatform({ x = 180, y = 60, facing = "up" })
+    OneWayPlatform({ x = 180, facing = "up" })
+    OneWayPlatform({ x = 220, y = 100, facing = "down" })
+    OneWayPlatform({ x = 240, h = 40, y = 140, facing = "right" })
+    --OneWayPlatform({ x = 420, h = 40, y = 160, facing = "left" })
     Wall({ x = 220, y = 180, w = 160})
     RicoChet({ x = 500, y = 100 })
     RicoChet({ x = 400, y = 60, h = 20, w = 80 })
@@ -43,12 +43,12 @@ love.load = function()
     love.mouse.setVisible(false)
     Sprite({
         atlasKey = "Border",
-        Nid = "Border",
+        nid = "Border",
         drawOrder = 9000
     })
     Sprite({
         atlasKey = "BorderPattern",
-        Nid = "BorderPattern",
+        nid = "BorderPattern",
         drawOrder = 9001,
         updateFunc = function (self, dt)
             self.T.x = self.T.x + 25 * dt
@@ -62,7 +62,7 @@ love.load = function()
     })
     Sprite({
         atlasKey = "TitleBase",
-        Nid = "TitleScr",
+        nid = "TitleScr",
         drawOrder = 1,
         extra = {
             SelectedOption = 1,
@@ -101,7 +101,7 @@ love.load = function()
     })
     Sprite({
         atlasKey = "TitleSelection",
-        Nid = "TitleButtons",
+        nid = "TitleButtons",
         drawOrder = 2,
         x = 359,
         y = 228,

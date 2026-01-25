@@ -20,10 +20,10 @@ end
 BRang = Moveable:extend()
 function BRang:new(args)
     local collidedFunc = function(a, dir)
-        return next(a.extra.ticked or {}) and not collisionContainsId(a.extra.ticked, self.Id) and
+        return next(a.extra.ticked or {}) and not collisionContainsId(a.extra.ticked, self.id) and
             not collisionContainsProperty(a.extra.ticked, "noCollision") and
             not collisionContainsProperty(a.extra.ticked, "collisionCheck") and
-            (CollisionContainsextra(a.extra.ticked, "Facing") and collisionContainsId(getAllCollisionextra(a.extra.ticked, "Facing"), dir) or true)
+            (CollisionContainsextra(a.extra.ticked, "facing") and collisionContainsId(getAllCollisionextra(a.extra.ticked, "facing"), dir) or true)
     end
     args = args or {}
     args.drawOrder = 35
@@ -206,7 +206,7 @@ function BRang:new(args)
             end
         end
     })
-    self.extra.A:SetParent(self)
+    self.extra.A:setParent(self)
     self.extra.checks = {}
     local c = self.extra.checks
     c.up = Moveable {
@@ -282,7 +282,7 @@ function BRang:new(args)
     c.right.TMod.y.offset = 2
     c.right.TMod.x.offset = 20
     for k, v in pairs(c) do
-        v:SetParent(self)
+        v:setParent(self)
     end
     return self
 end

@@ -9,9 +9,9 @@
 Event = Object:extend()
 function Event:new(args)
     args = args or {}
-    self.Id = G.currentID
+    self.id = G.currentID
     G.currentID = G.currentID + 1
-    self.Nid = args.Nid or "_"
+    self.nid = args.nid or "_"
     self.Ease = args.Ease == nil and true or args.Ease
     self.curTime = 0
     self.easeFunc = args.easeFunc or function() end
