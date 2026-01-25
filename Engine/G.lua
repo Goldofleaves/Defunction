@@ -191,7 +191,7 @@ function Game:update(dt)
         while loop do
             loop = false
             limit = limit + 1
-            if limit > 1 then
+            if limit > 20 then
                 break
             end
             for i = 1, #self.I.MOVEABLES do
