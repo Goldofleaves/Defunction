@@ -23,11 +23,11 @@ function Event:new(args)
     return self
 end
 Util.Event = {}
-function Util.Event.AddEvent(e)
-    table.insert(G.Events, e)
+function Util.Event.addEvent(e)
+    table.insert(G.events, e)
 end
-function Util.Event.Screenshake(Amp, Dur)
-    Util.Event.AddEvent(Event(
+function Util.Event.screenShake(Amp, Dur)
+    Util.Event.addEvent(Event(
         {
             duration = Dur,
             easeFunc = function (t, e)

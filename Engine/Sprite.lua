@@ -1,25 +1,35 @@
 --- Sprite objects.
 
 Atlases = {}
-function RegisterAtlasSimple(key, fpos, px, py)
-    Atlases[key] = {}
-    local atli = Atlases[key]
-    atli.imageData = love.image.newImageData(fpos)
-    atli.image = love.graphics.newImage(atli.imageData)
-    local spritewidth, spriteheight = atli.image:getWidth(), atli.image:getHeight()
-    local Xsegments, Ysegments = spritewidth / px, spriteheight / py
-    atli.key = key
-    atli.filePos = fpos
-    atli.splicedImages = {}
-    atli.dimentions = { w = spritewidth, h = spriteheight }
-    atli.singleDimention = { w = px, h = py }
-    atli.size = { x = Xsegments, y = Ysegments }
-    for i = 0, Xsegments - 1 do
-        atli.splicedImages[i] = atli.splicedImages[i] or {}
-        for j = 0, Ysegments - 1 do
-            atli.splicedImages[i][j] = love.graphics.newQuad(math.floor(i * px), math.floor(j * py), math.floor(px),
-                math.floor(py), math.floor(spritewidth), math.floor(spriteheight))
+function registerAtlasSimple(key, fpos, px, py)
+    if not Atlases[key] then
+        Atlases[key] = {}
+        local atli = Atlases[key]
+        atli.imageData = love.image.newImageData(fpos)
+        atli.image = love.graphics.newImage(atli.imageData)
+        local spritewidth, spriteheight = atli.image:getWidth(), atli.image:getHeight()
+        local Xsegments, Ysegments = spritewidth / px, spriteheight / py
+        atli.key = key
+        atli.filePos = fpos
+        atli.splicedImages = {}
+        atli.dimentions = { w = spritewidth, h = spriteheight }
+        atli.singleDimention = { w = px, h = py }
+        atli.size = { x = Xsegments, y = Ysegments }
+        for i = 0, Xsegments - 1 do
+            atli.splicedImages[i] = atli.splicedImages[i] or {}
+            for j = 0, Ysegments - 1 do
+                atli.splicedImages[i][j] = love.graphics.newQuad(math.floor(i * px), math.floor(j * py), math.floor(px),
+                    math.floor(py), math.floor(spritewidth), math.floor(spriteheight))
+            end
         end
+        print(
+            string.format('[IMAGE INFO/REGISTER ATLAS] \'%s\' has been registered.', key)
+        )
+        return Atlases[key]
+    else
+        print(
+            string.format('[IMAGE WARNING/REGISTER ATLAS] \'%s\' is already registered!', key)
+        )
     end
 end
 ---@class Sprite: Object

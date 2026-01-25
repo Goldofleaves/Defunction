@@ -3,7 +3,7 @@ Util.File = {}
 --- Saves the table to a file named fn under the appdata
 --- @param tab table
 --- @param fn string
-function Util.File.SaveTableToFile(tab, fn)
+function Util.File.saveTableToFile(tab, fn)
 	local returnstring = ""
 	local typetab = {
 		string = "str",
@@ -37,10 +37,10 @@ end
 --- This function does not return anything and sets the table via passing by reference.
 --- @param tab table
 --- @param fn string
-function Util.File.SetTableWithFIle(tab, fn)
+function Util.File.setTableWithFIle(tab, fn)
 	local c = love.filesystem.read(fn..Macros.fileSuffix)
 	if c then
-		local temp = Util.File.ReadTableFromFile(fn)
+		local temp = Util.File.readTableFromFile(fn)
 		for k,v in pairs(temp) do
 			tab[k] = v == nil and tab[k] or v
 		end
@@ -49,7 +49,7 @@ end
 --- Reads from a file named fn under the appdata and returns the contents as a table
 --- @param fn string
 --- @return table contents
-function Util.File.ReadTableFromFile(fn)
+function Util.File.readTableFromFile(fn)
 	local returntable = {}
 	local hierarchies = {} -- table hierarchy, for sub table value jank
 	local contents = love.filesystem.read(fn..Macros.fileSuffix)

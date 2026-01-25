@@ -9,7 +9,12 @@ function Game:new()
     self.settings = {
         scalingFactor = 2,
         fullscreen = false,
-        showGrid = true
+        showGrid = true,
+        sound = {
+            master = 100,
+            music = 100,
+            sfx = 100
+        }
     }
     self.currentID = 0
     self.I = {
@@ -45,7 +50,12 @@ function Game:new()
         }
     }
     self.flags = {}
-    self.Events = {}
+    self.events = {}
+    self.audio = {
+        sfx = {},
+        music = {},
+        musicHandler = {}
+    }
     G = self
 end
 function Game:getTotalOffset()
@@ -58,12 +68,15 @@ function Game:getTotalOffset()
     return ret
 end
 function Game:update(dt)
+
+    -- Mouse
     self.mousePos = {
         x = love.mouse.getX() / G.settings.scalingFactor,
         y = love.mouse.getY() / G.settings.scalingFactor
     }
+
     -- Handling Events
-    for k, v in ipairs(self.Events) do
+    for k, v in ipairs(self.events) do
         local event = v
         event.curTime = event.curTime or 0
         if event.easeFunc then
@@ -77,10 +90,12 @@ function Game:update(dt)
         event.curTime = event.curTime + dt
         if event.curTime > event.duration then
             if event.endFunc then event.endFunc(event) end
-            self.Events[k] = nil
+            self.events[k] = nil
         end
     end
-    self.Events = Util.Other.RemoveNils(self.Events)
+    self.events = Util.Other.removeNils(self.events)
+
+    -- Controller
     for k, v in pairs(self.controller.keyboard) do
         if (function ()
                 for kk, vv in pairs(v.keybind) do
@@ -160,30 +175,36 @@ function Game:update(dt)
             v.pressTemp = nil
         end
     end
-    --[[ Unused!
-    local function HandleCollisionsGeneral()
-        local loop = true
-        local limit = 0
 
-        while loop do
-            loop = false
-            limit = limit + 1
-            if limit > 1 then
-                break
-            end
-            for i = 1, #self.I.MOVEABLES - 1 do
-                for j = i + 1, #self.I.MOVEABLES do
-                    --print("i = "..i..", j = "..j)
-                    local collision = self.I.MOVEABLES[i]:resolveCollision(self.I.MOVEABLES[j])
-                    --print(collision)
-                    if collision then
-                        loop = true
-                    end
-                end
-            end
+    -- Sounds
+    -- Sfx
+    for i, v in ipairs(self.audio.sfx) do
+        if not v.source:isPlaying() and not v.no_delete then
+            v.source:release()
+            self.audio.sfx[i] = nil
         end
     end
-    ]]
+    self.audio.sfx = Util.Other.removeNils(self.audio.sfx)
+
+    -- Music
+    local targetBgm = self.audio.music[#self.audio.music]
+    local previousBgm = self.audio.musicHandler.previousBgm
+    for i, v in ipairs(self.audio.music) do
+        if i < #self.audio.music and v.source:isPlaying() then
+            v.source:pause()
+        end
+    end
+    if targetBgm then
+        if previousBgm and previousBgm ~= targetBgm and previousBgm == targetBgm.group then
+            targetBgm.source:seek(previousBgm.source:tell('seconds'), 'seconds')
+        end
+        local source = targetBgm.source
+        if not source:isPlaying() then source:play() end
+        source:setVolume(targetBgm.volume * G.settings.sound.music / 100 * G.settings.sound.master / 100)
+    end
+    self.audio.musicHandler.previousBgm = targetBgm
+
+    -- Collision handling + Updating Instances
     local function handleCollisionsK(K)
         local loop = true
         local limit = 0

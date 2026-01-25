@@ -3,11 +3,14 @@ Util.Math = {}
 --- The value of τ.
 math.tau = math.pi * 2
 
+--- The value of e, better known as eulers number/the expodential constant.
+math.e = math.exp(1)
+
 --- Integer division. What more do I have to say?
 --- @param num number
 --- @param div number
 --- @return integer Result
-Util.Math.Div = function(num, div)
+Util.Math.div = function(num, div)
     return math.floor(num / div)
     -- // is fucking broken, thanks love2d
 end
@@ -15,7 +18,7 @@ end
 --- Returns a random element and its corresponding key from tab.
 --- @param tab table
 --- @return {v:any,k:string|integer} Element
-Util.Math.RandomElement = function(tab)
+Util.Math.randomElement = function(tab)
     local f = {}
     for k, v in pairs(tab) do
         table.insert(f, k)
@@ -27,13 +30,13 @@ end
 --- Has a probably of the arguement to return true, else return false
 --- @param chance number
 --- @return boolean Result
-Util.Math.Chance = function(chance)
+Util.Math.chance = function(chance)
     return math.random() <= chance
 end
 
 
 --- Clamps a value between 2 numbers.
-Util.Math.Clamp = function(min, max, value)
+Util.Math.clamp = function(min, max, value)
     if max < min then
         local a = min
         min = max
@@ -46,7 +49,7 @@ end
 --- @param a number The starting value.
 --- @param b number The ending value.
 --- @param v number The `"speed"`, or fraction of the distance traversed in 1 frame.
-Util.Math.Lerp = function(a, b, v)
+Util.Math.lerp = function(a, b, v)
     return a + (v * (b - a))
 end
 
@@ -58,15 +61,15 @@ end
 --- @param r number The `"speed"`, or fraction of the distance left to traverse in 1 second.
 Util.Math.lerpDt = function(a, b, r)
     local v = 1 - (r ^ DELTATIME)
-    return Util.Math.Lerp(a, b, v)
+    return Util.Math.lerp(a, b, v)
 end
-math.sgn = function (n)
+math.sign = function (n)
     if n ~= 0 then
         return n/math.abs(n)
     end
     return 0
 end
-function Util.Math.PercisionCheck(a, b, p)
+function Util.Math.percisionCheck(a, b, p)
     local delta = math.abs(a - b)
     return delta <= p
 end

@@ -162,7 +162,7 @@ function Player:new(args)
                         end
                     end
                     s.atlasInfo.x = (s.extra.Det - 1) % 4
-                    s.atlasInfo.y = Util.Math.Div((s.extra.Det - 1), 4) + 1
+                    s.atlasInfo.y = Util.Math.div((s.extra.Det - 1), 4) + 1
                 end,
                 drawFunc = function(s)
                     local r, g, b, a = love.graphics.getColor()
@@ -277,7 +277,7 @@ function Player:new(args)
         updateFunc = function(s, dt)
             s.Xflipped = self.extra.facing == "left" and true or false
             local tickTime = 0.2
-            local frame = Util.Math.Div(G.timer, tickTime) % 7
+            local frame = Util.Math.div(G.timer, tickTime) % 7
             s.atlasInfo.x = frame
         end
     }):setParent(self)
@@ -293,7 +293,7 @@ function Player:new(args)
                 s.atlasInfo.y = 1
             else
                 if (G.controller.keyboard.left.held or G.controller.keyboard.right.held) and not (G.controller.keyboard.left.held and G.controller.keyboard.right.held) then
-                    local frame = Util.Math.Div(G.timer, tickTime) % 6
+                    local frame = Util.Math.div(G.timer, tickTime) % 6
                     s.atlasInfo.x = frame
                     s.atlasInfo.y = 2
                 else
@@ -310,7 +310,7 @@ function Player:new(args)
         updateFunc = function(s, dt)
             s.Xflipped = self.extra.facing == "left" and true or false
             local tickTime = 0.2
-            local frame = Util.Math.Div(G.timer, tickTime) % 7
+            local frame = Util.Math.div(G.timer, tickTime) % 7
             s.atlasInfo.x = frame
         end
     }):setParent(self)
@@ -322,7 +322,7 @@ function Player:new(args)
         updateFunc = function(s, dt)
             s.Xflipped = self.extra.facing == "left" and true or false
             local tickTime = 0.2
-            local frame = Util.Math.Div(G.timer, tickTime) % 7
+            local frame = Util.Math.div(G.timer, tickTime) % 7
             s.atlasInfo.x = frame
         end
     }):setParent(self)
@@ -339,7 +339,7 @@ function Player:new(args)
                 s.atlasInfo.y = 1
             else
                 if (G.controller.keyboard.left.held or G.controller.keyboard.right.held) and not (G.controller.keyboard.left.held and G.controller.keyboard.right.held) then
-                    local frame = Util.Math.Div(G.timer, tickTime) % 6
+                    local frame = Util.Math.div(G.timer, tickTime) % 6
                     s.atlasInfo.x = frame
                     s.atlasInfo.y = 2
                 else
@@ -357,7 +357,7 @@ function Player:new(args)
         updateFunc = function(s, dt)
             s.Xflipped = self.extra.facing == "left" and true or false
             local tickTime = 0.2
-            local frame = Util.Math.Div(G.timer, tickTime) % 7
+            local frame = Util.Math.div(G.timer, tickTime) % 7
             s.atlasInfo.x = frame
         end
     }):setParent(self)
@@ -368,7 +368,7 @@ function Player:new(args)
         updateFunc = function(s, dt)
             s.Xflipped = self.extra.facing == "left" and true or false
             local tickTime = 0.2
-            local frame = Util.Math.Div(G.timer, tickTime) % 7
+            local frame = Util.Math.div(G.timer, tickTime) % 7
             s.atlasInfo.x = frame
         end
     }):setParent(self)
@@ -385,7 +385,7 @@ function Player:new(args)
                 s.atlasInfo.y = 1
             else
                 if (G.controller.keyboard.left.held or G.controller.keyboard.right.held) and not (G.controller.keyboard.left.held and G.controller.keyboard.right.held) then
-                    local frame = Util.Math.Div(G.timer, tickTime) % 6
+                    local frame = Util.Math.div(G.timer, tickTime) % 6
                     s.atlasInfo.x = frame
                     s.atlasInfo.y = 2
                 else
@@ -403,7 +403,7 @@ function Player:new(args)
         updateFunc = function(s, dt)
             s.Xflipped = self.extra.facing == "left" and true or false
             local tickTime = 0.2
-            local frame = Util.Math.Div(G.timer, tickTime) % 7
+            local frame = Util.Math.div(G.timer, tickTime) % 7
             s.atlasInfo.x = frame
         end
     }):setParent(self)
@@ -414,7 +414,7 @@ function Player:new(args)
         updateFunc = function(s, dt)
             s.Xflipped = self.extra.facing == "left" and true or false
             local tickTime = 0.2
-            local frame = Util.Math.Div(G.timer, tickTime) % 7
+            local frame = Util.Math.div(G.timer, tickTime) % 7
             s.atlasInfo.x = frame
         end
     }):setParent(self)
@@ -431,7 +431,7 @@ function Player:new(args)
                 s.atlasInfo.y = 1
             else
                 if (G.controller.keyboard.left.held or G.controller.keyboard.right.held) and not (G.controller.keyboard.left.held and G.controller.keyboard.right.held) then
-                    local frame = Util.Math.Div(G.timer, tickTime) % 6
+                    local frame = Util.Math.div(G.timer, tickTime) % 6
                     s.atlasInfo.x = frame
                     s.atlasInfo.y = 2
                 else
@@ -449,7 +449,7 @@ function Player:new(args)
         updateFunc = function(s, dt)
             s.Xflipped = self.extra.facing == "left" and true or false
             local tickTime = 0.2
-            local frame = Util.Math.Div(G.timer, tickTime) % 7
+            local frame = Util.Math.div(G.timer, tickTime) % 7
             s.atlasInfo.x = frame
         end
     }):setParent(self)
@@ -460,7 +460,7 @@ function Player:new(args)
         updateFunc = function(s, dt)
             s.Xflipped = self.extra.facing == "left" and true or false
             local tickTime = 0.2
-            local frame = Util.Math.Div(G.timer, tickTime) % 7
+            local frame = Util.Math.div(G.timer, tickTime) % 7
             s.atlasInfo.x = frame
         end
     }):setParent(self)
@@ -477,7 +477,7 @@ function Player:new(args)
                 s.atlasInfo.y = 1
             else
                 if (G.controller.keyboard.left.held or G.controller.keyboard.right.held) and not (G.controller.keyboard.left.held and G.controller.keyboard.right.held) then
-                    local frame = Util.Math.Div(G.timer, tickTime) % 6
+                    local frame = Util.Math.div(G.timer, tickTime) % 6
                     s.atlasInfo.x = frame
                     s.atlasInfo.y = 2
                 else
@@ -495,7 +495,7 @@ function Player:new(args)
         updateFunc = function(s, dt)
             s.Xflipped = self.extra.facing == "left" and true or false
             local tickTime = 0.2
-            local frame = Util.Math.Div(G.timer, tickTime) % 7
+            local frame = Util.Math.div(G.timer, tickTime) % 7
             s.atlasInfo.x = frame
         end
     }):setParent(self)

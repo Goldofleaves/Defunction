@@ -60,9 +60,10 @@ function BRang:new(args)
                     left = function (a)
                         local bump = getObjectById(getAllCollisionPropertyIds(self.extra.checks.left.extra.ticked,
                         "RicoChet")[1])
-                        if a.V.x.base < 0 and bump and bump.T.x + bump.T.w > a.T.x and Util.Math.PercisionCheck(bump.T.x + bump.T.w, a.T.x, math.abs(a.V.x.base) * DELTATIME * 1.5 + 10) then
+                        if a.V.x.base < 0 and bump and bump.T.x + bump.T.w > a.T.x and Util.Math.percisionCheck(bump.T.x + bump.T.w, a.T.x, math.abs(a.V.x.base) * DELTATIME * 1.5 + 10) then
                             a.V.x.base = a.V.x.base * -1
-                            Util.Event.Screenshake(2, 1/4)
+                            Util.Audio.playSfx("Bump1", 0.65, math.random()*0.5 + 0.75)
+                            Util.Event.screenShake(2, 1/4)
                             Sprite({
                                 atlasKey = "Bump",
                                 drawOrder = 101,
@@ -76,7 +77,7 @@ function BRang:new(args)
                                         s:remove()
                                     end
                                     local tickTime = 0.075
-                                    local frame = Util.Math.Div(s.extra.timer, tickTime) % 4
+                                    local frame = Util.Math.div(s.extra.timer, tickTime) % 4
                                     s.atlasInfo.x = frame
                                 end
                             })
@@ -85,9 +86,10 @@ function BRang:new(args)
                     right = function(a)
                         local bump = getObjectById(getAllCollisionPropertyIds(self.extra.checks.right.extra.ticked,
                         "RicoChet")[1])
-                        if a.V.x.base > 0 and bump and bump.T.x < a.T.x + a.T.w and Util.Math.PercisionCheck(bump.T.x, a.T.x + a.T.w, math.abs(a.V.x.base) * DELTATIME * 1.5 + 10) then
+                        if a.V.x.base > 0 and bump and bump.T.x < a.T.x + a.T.w and Util.Math.percisionCheck(bump.T.x, a.T.x + a.T.w, math.abs(a.V.x.base) * DELTATIME * 1.5 + 10) then
                             a.V.x.base = a.V.x.base * -1
-                            Util.Event.Screenshake(2, 1 / 4)
+                            Util.Audio.playSfx("Bump1", 0.65, math.random() * 0.5 + 0.75)
+                            Util.Event.screenShake(2, 1 / 4)
                             Sprite({
                                 atlasKey = "Bump",
                                 drawOrder = 101,
@@ -101,7 +103,7 @@ function BRang:new(args)
                                         s:remove()
                                     end
                                     local tickTime = 0.075
-                                    local frame = Util.Math.Div(s.extra.timer, tickTime) % 4
+                                    local frame = Util.Math.div(s.extra.timer, tickTime) % 4
                                     s.atlasInfo.x = frame
                                 end
                             })
@@ -110,9 +112,10 @@ function BRang:new(args)
                     up = function(a)
                         local bump = getObjectById(getAllCollisionPropertyIds(self.extra.checks.up.extra.ticked,
                         "RicoChet")[1])
-                        if a.V.y.base < 0 and bump and bump.T.y + bump.T.h > a.T.y and Util.Math.PercisionCheck(bump.T.y + bump.T.h, a.T.y, math.abs(a.V.y.base) * DELTATIME * 1.5 + 10) then
+                        if a.V.y.base < 0 and bump and bump.T.y + bump.T.h > a.T.y and Util.Math.percisionCheck(bump.T.y + bump.T.h, a.T.y, math.abs(a.V.y.base) * DELTATIME * 1.5 + 10) then
                             a.V.y.base = a.V.y.base * -1
-                            Util.Event.Screenshake(2, 1 / 4)
+                            Util.Audio.playSfx("Bump1", 0.65, math.random() * 0.5 + 0.75)
+                            Util.Event.screenShake(2, 1 / 4)
                             Sprite({
                                 atlasKey = "Bump",
                                 drawOrder = 101,
@@ -126,7 +129,7 @@ function BRang:new(args)
                                         s:remove()
                                     end
                                     local tickTime = 0.075
-                                    local frame = Util.Math.Div(s.extra.timer, tickTime) % 4
+                                    local frame = Util.Math.div(s.extra.timer, tickTime) % 4
                                     s.atlasInfo.x = frame
                                 end
                             })
@@ -134,9 +137,10 @@ function BRang:new(args)
                     end,
                     down = function(a)
                         local bump = getObjectById(getAllCollisionPropertyIds(self.extra.checks.down.extra.ticked, "RicoChet")[1])
-                        if a.V.y.base > 0 and bump and bump.T.y < a.T.y + a.T.h and Util.Math.PercisionCheck(bump.T.y, a.T.y + a.T.h, math.abs(a.V.y.base) * DELTATIME * 1.5 + 10) then
+                        if a.V.y.base > 0 and bump and bump.T.y < a.T.y + a.T.h and Util.Math.percisionCheck(bump.T.y, a.T.y + a.T.h, math.abs(a.V.y.base) * DELTATIME * 1.5 + 10) then
                             a.V.y.base = a.V.y.base * -1
-                            Util.Event.Screenshake(2, 1 / 4)
+                            Util.Audio.playSfx("Bump1", 0.65, math.random() * 0.5 + 0.75)
+                            Util.Event.screenShake(2, 1 / 4)
                             Sprite({
                                 atlasKey = "Bump",
                                 drawOrder = 101,
@@ -150,7 +154,7 @@ function BRang:new(args)
                                         s:remove()
                                     end
                                     local tickTime = 0.075
-                                    local frame = Util.Math.Div(s.extra.timer, tickTime) % 4
+                                    local frame = Util.Math.div(s.extra.timer, tickTime) % 4
                                     s.atlasInfo.x = frame
                                 end
                             })
@@ -162,7 +166,10 @@ function BRang:new(args)
                         funcs[k](self)
                         self.extra.TG = 0.05
                     elseif not collisionContainsProperty(v.extra.ticked, "Player") then
-                        if not self.extra.done then Util.Event.Screenshake(3/4, 1 / 8) end
+                        if not self.extra.done then
+                            Util.Event.screenShake(3 / 4, 1 / 8)
+                            Util.Audio.playSfx("BumpWeak1", 1, math.random()*0.5 + 0.75)
+                        end
                         self.extra.done = true
                         self.V.y.base = 0
                         self.V.x.base = 0
@@ -180,7 +187,7 @@ function BRang:new(args)
             self.extra.lerpD = Util.Math.lerpDt(self.extra.lerpD, 0, 0.15)
             self.TMod.x.base = Util.Math.lerpDt(self.TMod.x.base, getObjectByNid("Player").T.x, self.extra.lerpD)
             self.TMod.y.base = Util.Math.lerpDt(self.TMod.y.base, getObjectByNid("Player").T.y + 10, self.extra.lerpD)
-            if Util.Math.PercisionCheck(self.T.x, getObjectByNid("Player").T.x, 2) and Util.Math.PercisionCheck(self.T.y, getObjectByNid("Player").T.y + 10, 2) then
+            if Util.Math.percisionCheck(self.T.x, getObjectByNid("Player").T.x, 2) and Util.Math.percisionCheck(self.T.y, getObjectByNid("Player").T.y + 10, 2) then
                 self:remove()
                 G.flags.boomerangExists = nil
             end
@@ -198,7 +205,7 @@ function BRang:new(args)
         atlasY = 0,
         updateFunc = function(s, dt)
             local tickTime = 0.15
-            local frame = Util.Math.Div(G.timer, tickTime) % 4
+            local frame = Util.Math.div(G.timer, tickTime) % 4
             s.atlasInfo.x = frame
             s.atlasInfo.y = self.extra.done and 1 or 0
             if not G.flags.boomerangExists then
