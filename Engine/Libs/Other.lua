@@ -27,15 +27,15 @@ Util.Other.CopyTable = function(t, filter)
 	return ret
 end
 
---- Loads the localization entries to G.Localization.
+--- Loads the localization entries to G.localization.
 Util.Other.LoadLocalization = function()
-	G.Localization = assert(load(love.filesystem.read("Localization/english.lua")))()
-	local language = G.Language or "english"
-	local temp = assert(load(love.filesystem.read("Localization/"..language..".lua")))()
-	for k,v in pairs(G.Localization) do
-		G.Localization[k] = temp[k] or ('Error when loading localization with key'..k.."!")
+	G.localization = assert(load(love.filesystem.read("localization/english.lua")))()
+	local language = G.language or "english"
+	local temp = assert(load(love.filesystem.read("localization/"..language..".lua")))()
+	for k,v in pairs(G.localization) do
+		G.localization[k] = temp[k] or ('Error when loading localization with key'..k.."!")
 	end
-	-- love.window.setTitle(G.Localization.title)
+	-- love.window.setTitle(G.localization.title)
 end
 
 --- Returns the color value for the passed in hex code.

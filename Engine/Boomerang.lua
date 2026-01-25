@@ -1,11 +1,11 @@
 ---@class BRang: Moveable
 
-local function CreateAfterImage(x, y, f)
+local function createAfterImage(x, y, f)
     Sprite({
         atlasKey = "Boomerang",
         drawOrder = 50,
-        AtlasY = 2,
-        AtlasX = f,
+        atlasY = 2,
+        atlasX = f,
         x = x, y = y,
         transparency = 1/2,
         updateFunc = function(s, dt)
@@ -22,7 +22,7 @@ function BRang:new(args)
     local collidedFunc = function(a, dir)
         return next(a.extra.ticked or {}) and not collisionContainsId(a.extra.ticked, self.Id) and
             not collisionContainsProperty(a.extra.ticked, "noCollision") and
-            not collisionContainsProperty(a.extra.ticked, "CollisionCheck") and
+            not collisionContainsProperty(a.extra.ticked, "collisionCheck") and
             (CollisionContainsextra(a.extra.ticked, "Facing") and collisionContainsId(getAllCollisionextra(a.extra.ticked, "Facing"), dir) or true)
     end
     args = args or {}
@@ -51,14 +51,14 @@ function BRang:new(args)
         if self.extra.TG <= 0 then
             for k, v in pairs(self.extra.checks) do
                 local opposite = {
-                    Left = "Right",
-                    Right = "Left",
-                    Down = "Up",
-                    Up = "Down"
+                    left = "right",
+                    right = "left",
+                    down = "up",
+                    up = "down"
                 }
                 local funcs = {
-                    Left = function (a)
-                        local bump = GetObjectById(GetAllCollisionPropertyIds(self.extra.checks.Left.extra.ticked,
+                    left = function (a)
+                        local bump = getObjectById(getAllCollisionPropertyIds(self.extra.checks.left.extra.ticked,
                         "RicoChet")[1])
                         if a.V.x.base < 0 and bump and bump.T.x + bump.T.w > a.T.x and Util.Math.PercisionCheck(bump.T.x + bump.T.w, a.T.x, math.abs(a.V.x.base) * DELTATIME * 1.5 + 10) then
                             a.V.x.base = a.V.x.base * -1
@@ -66,24 +66,24 @@ function BRang:new(args)
                             Sprite({
                                 atlasKey = "Bump",
                                 drawOrder = 101,
-                                AtlasY = 2,
+                                atlasY = 2,
                                 x = bump.T.x + bump.T.w,
                                 y = a.T.y,
                                 updateFunc = function(s, dt)
-                                    s.extra.Timer = s.extra.Timer or 0
-                                    s.extra.Timer = s.extra.Timer + dt
-                                    if s.extra.Timer > 4 * 0.075 then
+                                    s.extra.timer = s.extra.timer or 0
+                                    s.extra.timer = s.extra.timer + dt
+                                    if s.extra.timer > 4 * 0.075 then
                                         s:remove()
                                     end
-                                    local TickTime = 0.075
-                                    local frame = Util.Math.Div(s.extra.Timer, TickTime) % 4
-                                    s.AtliInfo.x = frame
+                                    local tickTime = 0.075
+                                    local frame = Util.Math.Div(s.extra.timer, tickTime) % 4
+                                    s.atlasInfo.x = frame
                                 end
                             })
                         end
                     end,
-                    Right = function(a)
-                        local bump = GetObjectById(GetAllCollisionPropertyIds(self.extra.checks.Right.extra.ticked,
+                    right = function(a)
+                        local bump = getObjectById(getAllCollisionPropertyIds(self.extra.checks.right.extra.ticked,
                         "RicoChet")[1])
                         if a.V.x.base > 0 and bump and bump.T.x < a.T.x + a.T.w and Util.Math.PercisionCheck(bump.T.x, a.T.x + a.T.w, math.abs(a.V.x.base) * DELTATIME * 1.5 + 10) then
                             a.V.x.base = a.V.x.base * -1
@@ -91,24 +91,24 @@ function BRang:new(args)
                             Sprite({
                                 atlasKey = "Bump",
                                 drawOrder = 101,
-                                AtlasY = 0,
+                                atlasY = 0,
                                 x = bump.T.x - 20,
                                 y = a.T.y,
                                 updateFunc = function(s, dt)
-                                    s.extra.Timer = s.extra.Timer or 0
-                                    s.extra.Timer = s.extra.Timer + dt
-                                    if s.extra.Timer > 4 * 0.075 then
+                                    s.extra.timer = s.extra.timer or 0
+                                    s.extra.timer = s.extra.timer + dt
+                                    if s.extra.timer > 4 * 0.075 then
                                         s:remove()
                                     end
-                                    local TickTime = 0.075
-                                    local frame = Util.Math.Div(s.extra.Timer, TickTime) % 4
-                                    s.AtliInfo.x = frame
+                                    local tickTime = 0.075
+                                    local frame = Util.Math.Div(s.extra.timer, tickTime) % 4
+                                    s.atlasInfo.x = frame
                                 end
                             })
                         end
                     end,
-                    Up = function(a)
-                        local bump = GetObjectById(GetAllCollisionPropertyIds(self.extra.checks.Up.extra.ticked,
+                    up = function(a)
+                        local bump = getObjectById(getAllCollisionPropertyIds(self.extra.checks.up.extra.ticked,
                         "RicoChet")[1])
                         if a.V.y.base < 0 and bump and bump.T.y + bump.T.h > a.T.y and Util.Math.PercisionCheck(bump.T.y + bump.T.h, a.T.y, math.abs(a.V.y.base) * DELTATIME * 1.5 + 10) then
                             a.V.y.base = a.V.y.base * -1
@@ -116,24 +116,24 @@ function BRang:new(args)
                             Sprite({
                                 atlasKey = "Bump",
                                 drawOrder = 101,
-                                AtlasY = 1,
+                                atlasY = 1,
                                 x = a.T.x,
                                 y = bump.T.y + bump.T.h ,
                                 updateFunc = function(s, dt)
-                                    s.extra.Timer = s.extra.Timer or 0
-                                    s.extra.Timer = s.extra.Timer + dt
-                                    if s.extra.Timer > 4 * 0.075 then
+                                    s.extra.timer = s.extra.timer or 0
+                                    s.extra.timer = s.extra.timer + dt
+                                    if s.extra.timer > 4 * 0.075 then
                                         s:remove()
                                     end
-                                    local TickTime = 0.075
-                                    local frame = Util.Math.Div(s.extra.Timer, TickTime) % 4
-                                    s.AtliInfo.x = frame
+                                    local tickTime = 0.075
+                                    local frame = Util.Math.Div(s.extra.timer, tickTime) % 4
+                                    s.atlasInfo.x = frame
                                 end
                             })
                         end
                     end,
-                    Down = function(a)
-                        local bump = GetObjectById(GetAllCollisionPropertyIds(self.extra.checks.Down.extra.ticked, "RicoChet")[1])
+                    down = function(a)
+                        local bump = getObjectById(getAllCollisionPropertyIds(self.extra.checks.down.extra.ticked, "RicoChet")[1])
                         if a.V.y.base > 0 and bump and bump.T.y < a.T.y + a.T.h and Util.Math.PercisionCheck(bump.T.y, a.T.y + a.T.h, math.abs(a.V.y.base) * DELTATIME * 1.5 + 10) then
                             a.V.y.base = a.V.y.base * -1
                             Util.Event.Screenshake(2, 1 / 4)
@@ -142,16 +142,16 @@ function BRang:new(args)
                                 drawOrder = 101,
                                 x = a.T.x,
                                 y = bump.T.y - 20,
-                                AtlasY = 3,
+                                atlasY = 3,
                                 updateFunc = function(s, dt)
-                                    s.extra.Timer = s.extra.Timer or 0
-                                    s.extra.Timer = s.extra.Timer + dt
-                                    if s.extra.Timer > 4 * 0.075 then
+                                    s.extra.timer = s.extra.timer or 0
+                                    s.extra.timer = s.extra.timer + dt
+                                    if s.extra.timer > 4 * 0.075 then
                                         s:remove()
                                     end
-                                    local TickTime = 0.075
-                                    local frame = Util.Math.Div(s.extra.Timer, TickTime) % 4
-                                    s.AtliInfo.x = frame
+                                    local tickTime = 0.075
+                                    local frame = Util.Math.Div(s.extra.timer, tickTime) % 4
+                                    s.atlasInfo.x = frame
                                 end
                             })
                         end
@@ -162,8 +162,8 @@ function BRang:new(args)
                         funcs[k](self)
                         self.extra.TG = 0.05
                     elseif not collisionContainsProperty(v.extra.ticked, "Player") then
-                        if not self.extra.Done then Util.Event.Screenshake(3/4, 1 / 8) end
-                        self.extra.Done = true
+                        if not self.extra.done then Util.Event.Screenshake(3/4, 1 / 8) end
+                        self.extra.done = true
                         self.V.y.base = 0
                         self.V.x.base = 0
                     end
@@ -172,36 +172,36 @@ function BRang:new(args)
         end
         self.extra.TG = self.extra.TG - dt
         if self.extra.clockInit > 5 then
-            self.extra.Done = true
+            self.extra.done = true
         end
-        if self.extra.Done then
+        if self.extra.done then
             self.V.x.base = 0
             self.V.y.base = 0
             self.extra.lerpD = Util.Math.lerpDt(self.extra.lerpD, 0, 0.15)
-            self.TMod.x.base = Util.Math.lerpDt(self.TMod.x.base, GetObjectByNid("Player").T.x, self.extra.lerpD)
-            self.TMod.y.base = Util.Math.lerpDt(self.TMod.y.base, GetObjectByNid("Player").T.y + 10, self.extra.lerpD)
-            if Util.Math.PercisionCheck(self.T.x, GetObjectByNid("Player").T.x, 2) and Util.Math.PercisionCheck(self.T.y, GetObjectByNid("Player").T.y + 10, 2) then
+            self.TMod.x.base = Util.Math.lerpDt(self.TMod.x.base, getObjectByNid("Player").T.x, self.extra.lerpD)
+            self.TMod.y.base = Util.Math.lerpDt(self.TMod.y.base, getObjectByNid("Player").T.y + 10, self.extra.lerpD)
+            if Util.Math.PercisionCheck(self.T.x, getObjectByNid("Player").T.x, 2) and Util.Math.PercisionCheck(self.T.y, getObjectByNid("Player").T.y + 10, 2) then
                 self:remove()
-                G.Flags.BoomerangExists = nil
+                G.flags.boomerangExists = nil
             end
         end
         local tick = 1/3
         local k, k_1 = self.extra.clockInit % tick, (self.extra.clockInit - dt) % tick
         if k <= k_1 then
-            CreateAfterImage(self.TMod.x.base + self.V.x.base * dt, self.TMod.y.base + self.V.y.base * dt, self.extra.A.AtliInfo.x)
+            createAfterImage(self.TMod.x.base + self.V.x.base * dt, self.TMod.y.base + self.V.y.base * dt, self.extra.A.atlasInfo.x)
         end
     end
     Moveable.new(self, args)
     self.extra.A = Sprite({
         atlasKey = "Boomerang",
         drawOrder = 100,
-        AtlasY = 0,
+        atlasY = 0,
         updateFunc = function(s, dt)
-            local TickTime = 0.15
-            local frame = Util.Math.Div(G.Timer, TickTime) % 4
-            s.AtliInfo.x = frame
-            s.AtliInfo.y = self.extra.Done and 1 or 0
-            if not G.Flags.BoomerangExists then
+            local tickTime = 0.15
+            local frame = Util.Math.Div(G.timer, tickTime) % 4
+            s.atlasInfo.x = frame
+            s.atlasInfo.y = self.extra.done and 1 or 0
+            if not G.flags.boomerangExists then
                 s:remove()
             end
         end
@@ -209,9 +209,9 @@ function BRang:new(args)
     self.extra.A:SetParent(self)
     self.extra.checks = {}
     local c = self.extra.checks
-    c.Up = Moveable {
+    c.up = Moveable {
         properties = {
-            CollisionCheck = true,
+            collisionCheck = true,
         },
         strength = -1000,
         w = 16,
@@ -225,11 +225,11 @@ function BRang:new(args)
             end
         end,
     }
-    c.Up.TMod.x.offset = 2
-    c.Up.TMod.y.offset = -1
-    c.Down = Moveable {
+    c.up.TMod.x.offset = 2
+    c.up.TMod.y.offset = -1
+    c.down = Moveable {
         properties = {
-            CollisionCheck = true,
+            collisionCheck = true,
         },
         w = 16,
         h = 1,
@@ -243,11 +243,11 @@ function BRang:new(args)
             end
         end,
     }
-    c.Down.TMod.x.offset = 2
-    c.Down.TMod.y.offset = 20
-    c.Left = Moveable {
+    c.down.TMod.x.offset = 2
+    c.down.TMod.y.offset = 20
+    c.left = Moveable {
         properties = {
-            CollisionCheck = true,
+            collisionCheck = true,
         },
         w = 1,
         h = 16,
@@ -261,11 +261,11 @@ function BRang:new(args)
             end
         end,
     }
-    c.Left.TMod.y.offset = 2
-    c.Left.TMod.x.offset = -1
-    c.Right = Moveable {
+    c.left.TMod.y.offset = 2
+    c.left.TMod.x.offset = -1
+    c.right = Moveable {
         properties = {
-            CollisionCheck = true,
+            collisionCheck = true,
         },
         w = 1,
         h = 16,
@@ -279,8 +279,8 @@ function BRang:new(args)
             end
         end,
     }
-    c.Right.TMod.y.offset = 2
-    c.Right.TMod.x.offset = 20
+    c.right.TMod.y.offset = 2
+    c.right.TMod.x.offset = 20
     for k, v in pairs(c) do
         v:SetParent(self)
     end

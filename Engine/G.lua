@@ -4,39 +4,39 @@
 Game = Object:extend()
 
 function Game:new()
-    self.Language = "english"
-    self.Localization = {}
-    self.Settings = {
-        ScalingFactor = 2,
-        Fullscreen = false,
-        ShowGrid = true
+    self.language = "english"
+    self.localization = {}
+    self.settings = {
+        scalingFactor = 2,
+        fullscreen = false,
+        showGrid = true
     }
-    self.CurrentID = 0
+    self.currentID = 0
     self.I = {
         SPRITES = {},
         MOVEABLES = {},
     }
     self.debug = true
-    self.Timer = 0
-    self.State = "Overworld"
-    self.Controller = {
-        Keyboard = {
-            up = { Keybind = {"w", "space", "up", {"lctrl", "lshift"}}, Pressed = false, Held = false, Released = false },
-            down = { Keybind = {"s", "down"}, Pressed = false, Held = false, Released = false },
-            left = { Keybind = {"a", "left"}, Pressed = false, Held = false, Released = false },
-            right = { Keybind = { "d", "right" }, Pressed = false, Held = false, Released = false },
-            select = { Keybind = { "z", "return" }, Pressed = false, Held = false, Released = false },
+    self.timer = 0
+    self.state = "Overworld"
+    self.controller = {
+        keyboard = {
+            up = { keybind = {"w", "space", "up", {"lctrl", "lshift"}}, pressed = false, held = false, released = false },
+            down = { keybind = {"s", "down"}, pressed = false, held = false, released = false },
+            left = { keybind = {"a", "left"}, pressed = false, held = false, released = false },
+            right = { keybind = { "d", "right" }, pressed = false, held = false, released = false },
+            select = { keybind = { "z", "return" }, pressed = false, held = false, released = false },
         },
-        Mouse = {
-            Primary = { Keybind = {1}, Pressed = false, Held = false, Released = false }, -- Primary (left)
-            Secondary = { Keybind = {2}, Pressed = false, Held = false, Released = false },     -- Secondary (right)
-            Middle = { Keybind = {3}, Pressed = false, Held = false, Released = false },     -- Middle Click
+        mouse = {
+            primary = { keybind = {1}, pressed = false, held = false, released = false }, -- primary (left)
+            secondary = { keybind = {2}, pressed = false, held = false, released = false },     -- secondary (right)
+            middle = { keybind = {3}, pressed = false, held = false, released = false },     -- middle Click
         }
     }
-    self.MousePos = {
+    self.mousePos = {
         x = 0, y = 0
     }
-    self.DispOffset = {
+    self.dispOffset = {
         x = {
             base = 0
         },
@@ -44,46 +44,46 @@ function Game:new()
             base = 0
         }
     }
-    self.Flags = {}
+    self.flags = {}
     self.Events = {}
     G = self
 end
-function Game:GetTotalOffset()
-    local retTable = {x = 0, y = 0}
-    for k, v in pairs(self.DispOffset) do
+function Game:getTotalOffset()
+    local ret = {x = 0, y = 0}
+    for k, v in pairs(self.dispOffset) do
         for kk, vv in pairs(v) do
-            retTable[k] = retTable[k] + vv
+            ret[k] = ret[k] + vv
         end
     end
-    return retTable
+    return ret
 end
 function Game:update(dt)
-    self.MousePos = {
-        x = love.mouse.getX() / G.Settings.ScalingFactor,
-        y = love.mouse.getY() / G.Settings.ScalingFactor
+    self.mousePos = {
+        x = love.mouse.getX() / G.settings.scalingFactor,
+        y = love.mouse.getY() / G.settings.scalingFactor
     }
     -- Handling Events
     for k, v in ipairs(self.Events) do
         local event = v
-        event.CurTime = event.CurTime or 0
-        if event.EaseFunc then
-            event.EaseFunc(event.CurTime / event.Duration, event)
+        event.curTime = event.curTime or 0
+        if event.easeFunc then
+            event.easeFunc(event.curTime / event.duration, event)
         end
-        event.Completed = event.Completed == nil and false or event.Completed
-        if not event.Completed and event.Func then
-            event.Func(event)
-            event.Completed = true
+        event.completed = event.completed == nil and false or event.completed
+        if not event.completed and event.func then
+            event.func(event)
+            event.completed = true
         end
-        event.CurTime = event.CurTime + dt
-        if event.CurTime > event.Duration then
-            if event.EndFunc then event.EndFunc(event) end
+        event.curTime = event.curTime + dt
+        if event.curTime > event.duration then
+            if event.endFunc then event.endFunc(event) end
             self.Events[k] = nil
         end
     end
     self.Events = Util.Other.RemoveNils(self.Events)
-    for k, v in pairs(self.Controller.Keyboard) do
+    for k, v in pairs(self.controller.keyboard) do
         if (function ()
-                for kk, vv in pairs(v.Keybind) do
+                for kk, vv in pairs(v.keybind) do
                     if type(vv) ~= "table" then
                         if love.keyboard.isDown(vv) then
                             return true
@@ -102,28 +102,28 @@ function Game:update(dt)
                 end
                 return false
             end)() then
-            v.Held = true
-            if not v.PressTemp then
-                v.Pressed = true
-                v.PressTemp = true
+            v.held = true
+            if not v.pressTemp then
+                v.pressed = true
+                v.pressTemp = true
             else
-                v.Pressed = false
+                v.pressed = false
             end
         else
-            if v.Held then
-                v.Released = true
+            if v.held then
+                v.released = true
             else
-                v.Released = false
+                v.released = false
             end
-            v.Held = false
-            v.Pressed = false
-            v.PressTemp = false
+            v.held = false
+            v.pressed = false
+            v.pressTemp = nil
         end
     end
 
-    for k, v in pairs(self.Controller.Mouse) do
+    for k, v in pairs(self.controller.mouse) do
         if (function()
-                for kk, vv in pairs(v.Keybind) do
+                for kk, vv in pairs(v.keybind) do
                     if type(vv) ~= "table" then
                         if love.mouse.isDown(vv) then
                             return true
@@ -142,26 +142,26 @@ function Game:update(dt)
                 end
                 return false
             end)() then
-            v.Held = true
-            if not v.PressTemp then
-                v.Pressed = true
-                v.PressTemp = true
+            v.held = true
+            if not v.pressTemp then
+                v.pressed = true
+                v.pressTemp = true
             else
-                v.Pressed = false
+                v.pressed = false
             end
         else
-            if v.Held then
-                v.Released = true
+            if v.held then
+                v.released = true
             else
-                v.Released = false
+                v.released = false
             end
-            v.Held = false
-            v.Pressed = false
-            v.PressTemp = false
+            v.held = false
+            v.pressed = false
+            v.pressTemp = nil
         end
     end
     
-    local function HandleCollisions()
+    local function handleCollisions()
         local loop = true
         local limit = 0
 
@@ -174,7 +174,7 @@ function Game:update(dt)
             for i = 1, #self.I.MOVEABLES - 1 do
                 for j = i + 1, #self.I.MOVEABLES do
                     --print("i = "..i..", j = "..j)
-                    local collision = self.I.MOVEABLES[i]:ResolveCollision(self.I.MOVEABLES[j])
+                    local collision = self.I.MOVEABLES[i]:resolveCollision(self.I.MOVEABLES[j])
                     --print(collision)
                     if collision then
                         loop = true
@@ -183,63 +183,63 @@ function Game:update(dt)
             end
         end
     end
-    HandleCollisions()
+    handleCollisions()
     for k, v in pairs(self.I.MOVEABLES) do
-        if not v.properties.CollisionCheck then
+        if not v.properties.collisionCheck then
             v:update(dt)
-            HandleCollisions()
-            if self.State == "DestroyedObj" then
-                self.State = self.OldState
-                self.OldState = nil
+            handleCollisions()
+            if self.state == "DestroyedObj" then
+                self.state = self.oldState
+                self.oldState = nil
                 break
             end
         end
     end
     for k, v in pairs(self.I.MOVEABLES) do
-        if v.properties.CollisionCheck then
+        if v.properties.collisionCheck then
             v:update(dt)
-            HandleCollisions()
-            if self.State == "DestroyedObj" then
-                self.State = self.OldState
-                self.OldState = nil
+            handleCollisions()
+            if self.state == "DestroyedObj" then
+                self.state = self.oldState
+                self.oldState = nil
                 break
             end
         end
     end
     for k, v in pairs(self.I.SPRITES) do
         v:update(dt)
-        if self.State == "DestroyedObj" then
-            self.State = self.OldState
-            self.OldState = nil
+        if self.state == "DestroyedObj" then
+            self.state = self.oldState
+            self.oldState = nil
             break
         end
     end
     for k, v in pairs(self.I.MOVEABLES) do
-        if v.properties.CollisionCheck then
+        if v.properties.collisionCheck then
             v.extra.ticked = {}
         end
     end
-    HandleCollisions()
-    self.Timer = self.Timer + dt
+    handleCollisions()
+    self.timer = self.timer + dt
 end
 
 function Game:draw()
     local r, g, b, a = love.graphics.getColor()
     love.graphics.setColor(Util.Other.Hex("#4a3052"))
-    love.graphics.rectangle("fill", 0, 0, Macros.BaseResolution.w, Macros.BaseResolution.h)
+    love.graphics.rectangle("fill", 0, 0, Macros.baseResolution.w, Macros.baseResolution.h)
     love.graphics.setColor { r, g, b, a }
-    if self.Settings.ShowGrid then
+    if self.settings.showGrid then
         local r, g, b, a = love.graphics.getColor()
         love.graphics.setColor(Util.Other.Hex("#a32858"))
-        local amtx, amty = (Macros.BaseResolution.w - Macros.TileSize * 2) / Macros.TileSize,
-            (Macros.BaseResolution.h - Macros.TileSize * 2) / Macros.TileSize
+        local amtx, amty = (Macros.baseResolution.w - Macros.tileSize * 2) / Macros.tileSize,
+            (Macros.baseResolution.h - Macros.tileSize * 2) / Macros.tileSize
         for i = 1, amtx - 1 do
-            love.graphics.rectangle("fill", (1 + i) * Macros.TileSize, Macros.TileSize, 1,
-                Macros.BaseResolution.h - Macros.TileSize * 2)
+            love.graphics.rectangle("fill", (1 + i) * Macros.tileSize, Macros.tileSize, 1,
+                Macros.baseResolution.h - Macros.tileSize * 2)
         end
         for i = 1, amty - 1 do
-            love.graphics.rectangle("fill", Macros.TileSize, (1 + i) * Macros.TileSize,
-                Macros.BaseResolution.w - Macros.TileSize * 2, 1)
+            love.graphics.rectangle("fill", Macros.tileSize, (1 + i) * Macros.tileSize,
+                Macros.baseResolution.w - Macros.tileSize * 2, 1)
         end
         love.graphics.setColor { r, g, b, a }
     end

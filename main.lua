@@ -26,11 +26,11 @@ local function LoadFirstRoomTemp()
     Wall()
     RicoChet({ x = 380, w = 80, h = 20})
     Box()
-    OneWayPlatform({ x = 180, y = 60, Facing = "Up" })
-    OneWayPlatform({ x = 180, Facing = "Up" })
-    OneWayPlatform({ x = 220, y = 100, Facing = "Down" })
-    OneWayPlatform({ x = 240, h = 40, y = 140, Facing = "Right" })
-    --OneWayPlatform({ x = 420, h = 40, y = 160, Facing = "Left" })
+    OneWayPlatform({ x = 180, y = 60, Facing = "up" })
+    OneWayPlatform({ x = 180, Facing = "up" })
+    OneWayPlatform({ x = 220, y = 100, Facing = "down" })
+    OneWayPlatform({ x = 240, h = 40, y = 140, Facing = "right" })
+    --OneWayPlatform({ x = 420, h = 40, y = 160, Facing = "left" })
     Wall({ x = 220, y = 180, w = 160})
     RicoChet({ x = 500, y = 100 })
     RicoChet({ x = 400, y = 60, h = 20, w = 80 })
@@ -53,8 +53,8 @@ love.load = function()
         updateFunc = function (self, dt)
             self.T.x = self.T.x + 25 * dt
             self.T.y = self.T.y + 25 * dt
-            self.T.x = self.T.x % Macros.TileSize
-            self.T.y = self.T.y % Macros.TileSize
+            self.T.x = self.T.x % Macros.tileSize
+            self.T.y = self.T.y % Macros.tileSize
         end,
         DrawTiled = true,
         MaskShouldApply = true,
@@ -75,28 +75,28 @@ love.load = function()
                 end,
                 function(s, dt)
                     s:remove()
-                    GetObjectByNid("TitleButtons"):remove()
+                    getObjectByNid("TitleButtons"):remove()
                     LoadFirstRoomTemp()
                 end
             }
         },
         updateFunc = function(s, dt)
-            if G.Controller.Keyboard.up.Pressed then
+            if G.controller.keyboard.up.pressed then
                 s.extra.SelectedOption = Util.Math.Clamp(1, 3, s.extra.SelectedOption - 1)
-                local T = GetObjectByNid("TitleButtons")
+                local T = getObjectByNid("TitleButtons")
                 T.extra.Random = 1
             end
-            if G.Controller.Keyboard.down.Pressed then
+            if G.controller.keyboard.down.pressed then
                 s.extra.SelectedOption = Util.Math.Clamp(1, 3, s.extra.SelectedOption + 1)
-                local T = GetObjectByNid("TitleButtons")
+                local T = getObjectByNid("TitleButtons")
                 T.extra.Random = 1
             end
-            if G.Controller.Keyboard.select.Pressed then
+            if G.controller.keyboard.select.pressed then
                 s.extra.Funcs[s.extra.SelectedOption](s, dt)
             end
-            local TickTime = 0.5
-            local frame = Util.Math.Div(G.Timer, TickTime) % 3
-            s.AtliInfo.y = frame
+            local tickTime = 0.5
+            local frame = Util.Math.Div(G.timer, tickTime) % 3
+            s.atlasInfo.y = frame
         end
     })
     Sprite({
@@ -109,10 +109,10 @@ love.load = function()
             Random = 0
         },
         updateFunc = function(s, dt)
-            local T = GetObjectByNid("TitleScr")
+            local T = getObjectByNid("TitleScr")
             s.T.x = 359 + (math.random() * 2 - 1) * s.extra.Random
             s.T.y = 228 + (T.extra.SelectedOption - 1) * 11 + (math.random() * 2 - 1) * s.extra.Random
-            s.AtliInfo.y = T.extra.SelectedOption - 1
+            s.atlasInfo.y = T.extra.SelectedOption - 1
             s.extra.Random = Util.Math.Clamp(0, 1, s.extra.Random - 1/4)
         end
     })

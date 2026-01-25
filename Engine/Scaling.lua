@@ -32,7 +32,7 @@ function SimpleScale.setWindow(gw, gh, sw, sh, settings)
     SimpleScale.updateWindow(sw, sh, settings)
 end
 
--- Updates the Window size/settings
+-- updates the Window size/settings
 -- To be used instead of love.window.setMode
 --    [sw] and [sh] are the width and height of the new Window
 --    [settings] (optional) are settings for love.window.setMode
@@ -67,7 +67,7 @@ end
 -- If you screen is resizable on drag, you'll need to call this to make sure
 -- the appropriate screen values stay updated
 -- You can call it on love.update() with no trouble
-function SimpleScale.resizeUpdate()
+function SimpleScale.resizeupdate()
     windowW, windowH = love.graphics.getWidth(), love.graphics.getHeight()
     wAspectRatio = windowW / windowH
     local scale = nil
@@ -136,9 +136,9 @@ end
 -- custom funcs added by GMM
 function SimpleScale.auto_scale()
     SimpleScale.setWindow(
-        Macros.BaseResolution.w,
-        Macros.BaseResolution.h,
-        Macros.BaseResolution.w * G.Settings.ScalingFactor,
-        Macros.BaseResolution.h * G.Settings.ScalingFactor,
-        { fullscreen = G.Settings.Fullscreen })
+        Macros.baseResolution.w,
+        Macros.baseResolution.h,
+        Macros.baseResolution.w * G.settings.scalingFactor,
+        Macros.baseResolution.h * G.settings.scalingFactor,
+        { fullscreen = G.settings.fullscreen })
 end

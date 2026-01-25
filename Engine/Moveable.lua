@@ -4,9 +4,9 @@ Moveable = Object:extend()
 
 function Moveable:new(args)
     self.strength = args.strength or 1
-    self.Id = G.CurrentID
+    self.Id = G.currentID
     self.Nid = args.nid
-    G.CurrentID = G.CurrentID + 1
+    G.currentID = G.currentID + 1
     args = args or {}
     self.ObjectType = 'MOVEABLE'
     self.T = {
@@ -60,12 +60,12 @@ function Moveable:AddChildren (Obj) Obj:SetParent(self) end
 
 function Moveable:GetParentOffset()
     if not self.Parent then return {x=0,y=0} end
-    local Parent = GetObjectById(self.Parent)
+    local Parent = getObjectById(self.Parent)
     if not Parent then return {x = 0, y = 0} end
     return {x = Parent.T.x, y = Parent.T.y}
 end
 
-function Moveable:GetTotalOffset(Component)
+function Moveable:getTotalOffset(Component)
     local RetTable = { x = 0, y = 0, w = 0, h = 0 }
     for k, v in pairs(self.TMod) do
         if not Component then
@@ -110,7 +110,7 @@ function Moveable:update(dt)
     end
     for k, v in pairs(self.T) do
         if type(v) == "number" then
-            self.T[k] = math.floor(self:GetTotalOffset()[k])
+            self.T[k] = math.floor(self:getTotalOffset()[k])
         end
     end
     self.updateFunc(self, dt)
@@ -136,17 +136,17 @@ function Moveable:CheckCollision(e)
         and self.T.y + self.T.h > e.T.y
         and self.T.y < e.T.y + e.T.h
 end
-function Moveable:ResolveCollision(e)
+function Moveable:resolveCollision(e)
     if self.properties.noCollision or e.properties.noCollision then
         return false
     end
     if self.Tempstrength > e.Tempstrength then
-        return e:ResolveCollision(self)
+        return e:resolveCollision(self)
     end
     -- self is strictly a less strong moveable than e
     if self:CheckCollision(e) then
         self.Tempstrength = e.Tempstrength - 1
-        if not self.properties.CollisionCheck and not e.properties.CollisionCheck then
+        if not self.properties.collisionCheck and not e.properties.collisionCheck then
             if self:WasVerticallyAligned(e) then
                 if self.T.x + self.T.w / 2 < e.T.x + e.T.w / 2 then
                     local pushback = self.T.x + self.T.w - e.T.x
@@ -170,10 +170,10 @@ function Moveable:ResolveCollision(e)
             end
             return true
         else
-            if self.properties.CollisionCheck then
+            if self.properties.collisionCheck then
                 table.insert(self.extra.ticked, e.Id)
             end
-            if e.properties.CollisionCheck then
+            if e.properties.collisionCheck then
                 table.insert(e.extra.ticked, self.Id)
             end
             return true
@@ -196,7 +196,7 @@ function Wall:new(args)
         if G.debug then
             local r, g, b, a = love.graphics.getColor()
             love.graphics.setColor(Util.Other.Hex("#FF0000"))
-            love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, s.T.w, s.T.h)
+            love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, s.T.h)
             love.graphics.setColor{r, g, b, a}
         end
     end
@@ -217,7 +217,7 @@ function RicoChet:new(args)
         if G.debug then
             local r, g, b, a = love.graphics.getColor()
             love.graphics.setColor(Util.Other.Hex("#9900FF"))
-            love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, s.T.w, s.T.h)
+            love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, s.T.h)
             love.graphics.setColor { r, g, b, a }
         end
     end
@@ -239,14 +239,14 @@ function Box:new(args)
         OnGround = true
     }
     args.updateFunc = function(self, dt)
-        self.TMod.x.Gravity = self.TMod.x.Gravity or 0
-        self.V.x.Gravity = self.V.x.Gravity or 0
-        self.TMod.y.Gravity = self.TMod.y.Gravity or 0
-        self.V.y.Gravity = self.V.y.Gravity or 0
-        self.V.y.Gravity = self.V.y.Gravity + Macros.Gravity
-        self.extra.OnGround = self.extra.DownCheck.extra.ticked
+        self.TMod.x.gravity = self.TMod.x.gravity or 0
+        self.V.x.gravity = self.V.x.gravity or 0
+        self.TMod.y.gravity = self.TMod.y.gravity or 0
+        self.V.y.gravity = self.V.y.gravity or 0
+        self.V.y.gravity = self.V.y.gravity + Macros.gravity
+        self.extra.OnGround = self.extra.downCheck.extra.ticked
         if next(self.extra.OnGround) and not collisionContainsProperty(self.extra.OnGround, "noCollision") then
-            self.V.y.Gravity = 0
+            self.V.y.gravity = 0
         end
         self.strength = 200
         for k, v in pairs(G.I.MOVEABLES) do
@@ -261,21 +261,21 @@ function Box:new(args)
         if G.debug then
             local r, g, b, a = love.graphics.getColor()
             love.graphics.setColor(Util.Other.Hex("#83591B"))
-            love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, s.T.w, s.T.h)
+            love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, s.T.h)
             love.graphics.setColor { r, g, b, a }
         end
     end
     Moveable.new(self, args)
-    self.extra.DownCheck = Moveable {
+    self.extra.downCheck = Moveable {
         properties = {
-            CollisionCheck = true
+            collisionCheck = true
         },
         w = args.w,
         h = 1
     }
-    self.extra.DownCheck.TMod.x.offset = 0
-    self.extra.DownCheck.TMod.y.offset = args.h
-    self.extra.DownCheck:SetParent(self)
+    self.extra.downCheck.TMod.x.offset = 0
+    self.extra.downCheck.TMod.y.offset = args.h
+    self.extra.downCheck:SetParent(self)
     return self
 end
 OneWayPlatform = Moveable:extend()
@@ -289,22 +289,22 @@ function OneWayPlatform:new(args)
     args.h = args.h or 20
     args.extra = {
         OnGround = true,
-        Facing = args.Facing or "Up"
+        Facing = args.Facing or "up"
     }
     args.updateFunc = function(self, dt)
         self.properties.noCollision = true
         for k, v in pairs(G.I.MOVEABLES) do
             if v.properties.Player then
-                if v.T.y + v.T.h <= self.T.y and self.extra.Facing == "Up" then
+                if v.T.y + v.T.h <= self.T.y and self.extra.Facing == "up" then
                     self.properties.noCollision = false
                 end
-                if v.T.y >= self.T.h + self.T.y and self.extra.Facing == "Down" then
+                if v.T.y >= self.T.h + self.T.y and self.extra.Facing == "down" then
                     self.properties.noCollision = false
                 end
-                if v.T.x + v.T.w <= self.T.x and self.extra.Facing == "Left" then
+                if v.T.x + v.T.w <= self.T.x and self.extra.Facing == "left" then
                     self.properties.noCollision = false
                 end
-                if v.T.x >= self.T.w + self.T.x and self.extra.Facing == "Right" then
+                if v.T.x >= self.T.w + self.T.x and self.extra.Facing == "right" then
                     self.properties.noCollision = false
                 end
             end
@@ -314,16 +314,16 @@ function OneWayPlatform:new(args)
         if G.debug then
             local r, g, b, a = love.graphics.getColor()
             love.graphics.setColor(Util.Other.Hex("#ADA9C5")[1], Util.Other.Hex("#ADA9C5")[2], Util.Other.Hex("#ADA9C5")[3], 1/3)
-            love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, s.T.w, s.T.h)
+            love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, s.T.h)
             love.graphics.setColor(Util.Other.Hex("#0EDB0E"))
-            if self.extra.Facing == "Up" then
-                love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, s.T.w, 2)
-            elseif self.extra.Facing == "Down" then
-                love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + s.T.h - 2 + G:GetTotalOffset().y, s.T.w, 2)
-            elseif self.extra.Facing == "Left" then
-                love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, 2, s.T.h)
-            elseif self.extra.Facing == "Right" then
-                love.graphics.rectangle("fill", s.T.x + s.T.w - 2 + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, 2,
+            if self.extra.Facing == "up" then
+                love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, 2)
+            elseif self.extra.Facing == "down" then
+                love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + s.T.h - 2 + G:getTotalOffset().y, s.T.w, 2)
+            elseif self.extra.Facing == "left" then
+                love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, 2, s.T.h)
+            elseif self.extra.Facing == "right" then
+                love.graphics.rectangle("fill", s.T.x + s.T.w - 2 + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, 2,
                 s.T.h)
             end
             love.graphics.setColor { r, g, b, a }
@@ -344,7 +344,7 @@ function collisionContainsId(ticked, Id)
 end
 function collisionContainsProperty(ticked, P)
     for k, v in ipairs(ticked) do
-        local obj = GetObjectById(v)
+        local obj = getObjectById(v)
         if obj.properties[P] then
             return obj.properties[P]
         end
@@ -353,7 +353,7 @@ function collisionContainsProperty(ticked, P)
 end
 function CollisionContainsextra(ticked, P)
     for k, v in ipairs(ticked) do
-        local obj = GetObjectById(v)
+        local obj = getObjectById(v)
         if obj.extra[P] then
             return obj.extra[P]
         end
@@ -363,7 +363,7 @@ end
 function GetAllCollisionProperty(ticked, P)
     local PTab = {}
     for k, v in ipairs(ticked) do
-        local obj = GetObjectById(v)
+        local obj = getObjectById(v)
         if obj.properties[P] then
             table.insert(PTab, obj.properties[P])
         end
@@ -371,10 +371,10 @@ function GetAllCollisionProperty(ticked, P)
     return PTab
 end
 
-function GetAllCollisionPropertyIds(ticked, P)
+function getAllCollisionPropertyIds(ticked, P)
     local PTab = {}
     for k, v in ipairs(ticked) do
-        local obj = GetObjectById(v)
+        local obj = getObjectById(v)
         if obj.properties[P] then
             table.insert(PTab, v)
         end
@@ -384,7 +384,7 @@ end
 function getAllCollisionextra(ticked, P)
     local PTab = {}
     for k, v in ipairs(ticked) do
-        local obj = GetObjectById(v)
+        local obj = getObjectById(v)
         if obj.extra[P] then
             table.insert(PTab, obj.extra[P])
         end
@@ -395,8 +395,8 @@ function Moveable:remove()
     for k, v in ipairs(G.I.MOVEABLES) do
         if v.Id == self.Id then
             table.remove(G.I.MOVEABLES, k)
-            G.OldState = G.State
-            G.State = "DestroyedObj"
+            G.oldState = G.state
+            G.state = "DestroyedObj"
         end
     end
     self = nil

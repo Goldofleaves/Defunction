@@ -9,16 +9,16 @@
 Event = Object:extend()
 function Event:new(args)
     args = args or {}
-    self.Id = G.CurrentID
-    G.CurrentID = G.CurrentID + 1
+    self.Id = G.currentID
+    G.currentID = G.currentID + 1
     self.Nid = args.Nid or "_"
     self.Ease = args.Ease == nil and true or args.Ease
-    self.CurTime = 0
-    self.EaseFunc = args.EaseFunc or function() end
-    self.Func = args.Func or function () end
-    self.EndFunc = args.EndFunc or function () end
-    self.Completed = false
-    self.Duration = args.Duration or 1
+    self.curTime = 0
+    self.easeFunc = args.easeFunc or function() end
+    self.func = args.func or function () end
+    self.endFunc = args.endFunc or function () end
+    self.completed = false
+    self.duration = args.duration or 1
     self.extra = args.extra
     return self
 end
@@ -29,10 +29,10 @@ end
 function Util.Event.Screenshake(Amp, Dur)
     Util.Event.AddEvent(Event(
         {
-            Duration = Dur,
-            EaseFunc = function (t, e)
-                G.DispOffset.x.Shake = (math.random() - 0.5) * 2 * (1-t) * Amp
-                G.DispOffset.y.Shake = (math.random() - 0.5) * 2 * (1-t) * Amp
+            duration = Dur,
+            easeFunc = function (t, e)
+                G.dispOffset.x.Shake = (math.random() - 0.5) * 2 * (1-t) * Amp
+                G.dispOffset.y.Shake = (math.random() - 0.5) * 2 * (1-t) * Amp
             end
         }
     ))

@@ -1,10 +1,10 @@
 Macros = {
-    FileSuffix = ".def",
-    TileSize = 20,
-    BaseResolution = {w = 640, h = 360},
-    Gravity = 4,
-    JumpVelocity = 140,
-    CoyoteTime = 0.35,
-    MaxHold = 0.55,
-    TerminalVelocity = 250
+    fileSuffix = ".def",
+    tileSize = 20,
+    baseResolution = {w = 640, h = 360},
+    gravity = 4,
+    jumpVelocity = 140,
+    coyoteTime = 0.35,
+    maxHold = 0.55,
+    terminalVelocity = 250
 }

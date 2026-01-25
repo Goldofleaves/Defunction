@@ -30,7 +30,7 @@ function Util.File.SaveTableToFile(tab, fn)
 	end
 	recursion(tab, 0)
 	returnstring = string.sub(returnstring, 1, -2)
-	love.filesystem.write(fn..Macros.FileSuffix , returnstring)
+	love.filesystem.write(fn..Macros.fileSuffix , returnstring)
 end
 
 --- Sets a table with the file contents in fn,  replacing its original entries with the new one, but doesnt erase any old entries.\
@@ -38,7 +38,7 @@ end
 --- @param tab table
 --- @param fn string
 function Util.File.SetTableWithFIle(tab, fn)
-	local c = love.filesystem.read(fn..Macros.FileSuffix)
+	local c = love.filesystem.read(fn..Macros.fileSuffix)
 	if c then
 		local temp = Util.File.ReadTableFromFile(fn)
 		for k,v in pairs(temp) do
@@ -52,7 +52,7 @@ end
 function Util.File.ReadTableFromFile(fn)
 	local returntable = {}
 	local hierarchies = {} -- table hierarchy, for sub table value jank
-	local contents = love.filesystem.read(fn..Macros.FileSuffix)
+	local contents = love.filesystem.read(fn..Macros.fileSuffix)
 	local table_of_lines = {}
 	local str = ""
 	for i = 1, #contents do

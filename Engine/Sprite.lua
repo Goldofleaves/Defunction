@@ -27,19 +27,19 @@ Sprite = Object:extend()
 
 function Sprite:new(args)
     args = args or {}
-    self.Id = G.CurrentID
+    self.Id = G.currentID
     self.Nid = args.Nid
-    G.CurrentID = G.CurrentID + 1
+    G.currentID = G.currentID + 1
     self.T = {
         x = args.x or 0,
         y = args.y or 0,
     }
     self.Xflipped = false
     self.transparency = args.transparency or 1
-    self.AtliInfo = {
+    self.atlasInfo = {
         key = args.atlasKey,
-        x = args.AtlasX or 0,
-        y = args.AtlasY or 0
+        x = args.atlasX or 0,
+        y = args.atlasY or 0
     }
     self.updateFunc = args.updateFunc or function(s, dt) return end
     self.drawOrder = args.drawOrder or 1
@@ -61,7 +61,7 @@ end
 
 function Sprite:draw()
     local dir = self.Xflipped and -1 or 1
-    local XFlpiiedOffset = self.Xflipped and Atlases[self.AtliInfo.key].singleDimention.w or 0
+    local XFlpiiedOffset = self.Xflipped and Atlases[self.atlasInfo.key].singleDimention.w or 0
     local draw_func = function (kx, ky)
         local x = self.T.x + kx
         local y = self.T.y + ky
@@ -89,22 +89,22 @@ function Sprite:draw()
         end
         if not self.DrawTiled then
             love.graphics.draw(
-                Atlases[self.AtliInfo.key].image, Atlases[self.AtliInfo.key].splicedImages[self.AtliInfo.x][self.AtliInfo.y],
+                Atlases[self.atlasInfo.key].image, Atlases[self.atlasInfo.key].splicedImages[self.atlasInfo.x][self.atlasInfo.y],
                 x + XFlpiiedOffset, y,
                 0, dir, 1
             )
         else
-            local moduloX = x % Atlases[self.AtliInfo.key].singleDimention.w
-            local moduloY = y % Atlases[self.AtliInfo.key].singleDimention.h
-            local xSegments = math.ceil(Macros.BaseResolution.w / Atlases[self.AtliInfo.key].singleDimention.w)
-            local ySegments = math.ceil(Macros.BaseResolution.h / Atlases[self.AtliInfo.key].singleDimention.h)
+            local moduloX = x % Atlases[self.atlasInfo.key].singleDimention.w
+            local moduloY = y % Atlases[self.atlasInfo.key].singleDimention.h
+            local xSegments = math.ceil(Macros.baseResolution.w / Atlases[self.atlasInfo.key].singleDimention.w)
+            local ySegments = math.ceil(Macros.baseResolution.h / Atlases[self.atlasInfo.key].singleDimention.h)
             for i = -1, xSegments + 1 do
                 for j = -1, ySegments + 1 do
                     love.graphics.draw(
-                        Atlases[self.AtliInfo.key].image,
-                        Atlases[self.AtliInfo.key].splicedImages[self.AtliInfo.x][self.AtliInfo.y],
-                        moduloX + i * Atlases[self.AtliInfo.key].singleDimention.w + XFlpiiedOffset,
-                        moduloY + j * Atlases[self.AtliInfo.key].singleDimention.h,
+                        Atlases[self.atlasInfo.key].image,
+                        Atlases[self.atlasInfo.key].splicedImages[self.atlasInfo.x][self.atlasInfo.y],
+                        moduloX + i * Atlases[self.atlasInfo.key].singleDimention.w + XFlpiiedOffset,
+                        moduloY + j * Atlases[self.atlasInfo.key].singleDimention.h,
                         0, dir, 1
                     )
                 end
@@ -119,19 +119,19 @@ function Sprite:draw()
     if self.properties.Outline then
         local r, g, b, a = love.graphics.getColor()
         local function myStencilFunction()
-            draw_func(self.Offset.x + 1 + G:GetTotalOffset().x, self.Offset.y + G:GetTotalOffset().y)
-            draw_func(self.Offset.x - 1 + G:GetTotalOffset().x, self.Offset.y + G:GetTotalOffset().y)
-            draw_func(self.Offset.x + G:GetTotalOffset().x, self.Offset.y + 1 + G:GetTotalOffset().y)
-            draw_func(self.Offset.x + G:GetTotalOffset().x, self.Offset.y - 1 + G:GetTotalOffset().y)
+            draw_func(self.Offset.x + 1 + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
+            draw_func(self.Offset.x - 1 + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
+            draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y + 1 + G:getTotalOffset().y)
+            draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y - 1 + G:getTotalOffset().y)
         end
         love.graphics.stencil(myStencilFunction, "replace", 1)
         love.graphics.setStencilTest("greater", 0)
         love.graphics.setColor(self.properties.OutlineColor)
-        love.graphics.rectangle("fill", 0, 0, Macros.BaseResolution.w, Macros.BaseResolution.h)
+        love.graphics.rectangle("fill", 0, 0, Macros.baseResolution.w, Macros.baseResolution.h)
         love.graphics.setColor { r, g, b, a }
         love.graphics.setStencilTest()
     end
-    draw_func(self.Offset.x + G:GetTotalOffset().x, self.Offset.y + G:GetTotalOffset().y)
+    draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
 end
 function Sprite:SetParent(Obj)
     table.insert(Obj.Children, self.Id)
@@ -140,7 +140,7 @@ function Sprite:SetParent(Obj)
 end
 function Sprite:GetParentOffset()
     if not self.Parent then return { x = 0, y = 0 } end
-    local Parent = GetObjectById(self.Parent)
+    local Parent = getObjectById(self.Parent)
     if not Parent then return { x = 0, y = 0 } end
     return { x = Parent.T.x, y = Parent.T.y }
     end
@@ -157,8 +157,8 @@ function Sprite:remove()
     for k, v in ipairs(G.I.SPRITES) do
         if v.Id == self.Id then
             table.remove(G.I.SPRITES, k)
-            G.OldState = G.State
-            G.State = "DestroyedObj"
+            G.oldState = G.state
+            G.state = "DestroyedObj"
         end
     end
     self = nil
