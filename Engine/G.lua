@@ -160,8 +160,8 @@ function Game:update(dt)
             v.pressTemp = nil
         end
     end
-    
-    local function handleCollisions()
+    --[[ Unused!
+    local function HandleCollisionsGeneral()
         local loop = true
         local limit = 0
 
@@ -183,22 +183,44 @@ function Game:update(dt)
             end
         end
     end
-    handleCollisions()
+    ]]
+    local function handleCollisionsK(K)
+        local loop = true
+        local limit = 0
+
+        while loop do
+            loop = false
+            limit = limit + 1
+            if limit > 1 then
+                break
+            end
+            for i = 1, #self.I.MOVEABLES do
+                if i ~= K then
+                    local collision = self.I.MOVEABLES[i]:resolveCollision(self.I.MOVEABLES[K])
+                    if collision then
+                        loop = true
+                    end
+                end
+            end
+        end
+    end
+    --HandleCollisionsGeneral()
     for k, v in pairs(self.I.MOVEABLES) do
         if not v.properties.collisionCheck then
+            handleCollisionsK(k)
             v:update(dt)
-            handleCollisions()
+            handleCollisionsK(k)
             if self.state == "DestroyedObj" then
                 self.state = self.oldState
                 self.oldState = nil
-                break
             end
         end
     end
     for k, v in pairs(self.I.MOVEABLES) do
         if v.properties.collisionCheck then
             v:update(dt)
-            handleCollisions()
+            if v.parent then handleCollisionsK(getPosById(v.parent)) end
+            handleCollisionsK(k)
             if self.state == "DestroyedObj" then
                 self.state = self.oldState
                 self.oldState = nil
@@ -219,7 +241,6 @@ function Game:update(dt)
             v.extra.ticked = {}
         end
     end
-    handleCollisions()
     self.timer = self.timer + dt
 end
 

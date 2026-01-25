@@ -391,10 +391,23 @@ end
 function Moveable:remove()
     for k, v in ipairs(G.I.MOVEABLES) do
         if v.id == self.id then
+            local j = self.id
             table.remove(G.I.MOVEABLES, k)
+            for k, v in ipairs(G.I.MOVEABLES) do
+                if v.parent == j then
+                    v.parent = nil
+                end
+            end
             G.oldState = G.state
             G.state = "DestroyedObj"
         end
     end
     self = nil
+end
+function getPosById(Id)
+    for k, v in ipairs(G.I.MOVEABLES) do
+        if v.id == Id then
+            return k
+        end
+    end
 end
