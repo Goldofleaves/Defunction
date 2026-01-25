@@ -196,7 +196,7 @@ function Wall:new(args)
         if G.Debug then
             local r, g, b, a = love.graphics.getColor()
             love.graphics.setColor(Util.Other.Hex("#FF0000"))
-            love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+            love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, s.T.w, s.T.h)
             love.graphics.setColor{r, g, b, a}
         end
     end
@@ -217,7 +217,7 @@ function RicoChet:new(args)
         if G.Debug then
             local r, g, b, a = love.graphics.getColor()
             love.graphics.setColor(Util.Other.Hex("#9900FF"))
-            love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+            love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, s.T.w, s.T.h)
             love.graphics.setColor { r, g, b, a }
         end
     end
@@ -261,7 +261,7 @@ function Box:new(args)
         if G.Debug then
             local r, g, b, a = love.graphics.getColor()
             love.graphics.setColor(Util.Other.Hex("#83591B"))
-            love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+            love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, s.T.w, s.T.h)
             love.graphics.setColor { r, g, b, a }
         end
     end
@@ -314,16 +314,17 @@ function OneWayPlatform:new(args)
         if G.Debug then
             local r, g, b, a = love.graphics.getColor()
             love.graphics.setColor(Util.Other.Hex("#ADA9C5")[1], Util.Other.Hex("#ADA9C5")[2], Util.Other.Hex("#ADA9C5")[3], 1/3)
-            love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+            love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, s.T.w, s.T.h)
             love.graphics.setColor(Util.Other.Hex("#0EDB0E"))
             if self.Extra.Facing == "Up" then
-                love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, 2)
+                love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, s.T.w, 2)
             elseif self.Extra.Facing == "Down" then
-                love.graphics.rectangle("fill", s.T.x, s.T.y + s.T.h - 2, s.T.w, 2)
+                love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + s.T.h - 2 + G:GetTotalOffset().y, s.T.w, 2)
             elseif self.Extra.Facing == "Left" then
-                love.graphics.rectangle("fill", s.T.x, s.T.y, 2, s.T.h)
+                love.graphics.rectangle("fill", s.T.x + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, 2, s.T.h)
             elseif self.Extra.Facing == "Right" then
-                love.graphics.rectangle("fill", s.T.x + s.T.w - 2, s.T.y, 2, s.T.h)
+                love.graphics.rectangle("fill", s.T.x + s.T.w - 2 + G:GetTotalOffset().x, s.T.y + G:GetTotalOffset().y, 2,
+                s.T.h)
             end
             love.graphics.setColor { r, g, b, a }
         end

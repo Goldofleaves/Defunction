@@ -66,7 +66,7 @@ function Player:new(args)
                         G.Flags.BoomerangExists = true
                         s.Extra.Removen = true
                         local XCoord, YCoord, XVel, YVel = 0, 0, 0, 0
-                        local Spd, Offset = 350, 15
+                        local Spd, Offset = 300, 15
                         local rt2Spd, rt2Offset = Spd / (2 ^ (1 / 2)), Offset / (2 ^ (1 / 2))
                         if s.Extra.Det == 1 then
                             XCoord = Offset
@@ -189,11 +189,11 @@ function Player:new(args)
         self.V.x.Gravity = self.V.x.Gravity or 0
         self.TMod.y.Gravity = self.TMod.y.Gravity or 0
         self.V.y.Gravity = self.V.y.Gravity or 0
-        self.V.y.Gravity = math.min(self.V.y.Gravity + Macros.Gravity, Macros.TerminalVelocity)
+        self.V.y.Gravity = math.min(self.V.y.Gravity + Macros.Gravity / 0.02 * DELTATIME, Macros.TerminalVelocity)
         self.Extra.OnGround = self.Extra.DownCheck.Extra.Ticked
         self.Extra.HitCeiling = self.Extra.UpCheck.Extra.Ticked
         if OnGroundCond() then
-            self.V.y.Gravity = 0
+            self.V.y.Gravity = math.min(0, self.V.y.Gravity)
             self.Extra.HaventJumped = true
             self.Extra.CoyoteTimer = Macros.CoyoteTime
             self.Extra.HoldTimer = Macros.MaxHold

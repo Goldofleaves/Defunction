@@ -36,14 +36,51 @@ function Game:new()
     self.MousePos = {
         x = 0, y = 0
     }
+    self.DispOffset = {
+        x = {
+            base = 0
+        },
+        y = {
+            base = 0
+        }
+    }
     self.Flags = {}
+    self.Events = {}
     G = self
+end
+function Game:GetTotalOffset()
+    local retTable = {x = 0, y = 0}
+    for k, v in pairs(self.DispOffset) do
+        for kk, vv in pairs(v) do
+            retTable[k] = retTable[k] + vv
+        end
+    end
+    return retTable
 end
 function Game:update(dt)
     self.MousePos = {
         x = love.mouse.getX() / G.Settings.ScalingFactor,
         y = love.mouse.getY() / G.Settings.ScalingFactor
     }
+    -- Handling Events
+    for k, v in ipairs(self.Events) do
+        local event = v
+        event.CurTime = event.CurTime or 0
+        if event.EaseFunc then
+            event.EaseFunc(event.CurTime / event.Duration, event)
+        end
+        event.Completed = event.Completed == nil and false or event.Completed
+        if not event.Completed and event.Func then
+            event.Func(event)
+            event.Completed = true
+        end
+        event.CurTime = event.CurTime + dt
+        if event.CurTime > event.Duration then
+            if event.EndFunc then event.EndFunc(event) end
+            self.Events[k] = nil
+        end
+    end
+    self.Events = Util.Other.RemoveNils(self.Events)
     for k, v in pairs(self.Controller.Keyboard) do
         if (function ()
                 for kk, vv in pairs(v.Keybind) do
@@ -77,7 +114,6 @@ function Game:update(dt)
                 v.Released = true
             else
                 v.Released = false
-
             end
             v.Held = false
             v.Pressed = false

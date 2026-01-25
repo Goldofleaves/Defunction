@@ -119,10 +119,10 @@ function Sprite:draw()
     if self.Properties.Outline then
         local r, g, b, a = love.graphics.getColor()
         local function myStencilFunction()
-            draw_func(self.Offset.x + 1, self.Offset.y)
-            draw_func(self.Offset.x - 1, self.Offset.y)
-            draw_func(self.Offset.x, self.Offset.y + 1)
-            draw_func(self.Offset.x, self.Offset.y - 1)
+            draw_func(self.Offset.x + 1 + G:GetTotalOffset().x, self.Offset.y + G:GetTotalOffset().y)
+            draw_func(self.Offset.x - 1 + G:GetTotalOffset().x, self.Offset.y + G:GetTotalOffset().y)
+            draw_func(self.Offset.x + G:GetTotalOffset().x, self.Offset.y + 1 + G:GetTotalOffset().y)
+            draw_func(self.Offset.x + G:GetTotalOffset().x, self.Offset.y - 1 + G:GetTotalOffset().y)
         end
         love.graphics.stencil(myStencilFunction, "replace", 1)
         love.graphics.setStencilTest("greater", 0)
@@ -131,7 +131,7 @@ function Sprite:draw()
         love.graphics.setColor { r, g, b, a }
         love.graphics.setStencilTest()
     end
-    draw_func(self.Offset.x, self.Offset.y)
+    draw_func(self.Offset.x + G:GetTotalOffset().x, self.Offset.y + G:GetTotalOffset().y)
 end
 function Sprite:SetParent(Obj)
     table.insert(Obj.Children, self.Id)

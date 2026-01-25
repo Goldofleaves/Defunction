@@ -60,8 +60,9 @@ function BRang:new(args)
                     Left = function (a)
                         local bump = GetObjectById(GetAllCollisionPropertyIds(self.Extra.Checks.Left.Extra.Ticked,
                         "RicoChet")[1])
-                        if a.V.x.base < 0 and bump and bump.T.x + bump.T.w > a.T.x and Util.Math.PercisionCheck(bump.T.x + bump.T.w, a.T.x, math.abs(a.V.x.base) * PREVIOUS_DELTATIME + 10) then
+                        if a.V.x.base < 0 and bump and bump.T.x + bump.T.w > a.T.x and Util.Math.PercisionCheck(bump.T.x + bump.T.w, a.T.x, math.abs(a.V.x.base) * DELTATIME * 1.5 + 10) then
                             a.V.x.base = a.V.x.base * -1
+                            Util.Event.Screenshake(2, 1/4)
                             Sprite({
                                 AtliKey = "Bump",
                                 DrawOrder = 101,
@@ -71,10 +72,10 @@ function BRang:new(args)
                                 UpdateFunc = function(s, dt)
                                     s.Extra.Timer = s.Extra.Timer or 0
                                     s.Extra.Timer = s.Extra.Timer + dt
-                                    if s.Extra.Timer > 4 * 0.1 then
+                                    if s.Extra.Timer > 4 * 0.075 then
                                         s:Remove()
                                     end
-                                    local TickTime = 0.1
+                                    local TickTime = 0.075
                                     local frame = Util.Math.Div(s.Extra.Timer, TickTime) % 4
                                     s.AtliInfo.x = frame
                                 end
@@ -84,8 +85,9 @@ function BRang:new(args)
                     Right = function(a)
                         local bump = GetObjectById(GetAllCollisionPropertyIds(self.Extra.Checks.Right.Extra.Ticked,
                         "RicoChet")[1])
-                        if a.V.x.base > 0 and bump and bump.T.x < a.T.x + a.T.w and Util.Math.PercisionCheck(bump.T.x, a.T.x + a.T.w, math.abs(a.V.x.base) * PREVIOUS_DELTATIME + 10) then
+                        if a.V.x.base > 0 and bump and bump.T.x < a.T.x + a.T.w and Util.Math.PercisionCheck(bump.T.x, a.T.x + a.T.w, math.abs(a.V.x.base) * DELTATIME * 1.5 + 10) then
                             a.V.x.base = a.V.x.base * -1
+                            Util.Event.Screenshake(2, 1 / 4)
                             Sprite({
                                 AtliKey = "Bump",
                                 DrawOrder = 101,
@@ -95,10 +97,10 @@ function BRang:new(args)
                                 UpdateFunc = function(s, dt)
                                     s.Extra.Timer = s.Extra.Timer or 0
                                     s.Extra.Timer = s.Extra.Timer + dt
-                                    if s.Extra.Timer > 4 * 0.1 then
+                                    if s.Extra.Timer > 4 * 0.075 then
                                         s:Remove()
                                     end
-                                    local TickTime = 0.1
+                                    local TickTime = 0.075
                                     local frame = Util.Math.Div(s.Extra.Timer, TickTime) % 4
                                     s.AtliInfo.x = frame
                                 end
@@ -108,8 +110,9 @@ function BRang:new(args)
                     Up = function(a)
                         local bump = GetObjectById(GetAllCollisionPropertyIds(self.Extra.Checks.Up.Extra.Ticked,
                         "RicoChet")[1])
-                        if a.V.y.base < 0 and bump and bump.T.y + bump.T.h > a.T.y and Util.Math.PercisionCheck(bump.T.y + bump.T.h, a.T.y, math.abs(a.V.y.base) * PREVIOUS_DELTATIME + 10) then
+                        if a.V.y.base < 0 and bump and bump.T.y + bump.T.h > a.T.y and Util.Math.PercisionCheck(bump.T.y + bump.T.h, a.T.y, math.abs(a.V.y.base) * DELTATIME * 1.5 + 10) then
                             a.V.y.base = a.V.y.base * -1
+                            Util.Event.Screenshake(2, 1 / 4)
                             Sprite({
                                 AtliKey = "Bump",
                                 DrawOrder = 101,
@@ -119,10 +122,10 @@ function BRang:new(args)
                                 UpdateFunc = function(s, dt)
                                     s.Extra.Timer = s.Extra.Timer or 0
                                     s.Extra.Timer = s.Extra.Timer + dt
-                                    if s.Extra.Timer > 4 * 0.1 then
+                                    if s.Extra.Timer > 4 * 0.075 then
                                         s:Remove()
                                     end
-                                    local TickTime = 0.1
+                                    local TickTime = 0.075
                                     local frame = Util.Math.Div(s.Extra.Timer, TickTime) % 4
                                     s.AtliInfo.x = frame
                                 end
@@ -131,8 +134,9 @@ function BRang:new(args)
                     end,
                     Down = function(a)
                         local bump = GetObjectById(GetAllCollisionPropertyIds(self.Extra.Checks.Down.Extra.Ticked, "RicoChet")[1])
-                        if a.V.y.base > 0 and bump and bump.T.y < a.T.y + a.T.h and Util.Math.PercisionCheck(bump.T.y, a.T.y + a.T.h, math.abs(a.V.y.base) * PREVIOUS_DELTATIME + 10) then
+                        if a.V.y.base > 0 and bump and bump.T.y < a.T.y + a.T.h and Util.Math.PercisionCheck(bump.T.y, a.T.y + a.T.h, math.abs(a.V.y.base) * DELTATIME * 1.5 + 10) then
                             a.V.y.base = a.V.y.base * -1
+                            Util.Event.Screenshake(2, 1 / 4)
                             Sprite({
                                 AtliKey = "Bump",
                                 DrawOrder = 101,
@@ -142,10 +146,10 @@ function BRang:new(args)
                                 UpdateFunc = function(s, dt)
                                     s.Extra.Timer = s.Extra.Timer or 0
                                     s.Extra.Timer = s.Extra.Timer + dt
-                                    if s.Extra.Timer > 4 * 0.1 then
+                                    if s.Extra.Timer > 4 * 0.075 then
                                         s:Remove()
                                     end
-                                    local TickTime = 0.1
+                                    local TickTime = 0.075
                                     local frame = Util.Math.Div(s.Extra.Timer, TickTime) % 4
                                     s.AtliInfo.x = frame
                                 end
@@ -158,6 +162,7 @@ function BRang:new(args)
                         funcs[k](self)
                         self.Extra.TG = 0.05
                     elseif not CollisionContainsProperty(v.Extra.Ticked, "Player") then
+                        if not self.Extra.Done then Util.Event.Screenshake(3/4, 1 / 8) end
                         self.Extra.Done = true
                         self.V.y.base = 0
                         self.V.x.base = 0

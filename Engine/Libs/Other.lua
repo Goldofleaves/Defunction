@@ -68,3 +68,12 @@ function Util.Other.ExractValueFromHierarch(tab, hierarch)
 	end
 	return tab
 end
+function Util.Other.RemoveNils(t)
+	local ret = {}
+	for k, v in ipairs(t) do
+		if v ~= nil then
+			table.insert(ret, v)
+		end
+	end
+	return ret
+end

@@ -1,6 +1,7 @@
 Util = {}
 love.graphics.setDefaultFilter("nearest", "nearest", 1)
 require "Engine.Object"
+require "Engine.Event"
 require "Engine.Moveable"
 require "Engine.Sprite"
 require "Engine.Macros"
@@ -23,7 +24,7 @@ love.filesystem.setIdentity("Defunction")
 
 local function LoadFirstRoomTemp()
     Wall()
-    Wall({ x = 380 })
+    RicoChet({ x = 380, w = 80, h = 20})
     Box()
     OneWayPlatform({ x = 180, y = 60, Facing = "Up" })
     OneWayPlatform({ x = 180, Facing = "Up" })
@@ -118,6 +119,7 @@ love.load = function()
     --
 end
 function love.update(dt)
+    print(1/dt)
     DELTATIME = dt
     G:update(dt)
     PREVIOUS_DELTATIME = dt
