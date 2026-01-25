@@ -201,6 +201,9 @@ function BRang:new(args)
             local frame = Util.Math.Div(G.Timer, TickTime) % 4
             s.AtliInfo.x = frame
             s.AtliInfo.y = self.Extra.Done and 1 or 0
+            if not G.Flags.BoomerangExists then
+                s:Remove()
+            end
         end
     })
     self.Extra.A:SetParent(self)
