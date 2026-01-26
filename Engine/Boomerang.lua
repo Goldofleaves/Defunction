@@ -53,7 +53,7 @@ function BRang:new(args)
                     updateFunc = function(s, dt)
                         s.extra.v = s.extra.v or {
                             x = math.random(1, -1) * 2,
-                            y = -150,
+                            y = -120,
                             g = 5,
                             counter = 0
                         }
