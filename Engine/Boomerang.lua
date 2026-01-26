@@ -43,6 +43,33 @@ function BRang:new(args)
         end
     end
     args.updateFunc = function(self, dt)
+        if not getObjectByNid("player") then
+            self:remove(true)
+            if G.flags.boomerangExists then
+                Sprite {
+                    atlasKey = "BoomyDead",
+                    x = self.T.x,
+                    y = self.T.y,
+                    updateFunc = function(s, dt)
+                        s.extra.v = s.extra.v or {
+                            x = math.random(1, -1) * 2,
+                            y = -150,
+                            g = 5,
+                            counter = 0
+                        }
+                        s.extra.v.y = s.extra.v.y + s.extra.v.g / 0.015 * dt
+                        s.T.x = s.T.x + s.extra.v.x * dt
+                        s.T.y = s.T.y + s.extra.v.y * dt
+                        s.extra.v.counter = s.extra.v.counter + dt
+                        if s.extra.v.counter > 5 then
+                            s:remove()
+                        end
+                    end,
+                    drawOrder = 101,
+                }
+            end
+            G.flags.boomerangExists = false
+        end
         self.extra.velD = self.extra.velD or 0
         self.extra.TG = self.extra.TG or 0
         self.extra.velD = self.extra.velD + 1 / 12
@@ -185,9 +212,9 @@ function BRang:new(args)
             self.V.x.base = 0
             self.V.y.base = 0
             self.extra.lerpD = Util.Math.lerpDt(self.extra.lerpD, 0, 0.15)
-            self.TMod.x.base = Util.Math.lerpDt(self.TMod.x.base, getObjectByNid("player").T.x, self.extra.lerpD)
-            self.TMod.y.base = Util.Math.lerpDt(self.TMod.y.base, getObjectByNid("player").T.y + 10, self.extra.lerpD)
-            if Util.Math.percisionCheck(self.T.x, getObjectByNid("player").T.x, 2) and Util.Math.percisionCheck(self.T.y, getObjectByNid("player").T.y + 10, 2) then
+            self.TMod.x.base = Util.Math.lerpDt(self.TMod.x.base, getObjectByNid("player") and getObjectByNid("player").T.x or 0, self.extra.lerpD)
+            self.TMod.y.base = Util.Math.lerpDt(self.TMod.y.base, (getObjectByNid("player") and getObjectByNid("player").T.y or 0) + 10, self.extra.lerpD)
+            if Util.Math.percisionCheck(self.T.x, getObjectByNid("player") and getObjectByNid("player").T.x or 0, 2) and Util.Math.percisionCheck(self.T.y, (getObjectByNid("player") and getObjectByNid("player").T.y or 0) + 10, 2) then
                 self:remove()
                 G.flags.boomerangExists = nil
             end

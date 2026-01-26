@@ -53,6 +53,7 @@ registerAtlasSimple("ArnaDead", "Assets/Images/ArnaDead.png", 20, 40)
 registerAtlasSimple("ArnaOverworldMask", "Assets/Images/ArnaOverworldMask.png", 20, 40)
 registerAtlasSimple("BoomerangRing", "Assets/Images/BoomerangRing.png", 80, 80)
 registerAtlasSimple("Boomerang", "Assets/Images/Boomerang.png", 20, 20)
+registerAtlasSimple("BoomyDead", "Assets/Images/BoomyDead.png", 20, 20)
 registerAtlasSimple("Bump", "Assets/Images/Bump.png", 20, 20)
 registerAtlasSimple("TitleSelection", "Assets/Images/TitleSelection.png", 47, 11) -- x: 359 y: 228 + (i - 1) * 11 i think. Might be off by 1
 registerAtlasSimple("TitleBase", "Assets/Images/TitleBase.png", 640, 360)
