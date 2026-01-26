@@ -23,7 +23,7 @@ function BRang:new(args)
         return next(a.extra.ticked or {}) and not collisionContainsId(a.extra.ticked, self.id) and
             not collisionContainsProperty(a.extra.ticked, "noCollision") and
             not collisionContainsProperty(a.extra.ticked, "collisionCheck") and
-            (CollisionContainsextra(a.extra.ticked, "facing") and collisionContainsId(getAllCollisionextra(a.extra.ticked, "facing"), dir) or true)
+            (collisionContainsExtra(a.extra.ticked, "facing") and collisionContainsId(getAllCollisionextra(a.extra.ticked, "facing"), dir) or true)
     end
     args = args or {}
     args.drawOrder = 35
@@ -37,7 +37,7 @@ function BRang:new(args)
     args.drawFunc = function(s)
         if G.debug then
             local r, g, b, a = love.graphics.getColor()
-            love.graphics.setColor(Util.Other.Hex("#FF00B3"))
+            love.graphics.setColor(Util.Other.hex("#FF00B3"))
             --love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
             love.graphics.setColor { r, g, b, a }
         end
@@ -165,7 +165,7 @@ function BRang:new(args)
                     if collisionContainsProperty(v.extra.ticked, "RicoChet") then
                         funcs[k](self)
                         self.extra.TG = 0.05
-                    elseif not collisionContainsProperty(v.extra.ticked, "Player") then
+                    elseif not collisionContainsProperty(v.extra.ticked, "player") then
                         if not self.extra.done then
                             Util.Event.screenShake(3 / 4, 1 / 8)
                             Util.Audio.playSfx("BumpWeak1", 1, math.random()*0.5 + 0.75)
@@ -185,9 +185,9 @@ function BRang:new(args)
             self.V.x.base = 0
             self.V.y.base = 0
             self.extra.lerpD = Util.Math.lerpDt(self.extra.lerpD, 0, 0.15)
-            self.TMod.x.base = Util.Math.lerpDt(self.TMod.x.base, getObjectByNid("Player").T.x, self.extra.lerpD)
-            self.TMod.y.base = Util.Math.lerpDt(self.TMod.y.base, getObjectByNid("Player").T.y + 10, self.extra.lerpD)
-            if Util.Math.percisionCheck(self.T.x, getObjectByNid("Player").T.x, 2) and Util.Math.percisionCheck(self.T.y, getObjectByNid("Player").T.y + 10, 2) then
+            self.TMod.x.base = Util.Math.lerpDt(self.TMod.x.base, getObjectByNid("player").T.x, self.extra.lerpD)
+            self.TMod.y.base = Util.Math.lerpDt(self.TMod.y.base, getObjectByNid("player").T.y + 10, self.extra.lerpD)
+            if Util.Math.percisionCheck(self.T.x, getObjectByNid("player").T.x, 2) and Util.Math.percisionCheck(self.T.y, getObjectByNid("player").T.y + 10, 2) then
                 self:remove()
                 G.flags.boomerangExists = nil
             end
@@ -203,6 +203,8 @@ function BRang:new(args)
         atlasKey = "Boomerang",
         drawOrder = 100,
         atlasY = 0,
+        x = self.TMod.x.base,
+        y = self.TMod.y.base,
         updateFunc = function(s, dt)
             local tickTime = 0.15
             local frame = Util.Math.div(G.timer, tickTime) % 4
@@ -226,7 +228,7 @@ function BRang:new(args)
         drawFunc = function(s)
             if G.debug then
                 local r, g, b, a = love.graphics.getColor()
-                love.graphics.setColor(Util.Other.Hex("#2F00FF"))
+                love.graphics.setColor(Util.Other.hex("#2F00FF"))
                 --love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
                 love.graphics.setColor { r, g, b, a }
             end
@@ -244,7 +246,7 @@ function BRang:new(args)
         drawFunc = function(s)
             if G.debug then
                 local r, g, b, a = love.graphics.getColor()
-                love.graphics.setColor(Util.Other.Hex("#F700FF"))
+                love.graphics.setColor(Util.Other.hex("#F700FF"))
                 --love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
                 love.graphics.setColor { r, g, b, a }
             end
@@ -262,7 +264,7 @@ function BRang:new(args)
         drawFunc = function(s)
             if G.debug then
                 local r, g, b, a = love.graphics.getColor()
-                love.graphics.setColor(Util.Other.Hex("#FF0000"))
+                love.graphics.setColor(Util.Other.hex("#FF0000"))
                 --love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
                 love.graphics.setColor { r, g, b, a }
             end
@@ -280,7 +282,7 @@ function BRang:new(args)
         drawFunc = function(s)
             if G.debug then
                 local r, g, b, a = love.graphics.getColor()
-                love.graphics.setColor(Util.Other.Hex("#00FF22"))
+                love.graphics.setColor(Util.Other.hex("#00FF22"))
                 --love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
                 love.graphics.setColor { r, g, b, a }
             end

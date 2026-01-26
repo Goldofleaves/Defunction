@@ -4,7 +4,7 @@ Util.Other = {}
 --- @param t table|any The original Table
 --- @param filter table|nil If this is a table, then this function only copy entries inside filter as well.
 --- @return table|any
-Util.Other.CopyTable = function(t, filter)
+Util.Other.copyTable = function(t, filter)
 	if type(t) ~= "table" then
 		return t
 	end
@@ -21,14 +21,14 @@ Util.Other.CopyTable = function(t, filter)
 				end
 			end
 		else
-			ret[k] = Util.Other.CopyTable(v, filter)
+			ret[k] = Util.Other.copyTable(v, filter)
 		end
 	end
 	return ret
 end
 
 --- Loads the localization entries to G.localization.
-Util.Other.LoadLocalization = function()
+Util.Other.loadLocalization = function()
 	G.localization = assert(load(love.filesystem.read("localization/english.lua")))()
 	local language = G.language or "english"
 	local temp = assert(load(love.filesystem.read("localization/"..language..".lua")))()
@@ -41,7 +41,7 @@ end
 --- Returns the color value for the passed in hex code.
 --- @param hex string The hex code, `"#"` optionally included.
 --- @return table Color
-function Util.Other.Hex(hex)
+function Util.Other.hex(hex)
 	if string.sub(hex, 1, 1) == "#" then
 		hex = string.sub(hex, 2, string.len(hex))
 	end
@@ -56,13 +56,13 @@ end
 ---@param tab table
 ---@param hierarch table
 ---@return any
-function Util.Other.ExractValueFromHierarch(tab, hierarch)
-	hierarch = Util.Other.CopyTable(hierarch)
+function Util.Other.extractValueFromHierarch(tab, hierarch)
+	hierarch = Util.Other.copyTable(hierarch)
 	if next(hierarch) then
 		local k = hierarch[#hierarch]
 		table.remove(hierarch, #hierarch)
 		if tab[k] then
-			return Util.Other.ExractValueFromHierarch(tab[k], hierarch)
+			return Util.Other.extractValueFromHierarch(tab[k], hierarch)
 		end
 		return
 	end

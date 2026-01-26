@@ -43,13 +43,22 @@ function Game:new()
     }
     self.dispOffset = {
         x = {
-            base = 0
+            base = 0,
+            room = 0
         },
         y = {
-            base = 0
+            base = 0,
+            room = 0
         }
     }
-    self.flags = {}
+    self.flags = {
+        deaths = 0
+    }
+    self.roomInfo = {
+        spawnPoint = {
+            x = 140, y = 140
+        }
+    }
     self.events = {}
     self.audio = {
         sfx = {},
@@ -68,6 +77,7 @@ function Game:getTotalOffset()
     return ret
 end
 function Game:update(dt)
+
 
     -- Mouse
     self.mousePos = {
@@ -228,27 +238,44 @@ function Game:update(dt)
     --HandleCollisionsGeneral()
     for k, v in pairs(self.I.MOVEABLES) do
         if not v.properties.collisionCheck then
-            handleCollisionsK(k)
-            v:update(dt)
-            handleCollisionsK(k)
             if self.state == "DestroyedObj" then
                 self.state = self.oldState
                 self.oldState = nil
+                self.stopTemp = true
+                break
             end
+            if not self.stopTemp then handleCollisionsK(k) end
+            v:update(dt)
+            if self.state == "DestroyedObj" then
+                self.state = self.oldState
+                self.oldState = nil
+                self.stopTemp = true
+                break
+            end
+            if not self.stopTemp then handleCollisionsK(k) end
         end
     end
+    self.stopTemp = nil
     for k, v in pairs(self.I.MOVEABLES) do
         if v.properties.collisionCheck then
             v:update(dt)
-            if v.parent then handleCollisionsK(getPosById(v.parent)) end
-            handleCollisionsK(k)
             if self.state == "DestroyedObj" then
                 self.state = self.oldState
                 self.oldState = nil
+                self.stopTemp = true
                 break
             end
+            if v.parent and not self.B then handleCollisionsK(getPosById(v.parent)) end
+            if self.state == "DestroyedObj" then
+                self.state = self.oldState
+                self.oldState = nil
+                self.stopTemp = true
+                break
+            end
+            if not self.stopTemp then handleCollisionsK(k) end
         end
     end
+    self.B = nil
     for k, v in pairs(self.I.SPRITES) do
         v:update(dt)
         if self.state == "DestroyedObj" then
@@ -267,12 +294,12 @@ end
 
 function Game:draw()
     local r, g, b, a = love.graphics.getColor()
-    love.graphics.setColor(Util.Other.Hex("#4a3052"))
+    love.graphics.setColor(Util.Other.hex("#4a3052"))
     love.graphics.rectangle("fill", 0, 0, Macros.baseResolution.w, Macros.baseResolution.h)
     love.graphics.setColor { r, g, b, a }
     if self.settings.showGrid then
         local r, g, b, a = love.graphics.getColor()
-        love.graphics.setColor(Util.Other.Hex("#a32858"))
+        love.graphics.setColor(Util.Other.hex("#a32858"))
         local amtx, amty = (Macros.baseResolution.w - Macros.tileSize * 2) / Macros.tileSize,
             (Macros.baseResolution.h - Macros.tileSize * 2) / Macros.tileSize
         for i = 1, amtx - 1 do

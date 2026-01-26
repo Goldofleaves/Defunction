@@ -120,28 +120,30 @@ function Sprite:draw()
                 end
             end
         end
-        self.drawFunc(self)
         if self.Mask.ShouldApply then
             love.graphics.setStencilTest()
         end
         love.graphics.setColor { r, g, b, a }
     end
-    if self.properties.Outline then
-        local r, g, b, a = love.graphics.getColor()
-        local function myStencilFunction()
-            draw_func(self.Offset.x + 1 + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
-            draw_func(self.Offset.x - 1 + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
-            draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y + 1 + G:getTotalOffset().y)
-            draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y - 1 + G:getTotalOffset().y)
+    if self.atlasInfo.key then
+        if self.properties.Outline then
+            local r, g, b, a = love.graphics.getColor()
+            local function myStencilFunction()
+                draw_func(self.Offset.x + 1 + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
+                draw_func(self.Offset.x - 1 + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
+                draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y + 1 + G:getTotalOffset().y)
+                draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y - 1 + G:getTotalOffset().y)
+            end
+            love.graphics.stencil(myStencilFunction, "replace", 1)
+            love.graphics.setStencilTest("greater", 0)
+            love.graphics.setColor(self.properties.OutlineColor)
+            love.graphics.rectangle("fill", 0, 0, Macros.baseResolution.w, Macros.baseResolution.h)
+            love.graphics.setColor { r, g, b, a }
+            love.graphics.setStencilTest()
         end
-        love.graphics.stencil(myStencilFunction, "replace", 1)
-        love.graphics.setStencilTest("greater", 0)
-        love.graphics.setColor(self.properties.OutlineColor)
-        love.graphics.rectangle("fill", 0, 0, Macros.baseResolution.w, Macros.baseResolution.h)
-        love.graphics.setColor { r, g, b, a }
-        love.graphics.setStencilTest()
+        draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
     end
-    draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
+    self.drawFunc(self)
 end
 function Sprite:setParent(obj)
     table.insert(obj.children, self.id)

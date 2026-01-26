@@ -134,6 +134,9 @@ function Moveable:checkCollision(e)
         and self.T.y < e.T.y + e.T.h
 end
 function Moveable:resolveCollision(e)
+    if not self or not e then
+        return
+    end
     if self.properties.noCollision or e.properties.noCollision then
         return false
     end
@@ -192,7 +195,7 @@ function Wall:new(args)
     args.drawFunc = function (s)
         if G.debug then
             local r, g, b, a = love.graphics.getColor()
-            love.graphics.setColor(Util.Other.Hex("#FF0000"))
+            love.graphics.setColor(Util.Other.hex("#FF0000"))
             love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, s.T.h)
             love.graphics.setColor{r, g, b, a}
         end
@@ -213,7 +216,7 @@ function RicoChet:new(args)
     args.drawFunc = function(s)
         if G.debug then
             local r, g, b, a = love.graphics.getColor()
-            love.graphics.setColor(Util.Other.Hex("#9900FF"))
+            love.graphics.setColor(Util.Other.hex("#9900FF"))
             love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, s.T.h)
             love.graphics.setColor { r, g, b, a }
         end
@@ -222,6 +225,7 @@ function RicoChet:new(args)
 end
 require "Engine.Player"
 require "Engine.Boomerang"
+require "Engine.Defeat"
 
 Box = Moveable:extend()
 function Box:new(args)
@@ -247,7 +251,7 @@ function Box:new(args)
         end
         self.strength = 200
         for k, v in pairs(G.I.MOVEABLES) do
-            if v.properties.Player then
+            if v.properties.player then
                 if v.T.y + v.T.h <= self.T.y then
                     self.strength = 1000
                 end
@@ -257,7 +261,7 @@ function Box:new(args)
     args.drawFunc = function(s)
         if G.debug then
             local r, g, b, a = love.graphics.getColor()
-            love.graphics.setColor(Util.Other.Hex("#83591B"))
+            love.graphics.setColor(Util.Other.hex("#83591B"))
             love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, s.T.h)
             love.graphics.setColor { r, g, b, a }
         end
@@ -291,7 +295,7 @@ function OneWayPlatform:new(args)
     args.updateFunc = function(self, dt)
         self.properties.noCollision = true
         for k, v in pairs(G.I.MOVEABLES) do
-            if v.properties.Player then
+            if v.properties.player then
                 if v.T.y + v.T.h <= self.T.y and self.extra.facing == "up" then
                     self.properties.noCollision = false
                 end
@@ -310,9 +314,9 @@ function OneWayPlatform:new(args)
     args.drawFunc = function(s)
         if G.debug then
             local r, g, b, a = love.graphics.getColor()
-            love.graphics.setColor(Util.Other.Hex("#ADA9C5")[1], Util.Other.Hex("#ADA9C5")[2], Util.Other.Hex("#ADA9C5")[3], 1/3)
+            love.graphics.setColor(Util.Other.hex("#ADA9C5")[1], Util.Other.hex("#ADA9C5")[2], Util.Other.hex("#ADA9C5")[3], 1/3)
             love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, s.T.h)
-            love.graphics.setColor(Util.Other.Hex("#0EDB0E"))
+            love.graphics.setColor(Util.Other.hex("#0EDB0E"))
             if self.extra.facing == "up" then
                 love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, 2)
             elseif self.extra.facing == "down" then
@@ -342,26 +346,26 @@ end
 function collisionContainsProperty(ticked, P)
     for k, v in ipairs(ticked) do
         local obj = getObjectById(v)
-        if obj.properties[P] then
+        if obj and obj.properties[P] then
             return obj.properties[P]
         end
     end
     return false
 end
-function CollisionContainsextra(ticked, P)
+function collisionContainsExtra(ticked, P)
     for k, v in ipairs(ticked) do
         local obj = getObjectById(v)
-        if obj.extra[P] then
+        if obj and obj.extra[P] then
             return obj.extra[P]
         end
     end
     return false
 end
-function GetAllCollisionProperty(ticked, P)
+function getAllCollisionProperty(ticked, P)
     local PTab = {}
     for k, v in ipairs(ticked) do
         local obj = getObjectById(v)
-        if obj.properties[P] then
+        if obj and obj.properties[P] then
             table.insert(PTab, obj.properties[P])
         end
     end
@@ -372,7 +376,7 @@ function getAllCollisionPropertyIds(ticked, P)
     local PTab = {}
     for k, v in ipairs(ticked) do
         local obj = getObjectById(v)
-        if obj.properties[P] then
+        if obj and obj.properties[P] then
             table.insert(PTab, v)
         end
     end
@@ -382,20 +386,24 @@ function getAllCollisionextra(ticked, P)
     local PTab = {}
     for k, v in ipairs(ticked) do
         local obj = getObjectById(v)
-        if obj.extra[P] then
+        if obj and obj.extra[P] then
             table.insert(PTab, obj.extra[P])
         end
     end
     return PTab
 end
-function Moveable:remove()
+function Moveable:remove(killAllChildren)
     for k, v in ipairs(G.I.MOVEABLES) do
         if v.id == self.id then
             local j = self.id
             table.remove(G.I.MOVEABLES, k)
             for k, v in ipairs(G.I.MOVEABLES) do
                 if v.parent == j then
-                    v.parent = nil
+                    if killAllChildren then
+                        v:remove()
+                    else
+                        v.parent = nil
+                    end
                 end
             end
             G.oldState = G.state
@@ -410,4 +418,12 @@ function getPosById(Id)
             return k
         end
     end
+end
+function collisionsSatisfiesForAll(ticked, fun)
+    for k, v in ipairs(ticked) do
+        if not fun(getObjectById(v)) then
+            return false
+        end
+    end
+    return true
 end

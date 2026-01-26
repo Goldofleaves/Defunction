@@ -4,22 +4,26 @@ Player = Moveable:extend()
 function Player:new(args)
     local OnGroundCond = function()
         return next(self.extra.onGround) and not collisionContainsId(self.extra.onGround, self.id) and
-            not collisionContainsProperty(self.extra.onGround, "noCollision") and
-            not collisionContainsProperty(self.extra.onGround, "collisionCheck") and
-            (CollisionContainsextra(self.extra.onGround, "facing") and collisionContainsId(getAllCollisionextra(self.extra.onGround, "facing"), "up") or true)
+            not collisionsSatisfiesForAll(self.extra.onGround, function (e)
+                return e.properties.noCollision
+            end) and
+            not collisionsSatisfiesForAll(self.extra.onGround, function(e)
+                return e.properties.collisionCheck
+            end) and
+            (collisionContainsExtra(self.extra.onGround, "facing") and collisionContainsId(getAllCollisionextra(self.extra.onGround, "facing"), "up") or true)
     end
     args = args or {}
     args.strength = 500
     args.properties = args.properties or {}
-    args.properties.Player = true
+    args.properties.player = true
     args.x = args.x or 140
     args.y = args.y or 140
     args.w = args.w or 20
     args.h = args.h or 40
     args.extra = {
-        CoyoteTimer = 0,
-        HaventJumped = true,
-        HoldTimer = Macros.maxHold,
+        coyoteTimer = 0,
+        haventJumped = true,
+        holdTimer = Macros.maxHold,
         facing = "right",
         onGround = {}
     }
@@ -166,11 +170,11 @@ function Player:new(args)
                 end,
                 drawFunc = function(s)
                     local r, g, b, a = love.graphics.getColor()
-                    love.graphics.setColor(Util.Other.Hex("#FFFFFF"))
+                    love.graphics.setColor(Util.Other.hex("#FFFFFF"))
                     love.graphics.circle("fill", G.mousePos.x, G.mousePos.y, math.max(0, s.extra.Radius))
-                    love.graphics.setColor(Util.Other.Hex("#4a3052"))
+                    love.graphics.setColor(Util.Other.hex("#4a3052"))
                     love.graphics.circle("fill", G.mousePos.x, G.mousePos.y, math.max(0, s.extra.Radius - 0.5))
-                    love.graphics.setColor(Util.Other.Hex("#FFFFFF"))
+                    love.graphics.setColor(Util.Other.hex("#FFFFFF"))
                     love.graphics.circle("fill", G.mousePos.x, G.mousePos.y, math.max(0, s.extra.Radius - 2.5))
                     love.graphics.setColor { r, g, b, a }
                 end
@@ -194,38 +198,38 @@ function Player:new(args)
         self.extra.HitCeiling = self.extra.upCheck.extra.ticked
         if OnGroundCond() then
             self.V.y.gravity = math.min(0, self.V.y.gravity)
-            self.extra.HaventJumped = true
-            self.extra.CoyoteTimer = Macros.coyoteTime
-            self.extra.HoldTimer = Macros.maxHold
+            self.extra.haventJumped = true
+            self.extra.coyoteTimer = Macros.coyoteTime
+            self.extra.holdTimer = Macros.maxHold
         else
-            self.extra.CoyoteTimer = self.extra.CoyoteTimer - dt
+            self.extra.coyoteTimer = self.extra.coyoteTimer - dt
         end
-        if self.extra.CoyoteTimer < 0 then
-            self.extra.HaventJumped = false
+        if self.extra.coyoteTimer < 0 then
+            self.extra.haventJumped = false
         end
         if G.controller.keyboard.up.held then
-            if self.extra.HaventJumped or self.extra.HoldTimer >= 0 then
+            if self.extra.haventJumped or self.extra.holdTimer >= 0 then
                 self.V.y.gravity = -Macros.jumpVelocity
             end
-            self.extra.HoldTimer = self.extra.HoldTimer - dt
+            self.extra.holdTimer = self.extra.holdTimer - dt
         else
-            self.extra.HoldTimer = -1
+            self.extra.holdTimer = -1
         end
         if self.V.y.gravity <= 0 and next(self.extra.HitCeiling) and not collisionContainsId(self.extra.HitCeiling, self.id) and not collisionContainsProperty(self.extra.HitCeiling, "noCollision") then
             self.V.y.gravity = 20
-            self.extra.HoldTimer = -1
+            self.extra.holdTimer = -1
         end
     end
     args.drawFunc = function(s)
         if G.debug then
             local r, g, b, a = love.graphics.getColor()
-            love.graphics.setColor(Util.Other.Hex("#00FF15"))
+            love.graphics.setColor(Util.Other.hex("#00FF15"))
             --love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
             love.graphics.setColor { r, g, b, a }
         end
     end
     Moveable.new(self, args)
-    self.extra.CoyoteTimer = Macros.coyoteTime
+    self.extra.coyoteTimer = Macros.coyoteTime
     self.extra.downCheck = Moveable {
         properties = {
             collisionCheck = true
@@ -235,8 +239,8 @@ function Player:new(args)
         drawFunc = function(s)
             if G.debug then
                 local r, g, b, a = love.graphics.getColor()
-                love.graphics.setColor(Util.Other.Hex("#2F00FF"))
-                love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+                love.graphics.setColor(Util.Other.hex("#2F00FF"))
+                love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, s.T.h)
                 love.graphics.setColor { r, g, b, a }
             end
         end,
@@ -254,8 +258,8 @@ function Player:new(args)
         drawFunc = function(s)
             if G.debug then
                 local r, g, b, a = love.graphics.getColor()
-                love.graphics.setColor(Util.Other.Hex("#2F00FF"))
-                love.graphics.rectangle("fill", s.T.x, s.T.y, s.T.w, s.T.h)
+                love.graphics.setColor(Util.Other.hex("#2F00FF"))
+                love.graphics.rectangle("fill", s.T.x + G:getTotalOffset().x, s.T.y + G:getTotalOffset().y, s.T.w, s.T.h)
                 love.graphics.setColor { r, g, b, a }
             end
         end,
@@ -499,6 +503,6 @@ function Player:new(args)
             s.atlasInfo.x = frame
         end
     }):setParent(self)
-    self.nid = "Player"
+    self.nid = "player"
     return self
 end

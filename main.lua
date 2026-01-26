@@ -36,17 +36,20 @@ require "Engine.Object"
 require "Engine.Event"
 require "Engine.Moveable"
 require "Engine.Sprite"
+require "Engine.Text"
 require "Engine.Macros"
 require "Engine.Libs.File"
 require "Engine.Libs.Math"
 require "Engine.Libs.Other"
 require "Engine.Libs.Audio"
+require "Engine.Libs.Splines and Easing"
 require "Engine.G"
 require "Engine.Scaling"
 registerAtlasSimple("Border", "Assets/Images/Border.png", 640, 360)
 registerAtlasSimple("BorderPattern", "Assets/Images/BorderPattern.png", 20, 20)
 registerAtlasSimple("Icon", "Assets/Images/Icon.png", 16, 16)
 registerAtlasSimple("ArnaOverworld", "Assets/Images/ArnaOverworld.png", 20, 40)
+registerAtlasSimple("ArnaDead", "Assets/Images/ArnaDead.png", 20, 40)
 registerAtlasSimple("ArnaOverworldMask", "Assets/Images/ArnaOverworldMask.png", 20, 40)
 registerAtlasSimple("BoomerangRing", "Assets/Images/BoomerangRing.png", 80, 80)
 registerAtlasSimple("Boomerang", "Assets/Images/Boomerang.png", 20, 20)
@@ -56,7 +59,7 @@ registerAtlasSimple("TitleBase", "Assets/Images/TitleBase.png", 640, 360)
 Util.Audio.registerSfx('Bump1', { 'Bump1' })
 Util.Audio.registerSfx('BumpWeak1', { 'BumpWeak1' })
 love.filesystem.setIdentity("Defunction")
-
+Util.Other.loadLocalization()
 local function LoadFirstRoomTemp()
     Wall()
     RicoChet({ x = 380, w = 80, h = 20})
@@ -70,6 +73,7 @@ local function LoadFirstRoomTemp()
     RicoChet({ x = 500, y = 100 })
     RicoChet({ x = 400, y = 60, h = 20, w = 80 })
     Player()
+    DeathBlock()
 end
 love.load = function()
     SimpleScale.auto_scale()
@@ -156,7 +160,9 @@ end
 function love.update(dt)
     DELTATIME = dt
     G:update(dt)
-    print("Fps: "..(math.floor(1/dt)))
+    print("Fps: " .. (math.floor(1 / dt)))
+    print("X: "..(G.dispOffset.x.Shake or 0))
+    print("Y: "..(G.dispOffset.y.Shake or 0))
     PREVIOUS_DELTATIME = dt
 end
 
