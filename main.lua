@@ -124,6 +124,7 @@ function love.errorhandler(msg)
         if not love.graphics.isActive() then return end
         pos = pos or 40
         love.graphics.setDefaultFilter("nearest", "nearest", 1)
+        J = J or love.graphics.newImage("Assets/Images/ErrorHandler.png")
         love.graphics.clear(hex("#8465ec"))
         love.graphics.setColor(1, 1, 1)
         love.graphics.rectangle("fill", 40 - 22, 40 - 22, love.graphics.getWidth() - 20 - 16,
@@ -132,7 +133,7 @@ function love.errorhandler(msg)
         love.graphics.rectangle("fill", 40 - 20, 40 - 20, love.graphics.getWidth() - 20 - 20,
             love.graphics.getHeight() - 20 - 20)
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.draw(love.graphics.newImage("Assets/Images/ErrorHandler.png"), 20, 20, 0, 2, 2)
+        love.graphics.draw(J, 20, 20, 0, 2, 2)
         love.graphics.setColor(hex("#4a3052"))
         love.graphics.printf(p, love.graphics.newFont("Assets/Fonts/monogram-extended.ttf", 16), 40, pos + 4,
             love.graphics.getWidth() - 40, "left", 0, 2, 2)
@@ -203,7 +204,7 @@ function love.errorhandler(msg)
         end
     end
 end
-error("Description on how you fucked up!")
+-- error("Description on how you fucked up!")
 -- LIBs Loading
 
 require "Engine.Object"

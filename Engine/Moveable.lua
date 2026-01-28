@@ -406,8 +406,6 @@ function Moveable:remove(killAllChildren)
                     end
                 end
             end
-            G.oldState = G.state
-            G.state = "DestroyedObj"
         end
     end
     self = nil

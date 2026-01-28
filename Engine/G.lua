@@ -235,8 +235,45 @@ function Game:update(dt)
             end
         end
     end
-    --HandleCollisionsGeneral()
-    for k, v in pairs(self.I.MOVEABLES) do
+    local function updateMoveable(k)
+        handleCollisionsK(k)
+        self.I.MOVEABLES[k]:update(dt)
+        handleCollisionsK(k)
+    end
+    local function updateAllNonCheckMoveablesRecursively(filter)
+        filter = filter or {}
+        for k, v in pairs(self.I.MOVEABLES) do
+            if not v.properties.collisionCheck and not filter[k] then
+                filter[k] = true
+                updateMoveable(k)
+                updateAllNonCheckMoveablesRecursively(filter)
+                break
+            end
+        end
+        return
+    end
+    local function updateAllCheckMoveablesRecursively(filter)
+        filter = filter or {}
+        for k, v in pairs(self.I.MOVEABLES) do
+            if v.properties.collisionCheck and not filter[k] then
+                filter[k] = true
+                if v.parent and not self.B then handleCollisionsK(getPosById(v.parent)) end
+                updateMoveable(k)
+                updateAllCheckMoveablesRecursively(filter)
+                break
+            end
+        end
+        return
+    end
+    local function updateAllSpritesRecursively(filter)
+        filter = filter or {}
+        for k, v in pairs(self.I.SPRITES) do
+            v:update(dt)
+        end
+        return
+    end
+    updateAllNonCheckMoveablesRecursively()
+    --[[for k, v in pairs(self.I.MOVEABLES) do
         if not v.properties.collisionCheck then
             if self.state == "DestroyedObj" then
                 self.state = self.oldState
@@ -254,9 +291,9 @@ function Game:update(dt)
             end
             if not self.stopTemp then handleCollisionsK(k) end
         end
-    end
-    self.stopTemp = nil
-    for k, v in pairs(self.I.MOVEABLES) do
+    end]]
+    updateAllCheckMoveablesRecursively()
+    --[[for k, v in pairs(self.I.MOVEABLES) do
         if v.properties.collisionCheck then
             v:update(dt)
             if self.state == "DestroyedObj" then
@@ -274,16 +311,16 @@ function Game:update(dt)
             end
             if not self.stopTemp then handleCollisionsK(k) end
         end
-    end
-    self.B = nil
-    for k, v in pairs(self.I.SPRITES) do
+    end]]
+    updateAllSpritesRecursively()
+    --[[for k, v in pairs(self.I.SPRITES) do
         v:update(dt)
         if self.state == "DestroyedObj" then
             self.state = self.oldState
             self.oldState = nil
             break
         end
-    end
+    end]]
     for k, v in pairs(self.I.MOVEABLES) do
         if v.properties.collisionCheck then
             v.extra.ticked = {}

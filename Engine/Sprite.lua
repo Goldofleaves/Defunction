@@ -169,8 +169,6 @@ function Sprite:remove()
     for k, v in ipairs(G.I.SPRITES) do
         if v.id == self.id then
             table.remove(G.I.SPRITES, k)
-            G.oldState = G.state
-            G.state = "DestroyedObj"
         end
     end
     self = nil
