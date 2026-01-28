@@ -273,54 +273,8 @@ function Game:update(dt)
         return
     end
     updateAllNonCheckMoveablesRecursively()
-    --[[for k, v in pairs(self.I.MOVEABLES) do
-        if not v.properties.collisionCheck then
-            if self.state == "DestroyedObj" then
-                self.state = self.oldState
-                self.oldState = nil
-                self.stopTemp = true
-                break
-            end
-            if not self.stopTemp then handleCollisionsK(k) end
-            v:update(dt)
-            if self.state == "DestroyedObj" then
-                self.state = self.oldState
-                self.oldState = nil
-                self.stopTemp = true
-                break
-            end
-            if not self.stopTemp then handleCollisionsK(k) end
-        end
-    end]]
     updateAllCheckMoveablesRecursively()
-    --[[for k, v in pairs(self.I.MOVEABLES) do
-        if v.properties.collisionCheck then
-            v:update(dt)
-            if self.state == "DestroyedObj" then
-                self.state = self.oldState
-                self.oldState = nil
-                self.stopTemp = true
-                break
-            end
-            if v.parent and not self.B then handleCollisionsK(getPosById(v.parent)) end
-            if self.state == "DestroyedObj" then
-                self.state = self.oldState
-                self.oldState = nil
-                self.stopTemp = true
-                break
-            end
-            if not self.stopTemp then handleCollisionsK(k) end
-        end
-    end]]
     updateAllSpritesRecursively()
-    --[[for k, v in pairs(self.I.SPRITES) do
-        v:update(dt)
-        if self.state == "DestroyedObj" then
-            self.state = self.oldState
-            self.oldState = nil
-            break
-        end
-    end]]
     for k, v in pairs(self.I.MOVEABLES) do
         if v.properties.collisionCheck then
             v.extra.ticked = {}
