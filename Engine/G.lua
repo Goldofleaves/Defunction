@@ -269,6 +269,7 @@ function Game:update(dt)
         filter = filter or {}
         for k, v in pairs(self.I.SPRITES) do
             v:update(dt)
+            break
         end
         return
     end
