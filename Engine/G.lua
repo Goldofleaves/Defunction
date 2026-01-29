@@ -14,6 +14,20 @@ function Game:new()
             master = 100,
             music = 100,
             sfx = 100
+        },
+        keybinds = {
+            keyboard = {
+                up = { "w", "space", "up", { "lctrl", "lshift" } },
+                down = { "s", "down" },
+                left = { "a", "left" },
+                right = { "d", "right" },
+                select = { "z", "return" }
+            },
+            mouse = {
+                primary = {1},
+                secondary = {2},
+                middle = {3}
+            }
         }
     }
     self.currentID = 0
@@ -26,16 +40,16 @@ function Game:new()
     self.state = "Overworld"
     self.controller = {
         keyboard = {
-            up = { keybind = {"w", "space", "up", {"lctrl", "lshift"}}, pressed = false, held = false, released = false },
-            down = { keybind = {"s", "down"}, pressed = false, held = false, released = false },
-            left = { keybind = {"a", "left"}, pressed = false, held = false, released = false },
-            right = { keybind = { "d", "right" }, pressed = false, held = false, released = false },
-            select = { keybind = { "z", "return" }, pressed = false, held = false, released = false },
+            up = { pressed = false, held = false, released = false },
+            down = { pressed = false, held = false, released = false },
+            left = { pressed = false, held = false, released = false },
+            right = { pressed = false, held = false, released = false },
+            select = { pressed = false, held = false, released = false },
         },
         mouse = {
-            primary = { keybind = {1}, pressed = false, held = false, released = false }, -- primary (left)
-            secondary = { keybind = {2}, pressed = false, held = false, released = false },     -- secondary (right)
-            middle = { keybind = {3}, pressed = false, held = false, released = false },     -- middle Click
+            primary = { pressed = false, held = false, released = false },       -- primary (left)
+            secondary = { pressed = false, held = false, released = false },     -- secondary (right)
+            middle = { pressed = false, held = false, released = false },        -- middle Click
         }
     }
     self.mousePos = {
@@ -108,7 +122,7 @@ function Game:update(dt)
     -- Controller
     for k, v in pairs(self.controller.keyboard) do
         if (function ()
-                for kk, vv in pairs(v.keybind) do
+                for kk, vv in pairs(G.settings.keybinds.keyboard[k]) do
                     if type(vv) ~= "table" then
                         if love.keyboard.isDown(vv) then
                             return true
@@ -148,7 +162,7 @@ function Game:update(dt)
 
     for k, v in pairs(self.controller.mouse) do
         if (function()
-                for kk, vv in pairs(v.keybind) do
+                for kk, vv in pairs(G.settings.keybinds.mouse[k]) do
                     if type(vv) ~= "table" then
                         if love.mouse.isDown(vv) then
                             return true
@@ -185,7 +199,6 @@ function Game:update(dt)
             v.pressTemp = nil
         end
     end
-
     -- Sounds
     -- Sfx
     for i, v in ipairs(self.audio.sfx) do
@@ -268,8 +281,12 @@ function Game:update(dt)
     local function updateAllSpritesRecursively(filter)
         filter = filter or {}
         for k, v in pairs(self.I.SPRITES) do
-            v:update(dt)
-            break
+            if not filter[k] then
+                filter[k] = true
+                v:update(dt)
+                updateAllSpritesRecursively(filter)
+                break
+            end
         end
         return
     end

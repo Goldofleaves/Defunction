@@ -336,9 +336,9 @@ end
 function love.update(dt)
     DELTATIME = dt
     G:update(dt)
-    print("Fps: " .. (math.floor(1 / dt)))
-    print("X: "..(G.dispOffset.x.Shake or 0))
-    print("Y: "..(G.dispOffset.y.Shake or 0))
+    -- print("Fps: " .. (math.floor(1 / dt)))
+    -- print("X: "..(G.dispOffset.x.Shake or 0))
+    -- print("Y: "..(G.dispOffset.y.Shake or 0))
     PREVIOUS_DELTATIME = dt
 end
 
