@@ -137,23 +137,23 @@ function love.errorhandler(msg)
         love.graphics.draw(J, 20, 20, 0, 2, 2)
         love.graphics.setColor(hex("#4a3052"))
         love.graphics.printf(p, X, 40, pos + 4,
-            love.graphics.getWidth() - 80, "left", 0, 2, 2)
+            (love.graphics.getWidth() - 80) / 2, "left", 0, 2, 2)
         love.graphics.printf(p, X, 40 - 2, pos + 2,
-            love.graphics.getWidth() - 80, "left", 0, 2, 2)
+            (love.graphics.getWidth() - 80) / 2, "left", 0, 2, 2)
         love.graphics.printf(p, X, 40 + 2, pos + 2,
-            love.graphics.getWidth() - 80, "left", 0, 2, 2)
+            (love.graphics.getWidth() - 80) / 2, "left", 0, 2, 2)
         love.graphics.printf(p, X, 40 - 2, pos,
-            love.graphics.getWidth() - 80, "left", 0, 2, 2)
+            (love.graphics.getWidth() - 80) / 2, "left", 0, 2, 2)
         love.graphics.printf(p, X, 40 + 2, pos,
-            love.graphics.getWidth() - 80, "left", 0, 2, 2)
+            (love.graphics.getWidth() - 80) / 2, "left", 0, 2, 2)
         love.graphics.printf(p, X, 40, pos - 2,
-            love.graphics.getWidth() - 80, "left", 0, 2, 2)
+            (love.graphics.getWidth() - 80) / 2, "left", 0, 2, 2)
         love.graphics.setColor(hex("#8b9bb4"))
         love.graphics.printf(p, X, 40, pos + 2,
-            love.graphics.getWidth() - 80, "left", 0, 2, 2)
+            (love.graphics.getWidth() - 80) / 2, "left", 0, 2, 2)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.printf(p, X, 40, pos,
-            love.graphics.getWidth() - 80, "left", 0, 2, 2)
+            (love.graphics.getWidth() - 80) / 2, "left", 0, 2, 2)
         love.graphics.present()
     end
 
