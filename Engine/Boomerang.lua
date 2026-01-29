@@ -209,12 +209,13 @@ function BRang:new(args)
             self.extra.done = true
         end
         if self.extra.done then
+            local p = getObjectByNid("player") or { T = { x = 1, y = 1 } }
             self.V.x.base = 0
             self.V.y.base = 0
             self.extra.lerpD = Util.Math.lerpDt(self.extra.lerpD, 0, 0.15)
-            self.TMod.x.base = Util.Math.lerpDt(self.TMod.x.base, getObjectByNid("player") and getObjectByNid("player").T.x or 0, self.extra.lerpD)
-            self.TMod.y.base = Util.Math.lerpDt(self.TMod.y.base, (getObjectByNid("player") and getObjectByNid("player").T.y or 0) + 10, self.extra.lerpD)
-            if Util.Math.percisionCheck(self.T.x, getObjectByNid("player") and getObjectByNid("player").T.x or 0, 2) and Util.Math.percisionCheck(self.T.y, (getObjectByNid("player") and getObjectByNid("player").T.y or 0) + 10, 2) then
+            self.TMod.x.base = Util.Math.lerpDt(self.TMod.x.base, p.T.x or 0, self.extra.lerpD)
+            self.TMod.y.base = Util.Math.lerpDt(self.TMod.y.base, (p.T.y or 0) + 10, self.extra.lerpD)
+            if Util.Math.percisionCheck(self.T.x, p.T.x or 0, 2) and Util.Math.percisionCheck(self.T.y, (p.T.y or 0) + 10, 2) then
                 self:remove()
                 G.flags.boomerangExists = nil
             end

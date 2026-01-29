@@ -1,4 +1,4 @@
----@class Moveable: Object
+---@class Moveable: {strength:number,T:table,TMod:table,TLast:table,id:number,nid:string|nil|any,parent:nil|number,children:table,extra:table,updateFunc:function,drawFunc:function,drawOrder:number,setParent:function,properties:table}
 
 Moveable = Object:extend()
 
@@ -44,6 +44,7 @@ end
 ---@param obj Moveable
 ---@return integer
 function Moveable:setParent (obj)
+    obj.children = {}
     table.insert(obj.children,self.id)
     self.parent = obj.id
     return self.parent
@@ -245,8 +246,8 @@ function Box:new(args)
         self.TMod.y.gravity = self.TMod.y.gravity or 0
         self.V.y.gravity = self.V.y.gravity or 0
         self.V.y.gravity = self.V.y.gravity + Macros.gravity
-        self.extra.onGround = self.extra.downCheck.extra.ticked
-        if next(self.extra.onGround) and not collisionContainsProperty(self.extra.onGround, "noCollision") then
+        self.extra.onGround = self.extra.downCheck.extra.ticked ---@type table
+        if next(type(self.extra.onGround) == "boolean" and {} or self.extra.onGround) and not collisionContainsProperty(self.extra.onGround, "noCollision") then
             self.V.y.gravity = 0
         end
         self.strength = 200

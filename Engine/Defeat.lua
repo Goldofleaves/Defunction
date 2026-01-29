@@ -11,8 +11,9 @@ function DeathBlock:new(args)
     args.strength = 0
     args.updateFunc = function (s, dt)
         if collisionContainsProperty(s.extra.ticked, "player") then
-            local xx, yy = getObjectByNid("player").T.x, getObjectByNid("player").T.y
-            getObjectByNid("player"):remove(true)
+            local p = getObjectByNid("player") or { T = {x = 1, y = 1}, remove = function (a, b) end}
+            local xx, yy = p.T.x, p.T.y
+            p:remove(true)
             G.flags.deaths = G.flags.deaths + 1
             Sprite {
                 atlasKey = "ArnaDead",

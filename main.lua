@@ -95,15 +95,15 @@ function love.errorhandler(msg)
     for char in msg:gmatch(utf8.charpattern) do
         table.insert(sanitizedmsg, char)
     end
-    sanitizedmsg = table.concat(sanitizedmsg)
+    local sanitizedmessage = table.concat(sanitizedmsg)
 
     local err = {}
 
     table.insert(err, "THE EARTH'S CORE HAS BLOWN UP")
     table.insert(err, "ERROR!\n")
-    table.insert(err, sanitizedmsg)
+    table.insert(err, sanitizedmessage)
 
-    if #sanitizedmsg ~= #msg then
+    if #sanitizedmessage ~= #msg then
         table.insert(err, "Invalid UTF-8 string in error message.")
     end
 
@@ -290,7 +290,8 @@ love.load = function()
                 end,
                 function(s, dt)
                     s:remove()
-                    getObjectByNid("TitleButtons"):remove()
+                    local tb = getObjectByNid("TitleButtons") or { remove = function () end }
+                    tb:remove()
                     LoadFirstRoomTemp()
                 end
             }
@@ -298,12 +299,12 @@ love.load = function()
         updateFunc = function(s, dt)
             if G.controller.keyboard.up.pressed then
                 s.extra.SelectedOption = Util.Math.clamp(1, 3, s.extra.SelectedOption - 1)
-                local T = getObjectByNid("TitleButtons")
+                local T = getObjectByNid("TitleButtons") or { extra = { Random = 1 } }
                 T.extra.Random = 1
             end
             if G.controller.keyboard.down.pressed then
                 s.extra.SelectedOption = Util.Math.clamp(1, 3, s.extra.SelectedOption + 1)
-                local T = getObjectByNid("TitleButtons")
+                local T = getObjectByNid("TitleButtons") or { extra = { Random = 1 } }
                 T.extra.Random = 1
             end
             if G.controller.keyboard.select.pressed then
@@ -324,7 +325,7 @@ love.load = function()
             Random = 0
         },
         updateFunc = function(s, dt)
-            local T = getObjectByNid("TitleScr")
+            local T = getObjectByNid("TitleScr") or {extra = {SelectedOption = 1}}
             s.T.x = 359 + (math.random() * 2 - 1) * s.extra.Random
             s.T.y = 228 + (T.extra.SelectedOption - 1) * 11 + (math.random() * 2 - 1) * s.extra.Random
             s.atlasInfo.y = T.extra.SelectedOption - 1

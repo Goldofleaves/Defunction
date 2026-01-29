@@ -14,7 +14,7 @@ end
 --- @param target table|number
 --- @param funct (fun(x:number):number)? Optional arguement. Isnt used if preset is set
 --- @param preset {preset:string, param:number} The present to use for easing.
---- @return fun(t:number):(number|table) easing_function
+--- @return fun(t:number):(number) easing_function
 --- Presets are:\
 --- `linear`: returns the function y = x for the interval 0 to 1.\
 --- `singleease`: returns the function y = x ^ param (manipulated, of course), ranging from -1 to 1, with negative values being ease out and positive meaning ease in.\
