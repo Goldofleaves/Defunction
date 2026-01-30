@@ -270,7 +270,7 @@ function Game:update(dt)
         for k, v in pairs(self.I.MOVEABLES) do
             if v.properties.collisionCheck and not filter[k] then
                 filter[k] = true
-                if v.parent and not self.B then handleCollisionsK(getPosById(v.parent)) end
+                if v.parent then handleCollisionsK(getPosById(v.parent)) end
                 updateMoveable(k)
                 updateAllCheckMoveablesRecursively(filter)
                 break
