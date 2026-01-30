@@ -53,16 +53,16 @@ function Sprite:new(args)
     }
     self.updateFunc = args.updateFunc or function(s, dt) return end
     self.drawOrder = args.drawOrder or 1
-    self.DrawTiled = args.DrawTiled == nil and false or args.DrawTiled
+    self.drawTiled = args.drawTiled == nil and false or args.drawTiled
     self.extra = args.extra or {}
     self.drawFunc = args.drawFunc or function (s) return end
-    self.Mask = {
+    self.mask = {
         ShouldApply = args.MaskShouldApply == nil and false or args.MaskShouldApply,
         ImageFpos = args.MaskImageFpos,
     }
     self.properties = args.properties or {}
     table.insert(G.I.SPRITES, self)
-    self.Offset = {
+    self.offset = {
         x = args.offsetX or 0,
         y = args.offsetY or 0
     }
@@ -77,9 +77,9 @@ function Sprite:draw()
         local y = self.T.y + ky
         local r, g, b, a = love.graphics.getColor()
         love.graphics.setColor { r, g, b, a * self.transparency }
-        if self.Mask.ShouldApply then
+        if self.mask.ShouldApply then
             self.extra = self.extra or {}
-            self.extra.mask = self.extra.mask or love.graphics.newImage(self.Mask.ImageFpos)
+            self.extra.mask = self.extra.mask or love.graphics.newImage(self.mask.ImageFpos)
             self.extra.mask_shader = self.extra.mask_shader or love.graphics.newShader [[
                    vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
                       if (Texel(texture, texture_coords).rgb == vec3(0.0)) {
@@ -97,7 +97,7 @@ function Sprite:draw()
             love.graphics.stencil(myStencilFunction, "replace", 1)
             love.graphics.setStencilTest("greater", 0)
         end
-        if not self.DrawTiled then
+        if not self.drawTiled then
             love.graphics.draw(
                 Atlases[self.atlasInfo.key].image, Atlases[self.atlasInfo.key].splicedImages[self.atlasInfo.x][self.atlasInfo.y],
                 x + XFlpiiedOffset, y,
@@ -120,7 +120,7 @@ function Sprite:draw()
                 end
             end
         end
-        if self.Mask.ShouldApply then
+        if self.mask.ShouldApply then
             love.graphics.setStencilTest()
         end
         love.graphics.setColor { r, g, b, a }
@@ -129,10 +129,10 @@ function Sprite:draw()
         if self.properties.Outline then
             local r, g, b, a = love.graphics.getColor()
             local function myStencilFunction()
-                draw_func(self.Offset.x + 1 + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
-                draw_func(self.Offset.x - 1 + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
-                draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y + 1 + G:getTotalOffset().y)
-                draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y - 1 + G:getTotalOffset().y)
+                draw_func(self.offset.x + 1 + G:getTotalOffset().x, self.offset.y + G:getTotalOffset().y)
+                draw_func(self.offset.x - 1 + G:getTotalOffset().x, self.offset.y + G:getTotalOffset().y)
+                draw_func(self.offset.x + G:getTotalOffset().x, self.offset.y + 1 + G:getTotalOffset().y)
+                draw_func(self.offset.x + G:getTotalOffset().x, self.offset.y - 1 + G:getTotalOffset().y)
             end
             love.graphics.stencil(myStencilFunction, "replace", 1)
             love.graphics.setStencilTest("greater", 0)
@@ -141,7 +141,7 @@ function Sprite:draw()
             love.graphics.setColor { r, g, b, a }
             love.graphics.setStencilTest()
         end
-        draw_func(self.Offset.x + G:getTotalOffset().x, self.Offset.y + G:getTotalOffset().y)
+        draw_func(self.offset.x + G:getTotalOffset().x, self.offset.y + G:getTotalOffset().y)
     end
     self.drawFunc(self)
 end

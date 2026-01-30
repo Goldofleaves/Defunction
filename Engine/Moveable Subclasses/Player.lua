@@ -70,10 +70,10 @@ function Player:new(args)
                         G.flags.boomerangExists = true
                         s.extra.Removen = true
                         local XCoord, YCoord, XVel, YVel = 0, 0, 0, 0
-                        local Spd, Offset = 300, 15
-                        local rt2Spd, rt2Offset = Spd / (2 ^ (1 / 2)), Offset / (2 ^ (1 / 2))
+                        local Spd, offset = 300, 15
+                        local rt2Spd, rt2Offset = Spd / (2 ^ (1 / 2)), offset / (2 ^ (1 / 2))
                         if s.extra.Det == 1 then
-                            XCoord = Offset
+                            XCoord = offset
                             XVel = Spd
                         elseif s.extra.Det == 2 then
                             XCoord = rt2Offset
@@ -81,7 +81,7 @@ function Player:new(args)
                             XVel = rt2Spd
                             YVel = -rt2Spd
                         elseif s.extra.Det == 3 then
-                            YCoord = -Offset
+                            YCoord = -offset
                             YVel = -Spd
                         elseif s.extra.Det == 4 then
                             XCoord = -rt2Offset
@@ -89,7 +89,7 @@ function Player:new(args)
                             XVel = -rt2Spd
                             YVel = -rt2Spd
                         elseif s.extra.Det == 5 then
-                            XCoord = -Offset
+                            XCoord = -offset
                             XVel = -Spd
                         elseif s.extra.Det == 6 then
                             XCoord = -rt2Offset
@@ -97,7 +97,7 @@ function Player:new(args)
                             XVel = -rt2Spd
                             YVel = rt2Spd
                         elseif s.extra.Det == 7 then
-                            YCoord = Offset
+                            YCoord = offset
                             YVel = Spd
                         else
                             XCoord = rt2Offset

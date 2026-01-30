@@ -224,9 +224,9 @@ function RicoChet:new(args)
     end
     return Moveable.new(self, args)
 end
-require "Engine.Player"
-require "Engine.Boomerang"
-require "Engine.Defeat"
+require "Engine.Moveable Subclasses.Player"
+require "Engine.Moveable Subclasses.Boomerang"
+require "Engine.Moveable Subclasses.DeathBlock"
 
 Box = Moveable:extend()
 function Box:new(args)

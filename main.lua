@@ -68,7 +68,7 @@ love.load = function()
             self.T.x = self.T.x % Macros.tileSize
             self.T.y = self.T.y % Macros.tileSize
         end,
-        DrawTiled = true,
+        drawTiled = true,
         MaskShouldApply = true,
         MaskImageFpos = "Assets/Images/BorderMask.png"
     })
