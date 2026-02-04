@@ -21,7 +21,8 @@ function Game:new()
                 down = { "s", "down" },
                 left = { "a", "left" },
                 right = { "d", "right" },
-                select = { "z", "return" }
+                select = { "z", "return" },
+                pause = { "escape" }
             },
             mouse = {
                 primary = {1},
@@ -37,7 +38,7 @@ function Game:new()
     }
     self.debug = true
     self.timer = 0
-    self.state = "Overworld"
+    self.state = "TitleScreen"
     self.controller = {
         keyboard = {
             up = { pressed = false, held = false, released = false },
@@ -45,6 +46,7 @@ function Game:new()
             left = { pressed = false, held = false, released = false },
             right = { pressed = false, held = false, released = false },
             select = { pressed = false, held = false, released = false },
+            pause = { pressed = false, held = false, released = false },
         },
         mouse = {
             primary = { pressed = false, held = false, released = false },       -- primary (left)
@@ -91,7 +93,6 @@ function Game:getTotalOffset()
     return ret
 end
 function Game:update(dt)
-
 
     -- Mouse
     self.mousePos = {
@@ -290,15 +291,26 @@ function Game:update(dt)
         end
         return
     end
-    updateAllNonCheckMoveablesRecursively()
-    updateAllCheckMoveablesRecursively()
-    updateAllSpritesRecursively()
-    for k, v in pairs(self.I.MOVEABLES) do
-        if v.properties.collisionCheck then
-            v.extra.ticked = {}
+    if self.state ~= "Paused" then
+        updateAllNonCheckMoveablesRecursively()
+        updateAllCheckMoveablesRecursively()
+        updateAllSpritesRecursively()
+        for k, v in pairs(self.I.MOVEABLES) do
+            if v.properties.collisionCheck then
+                v.extra.ticked = {}
+            end
+        end
+        self.timer = self.timer + dt
+    end
+
+    -- Pause Screen
+    if self.controller.keyboard.pause.pressed then
+        if self.state == "Overworld" then
+            self.state = "Paused"
+        else
+            self.state = "Overworld"
         end
     end
-    self.timer = self.timer + dt
 end
 
 function Game:draw()
@@ -340,6 +352,30 @@ function Game:draw()
     end)
     for _, v in ipairs(iTable) do
         v:draw()
+    end
+    if self.state == "Paused" then
+        local r, g, b, a = love.graphics.getColor()
+        self.extra = self.extra or {
+            advTextObjs = (function()
+                local retTable = {}
+                for k, v in ipairs(G.localization.labels.pause) do
+                    table.insert(retTable, AdvancedText(v))
+                end
+                return retTable
+            end)()
+        }
+        local s = self
+        local color = Util.Other.hex("#181425")
+        love.graphics.setColor(color[1], color[2], color[3], 1/2)
+        love.graphics.rectangle("fill", 20, 20, Macros.baseResolution.w - 40, Macros.baseResolution.h - 40)
+        local totalWidth = (1 + #s.extra.advTextObjs) *
+        s.extra.advTextObjs[1].contents[1]:getHeight()
+        for k, v in ipairs(s.extra.advTextObjs) do
+            v:lerpDraw(20,
+                20 + Macros.roomSize.y / 2 - totalWidth / 2 + k * v.contents[1]:getHeight(),
+                Macros.roomSize.x, 1 / 2)
+        end
+        love.graphics.setColor { r, g, b, a }
     end
 end
 

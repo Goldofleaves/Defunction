@@ -89,6 +89,7 @@ love.load = function()
                     s:remove()
                     local tb = getObjectByNid("TitleButtons") or { remove = function () end }
                     tb:remove()
+                    G.state = "Overworld"
                     LoadFirstRoomTemp()
                 end
             }

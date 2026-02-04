@@ -6,6 +6,11 @@ return {
             "|o:black||c:grey|[\"Player.lua\":|t:randomized|??|t:reset|]: in function |c:yellow|deathTracker|c:reset|()|c:grey|:",
             "|o:black||c:grey|[\"Player.lua\":|t:randomized|??|t:reset|]: |c:red|DEATHS: {1}",
             "|o:black||c:blue|Rebooting.."
+        },
+        pause = {
+            "Resume",
+            "Settings",
+            "Quit to Main Menu",
         }
     }
 }
