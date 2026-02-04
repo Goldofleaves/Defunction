@@ -60,7 +60,7 @@ function love.errorhandler(msg)
             return
         end
     end
-
+    love.window.setMode(800, 600)
     -- Reset state.
     if love.mouse then
         love.mouse.setVisible(true)
