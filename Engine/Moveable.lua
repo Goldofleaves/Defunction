@@ -254,7 +254,7 @@ function Moveable:remove(killAllChildren)
             for k, v in ipairs(G.I.MOVEABLES) do
                 if v.parent == j then
                     if killAllChildren then
-                        v:remove()
+                        v:remove(true)
                     else
                         v.parent = nil
                     end
