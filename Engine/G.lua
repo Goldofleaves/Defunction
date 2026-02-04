@@ -374,6 +374,7 @@ function Game:draw()
             v:lerpDraw(20,
                 20 + Macros.roomSize.y / 2 - totalWidth / 2 + k * v.contents[1]:getHeight(),
                 Macros.roomSize.x, 1 / 2)
+            v:update(DELTATIME)
         end
         love.graphics.setColor { r, g, b, a }
     end
