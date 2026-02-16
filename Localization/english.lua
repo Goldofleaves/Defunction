@@ -8,9 +8,14 @@ return {
             "|o:black||c:blue|Rebooting.."
         },
         pause = {
-            "Resume",
-            "Settings",
-            "Quit to Main Menu",
-        }
+            "|o:black|Resume",
+            "|o:black|Settings",
+            "|o:black|Quit to Main Menu",
+        },
+        pauseSelected = {
+            "|o:black||c:yellow||j:normal||e:wavy|Resume",
+            "|o:black||c:yellow||j:normal||e:wavy|Settings",
+            "|o:black||c:yellow||j:normal||e:wavy|Quit to Main Menu",
+        },
     }
 }

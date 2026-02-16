@@ -299,7 +299,7 @@ function TextChar:new(char, effects, pos)
 end
 
 function TextChar:update()
-    self.other.waveVal = G.timer + self.other.position
+    self.other.waveVal = G.timer + G.subTimer + self.other.position
     self.other.waveDisplacement.y = math.sin(self.other.waveVal * 5) * 2
     local chancex = Util.Math.chance(self.effects.effects == "shake" and 2 / 6 or 1 / 24)
     local chancey = Util.Math.chance(self.effects.effects == "shake" and 2 / 6 or 1 / 24)

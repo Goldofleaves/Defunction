@@ -58,7 +58,7 @@ function Box:new(args)
         self.V.x.gravity = self.V.x.gravity or 0
         self.TMod.y.gravity = self.TMod.y.gravity or 0
         self.V.y.gravity = self.V.y.gravity or 0
-        self.V.y.gravity = self.V.y.gravity + Macros.gravity
+        self.V.y.gravity = math.min(self.V.y.gravity + Macros.gravity / 0.02 * DELTATIME, Macros.terminalVelocity)
         self.extra.onGround = self.extra.downCheck.extra.ticked ---@type table
         if next(type(self.extra.onGround) == "boolean" and {} or self.extra.onGround) and not collisionContainsProperty(self.extra.onGround, "noCollision") then
             self.V.y.gravity = 0

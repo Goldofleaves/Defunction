@@ -38,6 +38,7 @@ function Game:new()
     }
     self.debug = true
     self.timer = 0
+    self.subTimer = 0
     self.state = "TitleScreen"
     self.controller = {
         keyboard = {
@@ -300,15 +301,175 @@ function Game:update(dt)
                 v.extra.ticked = {}
             end
         end
+        self.subTimer = 0
         self.timer = self.timer + dt
+        self.pauseVars = nil
+    else
+        self.subTimer = self.subTimer + dt
+        self.pauseVars = self.pauseVars or {
+            advTextObjs = (function()
+                local retTable = {}
+                for k, v in ipairs(G.localization.labels.pause) do
+                    if k - 1 ~= 0 then
+                        table.insert(retTable, AdvancedText(v))
+                    else
+                        table.insert(retTable, AdvancedText(G.localization.labels.pauseSelected[k]))
+                    end
+                end
+                return retTable
+            end)(),
+            selectedOption = 0,
+            r = 0
+        }
+        for k, v in ipairs(self.pauseVars.advTextObjs) do
+            v:update(dt)
+        end
+        if self.controller.keyboard.up.pressed then
+            self.pauseVars.selectedOption = (self.pauseVars.selectedOption - 1) % 3
+            self.pauseVars.advTextObjs = {}
+            for k, v in ipairs(G.localization.labels.pause) do
+                if k - 1 ~= self.pauseVars.selectedOption then
+                    table.insert(self.pauseVars.advTextObjs, AdvancedText(v))
+                else
+                    table.insert(self.pauseVars.advTextObjs, AdvancedText(G.localization.labels.pauseSelected[k]))
+                end
+            end
+            self.pauseVars.r = 1.5
+        end
+        if self.controller.keyboard.down.pressed then
+            self.pauseVars.selectedOption = (self.pauseVars.selectedOption + 1) % 3
+            self.pauseVars.advTextObjs = {}
+            for k, v in ipairs(G.localization.labels.pause) do
+                if k - 1 ~= self.pauseVars.selectedOption then
+                    table.insert(self.pauseVars.advTextObjs, AdvancedText(v))
+                else
+                    table.insert(self.pauseVars.advTextObjs, AdvancedText(G.localization.labels.pauseSelected[k]))
+                end
+            end
+            self.pauseVars.r = 1.5
+        end
+        if self.controller.keyboard.select.pressed then
+            local funcs = {
+                [0] = function()
+                    self.state = "Overworld"
+                end,
+                [2] = function ()
+                    local function LoadFirstRoomTemp()
+                        Wall()
+                        RicoChet({ x = 380, w = 80, h = 20 })
+                        Box()
+                        OneWayPlatform({ x = 180, y = 60, facing = "up" })
+                        OneWayPlatform({ x = 180, facing = "up" })
+                        OneWayPlatform({ x = 220, y = 100, facing = "down" })
+                        OneWayPlatform({ x = 240, h = 40, y = 140, facing = "right" })
+                        --OneWayPlatform({ x = 420, h = 40, y = 160, facing = "left" })
+                        Wall({ x = 220, y = 180, w = 160 })
+                        RicoChet({ x = 500, y = 100 })
+                        RicoChet({ x = 400, y = 60, h = 20, w = 80 })
+                        Player()
+                        DeathBlock()
+                    end
+                    local function removeEverythingRecursively(s, f)
+                        for k, v in pairs(G.I[s]) do
+                            if v.remove then
+                                v:remove(true)
+                                removeEverythingRecursively(s, f)
+                            end
+                            break
+                        end
+                    end
+                    removeEverythingRecursively("SPRITES")
+                    removeEverythingRecursively("MOVEABLES")
+                    self.state = "TitleScreen"
+                    Sprite({
+                        atlasKey = "Border",
+                        nid = "Border",
+                        drawOrder = 9000
+                    })
+                    Sprite({
+                        atlasKey = "BorderPattern",
+                        nid = "BorderPattern",
+                        drawOrder = 9001,
+                        updateFunc = function(self, dt)
+                            self.T.x = self.T.x + 25 * dt
+                            self.T.y = self.T.y + 25 * dt
+                            self.T.x = self.T.x % Macros.tileSize
+                            self.T.y = self.T.y % Macros.tileSize
+                        end,
+                        drawTiled = true,
+                        MaskShouldApply = true,
+                        MaskImageFpos = "Assets/Images/BorderMask.png"
+                    })
+                    Sprite({
+                        atlasKey = "TitleBase",
+                        nid = "TitleScr",
+                        drawOrder = 1,
+                        extra = {
+                            SelectedOption = 1,
+                            Funcs = {
+                                function(s, dt)
+                                    love.event.push("quit")
+                                end,
+                                function(s, dt)
+                                    return
+                                end,
+                                function(s, dt)
+                                    s:remove()
+                                    local tb = getObjectByNid("TitleButtons") or { remove = function() end }
+                                    tb:remove()
+                                    G.state = "Overworld"
+                                    LoadFirstRoomTemp()
+                                end
+                            }
+                        },
+                        updateFunc = function(s, dt)
+                            if G.controller.keyboard.up.pressed then
+                                s.extra.SelectedOption = Util.Math.clamp(1, 3, s.extra.SelectedOption - 1)
+                                local T = getObjectByNid("TitleButtons") or { extra = { Random = 1 } }
+                                T.extra.Random = 1
+                            end
+                            if G.controller.keyboard.down.pressed then
+                                s.extra.SelectedOption = Util.Math.clamp(1, 3, s.extra.SelectedOption + 1)
+                                local T = getObjectByNid("TitleButtons") or { extra = { Random = 1 } }
+                                T.extra.Random = 1
+                            end
+                            if G.controller.keyboard.select.pressed then
+                                s.extra.Funcs[s.extra.SelectedOption](s, dt)
+                            end
+                            local tickTime = 0.5
+                            local frame = Util.Math.div(G.timer, tickTime) % 3
+                            s.atlasInfo.y = frame
+                        end
+                    })
+                    Sprite({
+                        atlasKey = "TitleSelection",
+                        nid = "TitleButtons",
+                        drawOrder = 2,
+                        x = 359,
+                        y = 228,
+                        extra = {
+                            Random = 0
+                        },
+                        updateFunc = function(s, dt)
+                            local T = getObjectByNid("TitleScr") or { extra = { SelectedOption = 1 } }
+                            s.T.x = 359 + (math.random() * 2 - 1) * s.extra.Random
+                            s.T.y = 228 + (T.extra.SelectedOption - 1) * 11 + (math.random() * 2 - 1) * s.extra.Random
+                            s.atlasInfo.y = T.extra.SelectedOption - 1
+                            s.extra.Random = Util.Math.clamp(0, 1, s.extra.Random - 1 / 4)
+                        end
+                    })
+                end
+            }
+            funcs[self.pauseVars.selectedOption]()
+        end
+        self.pauseVars.r = self.pauseVars.r - dt * 10
+        self.pauseVars.r = math.max(self.pauseVars.r, 0)
     end
 
     -- Pause Screen
     if self.controller.keyboard.pause.pressed then
         if self.state == "Overworld" then
             self.state = "Paused"
-        else
-            self.state = "Overworld"
         end
     end
 end
@@ -354,29 +515,21 @@ function Game:draw()
         v:draw()
     end
     if self.state == "Paused" then
-        local r, g, b, a = love.graphics.getColor()
-        self.extra = self.extra or {
-            advTextObjs = (function()
-                local retTable = {}
-                for k, v in ipairs(G.localization.labels.pause) do
-                    table.insert(retTable, AdvancedText(v))
-                end
-                return retTable
-            end)()
-        }
-        local s = self
-        local color = Util.Other.hex("#181425")
-        love.graphics.setColor(color[1], color[2], color[3], 1/2)
-        love.graphics.rectangle("fill", 20, 20, Macros.baseResolution.w - 40, Macros.baseResolution.h - 40)
-        local totalWidth = (1 + #s.extra.advTextObjs) *
-        s.extra.advTextObjs[1].contents[1]:getHeight()
-        for k, v in ipairs(s.extra.advTextObjs) do
-            v:lerpDraw(20,
-                20 + Macros.roomSize.y / 2 - totalWidth / 2 + k * v.contents[1]:getHeight(),
-                Macros.roomSize.x, 1 / 2)
-            v:update(DELTATIME)
+        if self.pauseVars then
+            local r, g, b, a = love.graphics.getColor()
+            local s = self
+            local color = Util.Other.hex("#181425")
+            love.graphics.setColor(color[1], color[2], color[3], 1/2)
+            love.graphics.rectangle("fill", 20, 20, Macros.baseResolution.w - 40, Macros.baseResolution.h - 40)
+            local totalWidth = (1 + #s.pauseVars.advTextObjs) * s.pauseVars.advTextObjs[1].contents[1]:getHeight()
+            for k, v in ipairs(s.pauseVars.advTextObjs) do
+                v:lerpDraw(20 + self.pauseVars.r * 2 * (math.random() - 0.5),
+                    20 + Macros.roomSize.y / 2 - totalWidth / 2 + k * v.contents[1]:getHeight() +
+                    self.pauseVars.r * 2 * (math.random() - 0.5),
+                    Macros.roomSize.x, 1 / 2)
+            end
+            love.graphics.setColor { r, g, b, a }
         end
-        love.graphics.setColor { r, g, b, a }
     end
 end
 
