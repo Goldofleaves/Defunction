@@ -520,9 +520,10 @@ function Game:draw()
             love.graphics.rectangle("fill", 20, 20, Macros.baseResolution.w - 40, Macros.baseResolution.h - 40)
             local totalWidth = (1 + #s.pauseVars.advTextObjs) * s.pauseVars.advTextObjs[1].contents[1]:getHeight()
             for k, v in ipairs(s.pauseVars.advTextObjs) do
-                v:lerpDraw(20 + self.pauseVars.r * 2 * (math.random() - 0.5),
+                v:lerpDraw(20 + self.pauseVars.r * 2 * (math.random() - 0.5) + (k-1 == s.pauseVars.selectedOption and 1 * math.sin(1.5 * (G.timer + G.subTimer)) or 0),
                     20 + Macros.roomSize.y / 2 - totalWidth / 2 + k * v.contents[1]:getHeight() +
-                    self.pauseVars.r * 2 * (math.random() - 0.5),
+                    self.pauseVars.r * 2 * (math.random() - 0.5) +
+                    (k - 1 == s.pauseVars.selectedOption and 2 * math.sin(3 * (G.timer + G.subTimer)) or 0),
                     Macros.roomSize.x, 1 / 2)
             end
             love.graphics.setColor { r, g, b, a }
