@@ -334,6 +334,7 @@ function Game:update(dt)
                     table.insert(self.pauseVars.advTextObjs, AdvancedText(G.localization.labels.pauseSelected[k]))
                 end
             end
+            Util.Audio.playSfx("MenuSwitchSubjects", 0.6, math.random() * 0.5 + 0.75)
             self.pauseVars.r = 1.5
         end
         if self.controller.keyboard.down.pressed then
@@ -346,12 +347,16 @@ function Game:update(dt)
                     table.insert(self.pauseVars.advTextObjs, AdvancedText(G.localization.labels.pauseSelected[k]))
                 end
             end
+            Util.Audio.playSfx("MenuSwitchSubjects", 0.6, math.random() * 0.5 + 0.75)
             self.pauseVars.r = 1.5
         end
         if self.controller.keyboard.select.pressed then
             local funcs = {
                 [0] = function()
                     self.state = "Overworld"
+                end,
+                [1] = function()
+
                 end,
                 [2] = function ()
                     local function LoadFirstRoomTemp()
@@ -369,17 +374,7 @@ function Game:update(dt)
                         Player()
                         DeathBlock()
                     end
-                    local function removeEverythingRecursively(s, f)
-                        for k, v in pairs(G.I[s]) do
-                            if v.remove then
-                                v:remove(true)
-                                removeEverythingRecursively(s, f)
-                            end
-                            break
-                        end
-                    end
-                    removeEverythingRecursively("SPRITES")
-                    removeEverythingRecursively("MOVEABLES")
+                    Util.Other.removeAllObjects()
                     self.state = "TitleScreen"
                     Sprite({
                         atlasKey = "Border",
@@ -426,11 +421,13 @@ function Game:update(dt)
                             if G.controller.keyboard.up.pressed then
                                 s.extra.SelectedOption = Util.Math.clamp(1, 3, s.extra.SelectedOption - 1)
                                 local T = getObjectByNid("TitleButtons") or { extra = { Random = 1 } }
+                                Util.Audio.playSfx("MenuSwitchSubjects", 0.3, math.random() * 0.5 + 0.75)
                                 T.extra.Random = 1
                             end
                             if G.controller.keyboard.down.pressed then
                                 s.extra.SelectedOption = Util.Math.clamp(1, 3, s.extra.SelectedOption + 1)
                                 local T = getObjectByNid("TitleButtons") or { extra = { Random = 1 } }
+                                Util.Audio.playSfx("MenuSwitchSubjects", 0.3, math.random() * 0.5 + 0.75)
                                 T.extra.Random = 1
                             end
                             if G.controller.keyboard.select.pressed then

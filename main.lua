@@ -31,6 +31,7 @@ registerAtlasSimple("TitleSelection", "Assets/Images/TitleSelection.png", 47, 11
 registerAtlasSimple("TitleBase", "Assets/Images/TitleBase.png", 640, 360)
 Util.Audio.registerSfx('Bump1', { 'Bump1' })
 Util.Audio.registerSfx('BumpWeak1', { 'BumpWeak1' })
+Util.Audio.registerSfx('MenuSwitchSubjects', { 'MenuSwitchSubjects' })
 love.filesystem.setIdentity("Defunction")
 Util.Other.loadLocalization()
 local function LoadFirstRoomTemp()
@@ -98,11 +99,13 @@ love.load = function()
             if G.controller.keyboard.up.pressed then
                 s.extra.SelectedOption = Util.Math.clamp(1, 3, s.extra.SelectedOption - 1)
                 local T = getObjectByNid("TitleButtons") or { extra = { Random = 1 } }
+                Util.Audio.playSfx("MenuSwitchSubjects", 0.3, math.random() * 0.5 + 0.75)
                 T.extra.Random = 1
             end
             if G.controller.keyboard.down.pressed then
                 s.extra.SelectedOption = Util.Math.clamp(1, 3, s.extra.SelectedOption + 1)
                 local T = getObjectByNid("TitleButtons") or { extra = { Random = 1 } }
+                Util.Audio.playSfx("MenuSwitchSubjects", 0.3, math.random() * 0.5 + 0.75)
                 T.extra.Random = 1
             end
             if G.controller.keyboard.select.pressed then

@@ -87,3 +87,18 @@ function table.merge(...)
 	end
 	return ret
 end
+
+function Util.Other.removeAllObjects()
+	local function removeEverythingRecursively(s, f)
+		for k, v in pairs(G.I[s]) do
+			if v.remove then
+				v:remove(true)
+				removeEverythingRecursively(s, f)
+			end
+			break
+		end
+	end
+	for k, v in pairs(G.I) do
+		removeEverythingRecursively(k)
+	end
+end
